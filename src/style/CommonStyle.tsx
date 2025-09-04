@@ -17,3 +17,7 @@ export const Text = styled.div`
   color: #333;
   margin-bottom: 2rem;
 `;
+
+export const ContentContanier = styled.div`
+  width: 88%
+`
