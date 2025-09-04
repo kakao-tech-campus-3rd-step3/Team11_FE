@@ -3,10 +3,11 @@ import Landing from './pages/Landing';
 import Login from './pages/Login';
 import Home from './pages/Home';
 import MeetingRoom from './pages/MeetingRoom';
-
+import GlobalStyle from './style/GlobalStyle';
 function App() {
   return (
     <BrowserRouter>
+      <GlobalStyle/>
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/login" element={<Login />} />
