@@ -1,9 +1,10 @@
-import { Container, Text } from '@/style/CommonStyle';
+import { Header } from '@/components/meeting_room_page/Header';
+import { Container } from '@/style/CommonStyle';
 
 const MeetingRoom = () => {
   return (
     <Container>
-      <Text>Meeting Room Page</Text>
+      <Header />
     </Container>
   );
 };
