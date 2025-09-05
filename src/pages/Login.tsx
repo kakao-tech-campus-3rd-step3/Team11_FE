@@ -1,4 +1,4 @@
-import { Container, ContentContanier, Text } from '@/style/CommonStyle';
+import { Container, ContentContanier } from '@/style/CommonStyle';
 import LogoImg from '@/asset/LogoImg.png';
 import {
   InputSection,
@@ -8,13 +8,16 @@ import {
   LoginSection,
   Spacer,
 } from './Login.styled';
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
+  const navigate = useNavigate();
+
   return (
     <Container>
       <ContentContanier>
       <LoginMain>
-          <Logo alt="카카오 공식 로고" src={LogoImg} />
+          <Logo alt="모밋 로고" src={LogoImg} />
           <Spacer h={24}/>
           <LoginSection>
             <div>
@@ -30,7 +33,7 @@ const Login = () => {
               />
             </div>
             <Spacer h={24}/>
-            <LoginButton>
+            <LoginButton onClick={() => navigate('/home')}>
               로그인
             </LoginButton>
           </LoginSection>
