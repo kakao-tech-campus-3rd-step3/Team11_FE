@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { colors } from '../style/themes'; // 기존 themes.ts에서 colors를 가져옵니다.
+import { colors } from '../style/themes';
 
 // --- 페이지 전체 레이아웃 ---
-// CommonStyle.tsx의 Container와 유사하지만, 이 페이지는 상하 꽉 찬 레이아웃이 필요합니다.
 const PageContainer = styled.div`
   width: 100%;
   max-width: 720px;

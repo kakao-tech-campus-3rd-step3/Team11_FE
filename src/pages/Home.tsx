@@ -148,7 +148,7 @@ const Home = () => {
         <MapArea>
           <SearchButton />
           <MapContainer ref={mapRef} />
-          <RoomCreateButton />
+          <RoomCreateButton to="/create-room" />
         </MapArea>
       </HomeContainer>
     </>
