@@ -4,7 +4,7 @@ import GlobalStyle from '../style/GlobalStyle';
 import { colors } from '../style/themes';
 import apikey from '@/config/apikey';
 import { SearchButton } from '../components/home_page/searchButton';
-
+import { RoomCreateButton } from '../components/home_page/RoomCreateButton';
 declare global {
   interface Window {
     kakao: any;
@@ -65,23 +65,6 @@ const MapArea = styled.div`
 const MapContainer = styled.div.attrs({ id: 'kakaoMap' })`
   width: 100%;
   height: 100%;
-`;
-
-const CreateMoimButton = styled.button`
-  position: absolute;
-  bottom: 20px;
-  right: 20px;
-  z-index: 10;
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
-  border: none;
-  background-color: ${colors.primary400};
-  color: #fff;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  font-size: 32px;
-  line-height: 56px;
-  cursor: pointer;
 `;
 
 const Home = () => {
@@ -165,7 +148,7 @@ const Home = () => {
         <MapArea>
           <SearchButton />
           <MapContainer ref={mapRef} />
-          <CreateMoimButton>+</CreateMoimButton>
+          <RoomCreateButton> +</RoomCreateButton>
         </MapArea>
       </HomeContainer>
     </>
