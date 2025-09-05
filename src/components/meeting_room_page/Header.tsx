@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from '@emotion/styled';
 import BackArrow from '@/assets/meeting_room_page/chevron_left.svg?react';
 import Menu from '@/assets/meeting_room_page/menu.svg?react';
 

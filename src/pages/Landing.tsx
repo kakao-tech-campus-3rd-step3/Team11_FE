@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import { Logo } from './Landing.styled';
 import LogoImg from '@/asset/LogoImg.png';
 
-
 const Landing = () => {
   const navigte = useNavigate();
 

@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from '@emotion/styled';
 import { Participant } from './Participant';
 
 const Container = styled.div`
