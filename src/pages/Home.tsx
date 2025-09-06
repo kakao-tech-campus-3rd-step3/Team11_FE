@@ -1,9 +1,10 @@
 import { useEffect, useRef } from 'react';
 import styled, { createGlobalStyle } from 'styled-components';
-import GlobalStyle from '../style/GlobalStyle';
-import { colors } from '../style/themes';
+import GlobalStyle from '@/style/GlobalStyle';
+import { colors } from '@/style/themes';
 import apikey from '@/config/apikey';
-import { SearchButton } from '../components/home_page/searchButton';
+import { SearchButton } from '@/components/home_page/SearchButton';
+import { useKakaoMap } from '@/hooks/useKakaoMap';
 
 declare global {
   interface Window {
@@ -88,73 +89,8 @@ const Home = () => {
   const mapRef = useRef<HTMLDivElement>(null);
   const overlayRef = useRef<any>(null);
 
-  useEffect(() => {
-    const MAX_RETRIES = 3;
-    const RETRY_DELAY = 2000;
-
-    let cleanupFunc: (() => void) | null = null;
-
-    const initMap = (attempt = 1) => {
-      const APP_KEY =
-        (import.meta.env.VITE_KAKAO_MAP_KEY as string) || (apikey?.kakaoMapKey as string);
-
-      if (!APP_KEY) {
-        console.error('API 키를 찾을 수 없음.');
-        return;
-      }
-
-      let ro: ResizeObserver | null = null;
-
-      loadKakaoSDK(APP_KEY.trim())
-        .then(() => {
-          if (!mapRef.current) return;
-          const { kakao } = window as any;
-
-          const center = new kakao.maps.LatLng(35.2335, 129.081);
-          const map = new kakao.maps.Map(mapRef.current, { center, level: 4 });
-
-          const content = `
-            <div class="custom-div-icon">
-              <div class="marker-pin"></div>
-            </div>
-          `;
-          const overlay = new kakao.maps.CustomOverlay({
-            position: center,
-            content,
-            yAnchor: 1,
-            map,
-          });
-          overlayRef.current = overlay;
-
-          ro = new ResizeObserver(() => map.relayout());
-          ro.observe(mapRef.current);
-
-          cleanupFunc = () => {
-            if (ro && mapRef.current) ro.unobserve(mapRef.current);
-            if (overlayRef.current) {
-              overlayRef.current.setMap(null);
-              overlayRef.current = null;
-            }
-          };
-        })
-        .catch((error) => {
-          console.error(`지도 로딩 실패:`, error);
-          if (attempt < MAX_RETRIES) {
-            setTimeout(() => initMap(attempt + 1), RETRY_DELAY);
-          } else {
-            console.error('API 키 또는 네트워크 확인.');
-          }
-        });
-    };
-
-    initMap();
-
-    return () => {
-      if (cleanupFunc) {
-        cleanupFunc();
-      }
-    };
-  }, []);
+  const APP_KEY = (import.meta.env.VITE_KAKAO_MAP_KEY as string) || (apikey?.kakaoMapKey as string);
+  useKakaoMap({ mapRef, overlayRef, appKey: APP_KEY });
 
   return (
     <>
