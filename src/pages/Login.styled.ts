@@ -21,7 +21,7 @@ export const LoginMain = styled.main`
 
 export const Logo = styled.img`
   width: 80%;
-  max-width : 320px;
+  max-width: 320px;
   color: rgb(42, 48, 56);
 `;
 export const LoginSection = styled.section`
@@ -45,9 +45,8 @@ export const InputSection = styled.input<{ hasError?: boolean }>`
   border-color: ${({ hasError }) => (hasError ? 'red' : 'rgb(220, 222, 227)')};
   &:focus {
     outline: none;
-    border-color: ${({ hasError }) => hasError ? 'red' : 'rgb(42, 48, 56)'};
+    border-color: ${({ hasError }) => (hasError ? 'red' : 'rgb(42, 48, 56)')};
   }
-  
 `;
 
 export const LoginButton = styled.button<{ notVaild?: boolean }>`
@@ -60,11 +59,10 @@ export const LoginButton = styled.button<{ notVaild?: boolean }>`
   background-color: ${colors.primary};
   border-radius: 4px;
   border: none;
-  cursor: ${({notVaild}) => (notVaild?  'not-allowed' :'pointer' ) };
-  opacity: ${({notVaild}) => (notVaild?  '0.5' :'1' ) };
+  cursor: ${({ notVaild }) => (notVaild ? 'not-allowed' : 'pointer')};
+  opacity: ${({ notVaild }) => (notVaild ? '0.5' : '1')};
   transition: background-color 200ms;
 `;
-
 
 export const ErrorMessage = styled.div`
   color: red;
@@ -73,7 +71,6 @@ export const ErrorMessage = styled.div`
 `;
 
 export const Spacer = styled.div<{ h?: number; w?: number }>`
-  height: ${({ h }) => (h ? `${h}px` : "0")};
-  width: ${({ w }) => (w ? `${w}px` : "0")};
+  height: ${({ h }) => (h ? `${h}px` : '0')};
+  width: ${({ w }) => (w ? `${w}px` : '0')};
 `;
-
