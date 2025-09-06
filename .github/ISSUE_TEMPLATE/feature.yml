@@ -1,0 +1,35 @@
+name: '✨ Feature'
+description: '새로운 기능 추가'
+labels: ['enhancement']
+title: '[FEAT] '
+
+body:
+  - type: textarea
+    attributes:
+      label: 🔧 추가할 기능
+      description: 추가할 기능과 주요 내용을 구체적으로 작성해 주세요.
+      placeholder: |
+        반드시 -, 1. 2. 등의 글머리 기호를 통해 구분하여 주세요.
+        이미지는 항상 해당 내용의 하단에 첨부합니다.
+
+        작성 예시
+        1. 로그인 기능 구현
+        로그인 성공 시 토큰 저장
+        실패 시 에러 메시지 출력
+        <이미지>
+
+        2. UI 개선
+        로그인 버튼 색상 변경
+        반응형 설계
+        <이미지>
+        ...
+
+  - type: textarea
+    attributes:
+      label: 📂 참고 자료
+      description: 참고할 만한 문서의 링크나 스크린샷이 있다면 첨부해 주세요. 없으면 `> N/A` 그대로 두시면 됩니다.
+      placeholder: |
+        작성 예시
+        > https://example.com/design-doc
+        혹은 > 를 지우고 이미지 첨부
+      value: '> N/A'

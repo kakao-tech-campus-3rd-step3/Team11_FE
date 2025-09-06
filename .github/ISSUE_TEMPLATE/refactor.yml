@@ -1,0 +1,36 @@
+name: '🛠 Refactor'
+description: '코드 구조/가독성/성능 개선을 위한 리팩토링'
+labels: ['refactor']
+title: '[REFACTOR] '
+
+body:
+  - type: textarea
+    attributes:
+      label: 🔧 리팩토링 대상
+      description: 리팩토링 대상(파일/모듈/함수 등)과 목적에 대해 구체적으로 작성해 주세요.
+      placeholder: |
+        반드시 -, 1. 2. 등의 글머리 기호를 통해 구분하여 주세요.
+        이미지는 항상 해당 내용의 하단에 첨부합니다.
+
+        작성 예시
+        1. LoginForm 컴포넌트
+        상태 관리 로직을 Context → Custom Hook으로 분리하여 유지보수성 향상
+        <이미지/코드>
+
+        2. UserService
+        중복된 사용자 검증 로직 통합하여 중복 코드 제거
+        <이미지/코드>
+
+        3. API 응답 처리
+        불필요한 캐싱 로직 제거 및 react-query로 통합하여 성능 최적화
+        <이미지/코드>
+
+  - type: textarea
+    attributes:
+      label: 📂 참고 자료
+      description: 참고할 만한 문서의 링크나 스크린샷이 있다면 첨부해 주세요. 없으면 `> N/A` 그대로 두시면 됩니다.
+      placeholder: |
+        작성 예시
+        > https://example.com/design-doc
+        혹은 > 를 지우고 이미지 첨부
+      value: '> N/A'
