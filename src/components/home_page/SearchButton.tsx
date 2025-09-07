@@ -1,6 +1,5 @@
-import React, { useEffect, useRef } from 'react';
 import styled from '@emotion/styled';
-import { colors } from '../../style/themes';
+import { colors } from '@/style/themes';
 
 const SearchInput = styled.input`
   position: absolute;
