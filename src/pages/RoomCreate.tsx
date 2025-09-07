@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { colors } from '../style/themes';
+import { colors } from '@/style/themes';
 
 // --- 페이지 전체 레이아웃 ---
 const PageContainer = styled.div`

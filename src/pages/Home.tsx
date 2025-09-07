@@ -1,40 +1,15 @@
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 import styled, { createGlobalStyle } from 'styled-components';
 import GlobalStyle from '@/style/GlobalStyle';
 import { colors } from '@/style/themes';
 import apikey from '@/config/apikey';
 import { SearchButton } from '@/components/home_page/SearchButton';
 import { useKakaoMap } from '@/hooks/useKakaoMap';
-
+import { RoomCreateButton } from '@/components/home_page/RoomCreateButton';
 declare global {
   interface Window {
     kakao: any;
   }
-}
-
-function loadKakaoSDK(appKey: string) {
-  if (typeof window !== 'undefined' && window.kakao?.maps) return Promise.resolve();
-  return new Promise<void>((resolve, reject) => {
-    const scriptId = 'kakao-maps-sdk';
-    const existing = document.getElementById(scriptId) as HTMLScriptElement | null;
-    if (existing) {
-      if (window.kakao?.maps) return window.kakao.maps.load(() => resolve());
-      existing.addEventListener('load', () => window.kakao.maps.load(() => resolve()), {
-        once: true,
-      });
-      existing.addEventListener('error', () => reject(new Error('Kakao Maps SDK load error')), {
-        once: true,
-      });
-      return;
-    }
-    const script = document.createElement('script');
-    script.id = scriptId;
-    script.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${encodeURIComponent(appKey)}&autoload=false`;
-    script.async = true;
-    script.onload = () => window.kakao.maps.load(() => resolve());
-    script.onerror = () => reject(new Error('Kakao Maps SDK load error'));
-    document.head.appendChild(script);
-  });
 }
 
 const KakaoMapCssFix = createGlobalStyle`

@@ -14,7 +14,7 @@ type UseKakaoMapParams = {
   level?: number;
 };
 
-function loadKakaoSDK(appKey: string) {
+export function loadKakaoSDK(appKey: string) {
   if (typeof window !== 'undefined' && window.kakao?.maps) return Promise.resolve();
   return new Promise<void>((resolve, reject) => {
     const scriptId = 'kakao-maps-sdk';

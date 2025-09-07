@@ -4,6 +4,7 @@ import Login from '@/pages/Login';
 import Home from '@/pages/Home';
 import MeetingRoom from '@/pages/MeetingRoom';
 import GlobalStyle from '@/style/GlobalStyle';
+import RoomCreate from '@/pages/RoomCreate';
 function App() {
   return (
     <BrowserRouter>
