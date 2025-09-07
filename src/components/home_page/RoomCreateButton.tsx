@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import React from 'react';
 import styled from '@emotion/styled';
 import { Link } from 'react-router-dom';
@@ -9,16 +8,6 @@ const RoomCreateLink = styled(Link)`
   bottom: 20px;
   right: 20px;
   z-index: 1000;
-=======
-import styled from 'styled-components';
-import { colors } from '../../style/themes';
-
-const RoomCreateButton = styled.button`
-  position: absolute;
-  bottom: 20px;
-  right: 20px;
-  z-index: 10;
->>>>>>> 0a225f6fe4f8f699d6a2b96a5b61cfce306442ce
   width: 56px;
   height: 56px;
   border-radius: 50%;
@@ -29,7 +18,6 @@ const RoomCreateButton = styled.button`
   font-size: 32px;
   line-height: 56px;
   cursor: pointer;
-<<<<<<< HEAD
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -63,12 +51,3 @@ export const RoomCreate: React.FC<Props> = ({
 };
 
 export const RoomCreateButton = RoomCreate;
-=======
-`;
-
-export const RoomCreateButtonComponent = () => {
-  return <RoomCreateButton>+</RoomCreateButton>;
-};
-
-export { RoomCreateButton };
->>>>>>> 0a225f6fe4f8f699d6a2b96a5b61cfce306442ce
