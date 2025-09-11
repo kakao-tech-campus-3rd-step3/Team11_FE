@@ -62,7 +62,7 @@ const Option = styled.button`
   }
 `;
 
-const UNDO_SVG_SIZE = '1.6rem';
+const UNDO_SVG_SIZE = '25.6';
 
 export const Sidebar = ({ isOpen, setIsOpen }: Sidebar) => {
   return (

@@ -56,8 +56,8 @@ const Overlay = styled.div`
   z-index: 999;
 `;
 
-const BACKARROW_SVG_SIZE = '2rem';
-const MENU_SVG_SIZE = '1.6rem';
+const BACKARROW_SVG_SIZE = '32';
+const MENU_SVG_SIZE = '25.6';
 
 export const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
