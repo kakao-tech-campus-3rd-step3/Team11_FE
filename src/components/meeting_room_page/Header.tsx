@@ -1,6 +1,8 @@
 import styled from '@emotion/styled';
 import BackArrow from '@/assets/meeting_room_page/chevron_left.svg?react';
 import Menu from '@/assets/meeting_room_page/menu.svg?react';
+import { useState } from 'react';
+import { Sidebar } from '@/components/meeting_room_page/Sidebar';
 
 const HeaderContainer = styled.div`
   position: absolute;
@@ -35,10 +37,31 @@ const RoomTitle = styled.div`
   font-weight: 500;
 `;
 
+const Button = styled.button`
+  all: unset;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const Overlay = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  max-width: 720px;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 999;
+`;
+
 const BACKARROW_SVG_SIZE = '2rem';
 const MENU_SVG_SIZE = '1.6rem';
 
 export const Header = () => {
+  const [isOpen, setIsOpen] = useState(false);
+
   return (
     <HeaderContainer>
       <HeaderContent>
@@ -48,12 +71,16 @@ export const Header = () => {
           style={{ position: 'absolute', left: 0 }}
         />
         <RoomTitle>축구할 사람 구해요~</RoomTitle>
-        <Menu
-          width={MENU_SVG_SIZE}
-          height={MENU_SVG_SIZE}
-          style={{ position: 'absolute', right: 0, top: '0.85rem' }}
-        />
+        <Button onClick={() => setIsOpen(true)}>
+          <Menu
+            width={MENU_SVG_SIZE}
+            height={MENU_SVG_SIZE}
+            style={{ position: 'absolute', right: 0, top: '0.85rem' }}
+          />
+        </Button>
       </HeaderContent>
+      {isOpen && <Overlay />}
+      <Sidebar isOpen={isOpen} setIsOpen={setIsOpen} />
     </HeaderContainer>
   );
 };
