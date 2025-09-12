@@ -2,13 +2,15 @@ import styled from 'styled-components';
 
 export const Container = styled.div`
   display: flex;
+  position: relative;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 100vw; /* 뷰포트 가로 꽉 채우기 */
+  width: 100vw;
   height: 100vh;
   max-width: 720px;
   background-color: #ffffffff;
+  overflow: hidden;
 `;
 
 export const Text = styled.div`
@@ -19,5 +21,5 @@ export const Text = styled.div`
 `;
 
 export const ContentContanier = styled.div`
-  width: 88%
-`
+  width: 88%;
+`;

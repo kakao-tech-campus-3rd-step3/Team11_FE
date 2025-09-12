@@ -2,6 +2,7 @@ import styled from '@emotion/styled';
 
 interface Message {
   senderType: 'me' | 'other';
+  content: string;
 }
 
 const Container = styled.div<{ isMine: boolean }>`
@@ -54,13 +55,13 @@ const Content = styled.div<{ isMine: boolean }>`
   font-weight: 400;
 `;
 
-export const Message = ({ senderType }: Message) => {
+export const Message = ({ senderType, content }: Message) => {
   return (
     <Container isMine={senderType === 'me'}>
       {senderType === 'other' && <Profile />}
       <SubContainer isMine={senderType === 'me'}>
         {senderType === 'other' && <Name>이병길</Name>}
-        <Content isMine={senderType === 'me'}>안녕하세요!</Content>
+        <Content isMine={senderType === 'me'}>{content}</Content>
       </SubContainer>
     </Container>
   );
