@@ -1,8 +1,7 @@
-import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { colors } from '@/style/themes';
 
-const SearchContainer = styled(Link)`
+const SearchContainer = styled.button`
   position: absolute;
   top: 20px;
   left: 50%;
@@ -21,6 +20,7 @@ const SearchContainer = styled(Link)`
   color: ${colors.secondary400};
   font-weight: 500;
   cursor: pointer;
+  border: none;
   transition: box-shadow 0.2s ease-in-out;
 
   &:hover {
@@ -32,9 +32,13 @@ const SearchText = styled.span`
   margin-left: 8px;
 `;
 
-export const SearchButton = () => {
+interface SearchButtonProps {
+  onClick: () => void;
+}
+
+export const SearchButton = ({ onClick }: SearchButtonProps) => {
   return (
-    <SearchContainer to="/search-room">
+    <SearchContainer onClick={onClick}>
       <span>🔍</span>
       <SearchText>모임 검색!</SearchText>
     </SearchContainer>

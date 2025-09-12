@@ -1,5 +1,8 @@
+import { useState, useEffect } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { Container } from '@/style/CommonStyle';
+import { SearchHeader } from '@/components/search_page/SearchHeader';
+import { useNavigate } from 'react-router-dom';
 
 const dummyData = [
   {
@@ -18,16 +21,18 @@ const dummyData = [
 ];
 
 const slideUp = keyframes`
-  from {
-    transform: translateY(100%);
-  }
-  to {
-    transform: translateY(0%);
-  }
+  from { transform: translateY(100%); }
+  to { transform: translateY(0%); }
 `;
 
-const SearchPageContainer = styled(Container)`
+const slideDown = keyframes`
+  from { transform: translateY(0%); }
+  to { transform: translateY(100%); }
+`;
+
+const SearchPageContainer = styled(Container)<{ $closing?: boolean }>`
   justify-content: flex-start;
+  padding-top: 6rem;
   height: 100vh;
   max-width: 720px;
   background-color: #ffffffff;
@@ -38,11 +43,31 @@ const SearchPageContainer = styled(Container)`
   bottom: 0;
   margin: 0 auto;
   z-index: 100;
-  animation: ${slideUp} 0.4s ease-out;
+  animation: ${({ $closing }) => ($closing ? slideDown : slideUp)} 0.4s ease-out forwards;
 `;
 
-const SearchRoom = () => {
-  return <SearchPageContainer></SearchPageContainer>;
+const Search = () => {
+  const [isClosing, setIsClosing] = useState(false);
+  const navigate = useNavigate();
+
+  const handleBackButtonClick = () => {
+    setIsClosing(true);
+  };
+
+  useEffect(() => {
+    if (isClosing) {
+      const timer = setTimeout(() => {
+        navigate(-1);
+      }, 400);
+      return () => clearTimeout(timer);
+    }
+  }, [isClosing, navigate]);
+
+  return (
+    <SearchPageContainer $closing={isClosing}>
+      <SearchHeader onBackButtonClick={handleBackButtonClick} />
+    </SearchPageContainer>
+  );
 };
 
-export default SearchRoom;
+export default Search;
