@@ -5,6 +5,7 @@ import { SearchHeader } from '@/components/search_page/SearchHeader';
 import { useNavigate } from 'react-router-dom';
 import { SearchInput } from '@/components/search_page/SearchInput';
 import { SearchFilters } from '@/components/search_page/SearchFilters';
+import { SearchResultList } from '@/components/search_page/SearchResultList';
 const dummyData = [
   {
     id: 1,
@@ -15,6 +16,32 @@ const dummyData = [
   { id: 2, title: '저녁에 농구하실 분 구합니다', location: '온천천 농구장', category: '운동' },
   {
     id: 3,
+    title: '주말에 보드게임 하실 분',
+    location: '히어로보드게임카페 부산대점',
+    category: '취미',
+  },
+  {
+    id: 4,
+    title: '금정구에서 같이 공부할 분!',
+    location: '스타벅스 부산대역점',
+    category: '스터디',
+  },
+  { id: 5, title: '저녁에 농구하실 분 구합니다', location: '온천천 농구장', category: '운동' },
+  {
+    id: 6,
+    title: '주말에 보드게임 하실 분',
+    location: '히어로보드게임카페 부산대점',
+    category: '취미',
+  },
+  {
+    id: 7,
+    title: '금정구에서 같이 공부할 분!',
+    location: '스타벅스 부산대역점',
+    category: '스터디',
+  },
+  { id: 8, title: '저녁에 농구하실 분 구합니다', location: '온천천 농구장', category: '운동' },
+  {
+    id: 9,
     title: '주말에 보드게임 하실 분',
     location: '히어로보드게임카페 부산대점',
     category: '취미',
@@ -47,9 +74,9 @@ const SearchPageContainer = styled(Container)<{ $closing?: boolean }>`
   animation: ${({ $closing }) => ($closing ? slideDown : slideUp)} 0.4s ease-out forwards;
 `;
 
-const Search = () => {
-  const [isClosing, setIsClosing] = useState(false);
+const SearchRoom = () => {
   const [searchQuery, setSearchQuery] = useState('');
+  const [isClosing, setIsClosing] = useState(false);
   const navigate = useNavigate();
 
   const handleBackButtonClick = () => {
@@ -70,8 +97,9 @@ const Search = () => {
       <SearchHeader onBackButtonClick={handleBackButtonClick} />
       <SearchInput query={searchQuery} setQuery={setSearchQuery} />
       <SearchFilters />
+      <SearchResultList results={dummyData} />
     </SearchPageContainer>
   );
 };
 
-export default Search;
+export default SearchRoom;
