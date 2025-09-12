@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import { Container } from '@/style/CommonStyle';
 
 const dummyData = [
@@ -17,11 +17,28 @@ const dummyData = [
   },
 ];
 
+const slideUp = keyframes`
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0%);
+  }
+`;
+
 const SearchPageContainer = styled(Container)`
   justify-content: flex-start;
   height: 100vh;
-  max-width: 720px; /* Consistent max-width */
+  max-width: 720px;
   background-color: #ffffffff;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: 0 auto;
+  z-index: 100;
+  animation: ${slideUp} 0.4s ease-out;
 `;
 
 const SearchRoom = () => {
