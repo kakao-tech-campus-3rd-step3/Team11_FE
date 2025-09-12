@@ -79,8 +79,22 @@ const SearchRoom = () => {
   const [isClosing, setIsClosing] = useState(false);
   const navigate = useNavigate();
 
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [selectedRadius, setSelectedRadius] = useState<string | null>(null);
+  const [filteredResults, setFilteredResults] = useState(dummyData);
+
   const handleBackButtonClick = () => {
     setIsClosing(true);
+  };
+
+  const handleCategoryClick = (category: string) => {
+    setSelectedCategories((prev) =>
+      prev.includes(category) ? prev.filter((c) => c !== category) : [...prev, category],
+    );
+  };
+
+  const handleRadiusClick = (radius: string) => {
+    setSelectedRadius((prev) => (prev === radius ? null : radius));
   };
 
   useEffect(() => {
@@ -92,12 +106,33 @@ const SearchRoom = () => {
     }
   }, [isClosing, navigate]);
 
+  useEffect(() => {
+    let results = dummyData;
+
+    if (searchQuery) {
+      results = results.filter((item) =>
+        item.title.toLowerCase().includes(searchQuery.toLowerCase()),
+      );
+    }
+
+    if (selectedCategories.length > 0) {
+      results = results.filter((item) => selectedCategories.includes(item.category));
+    }
+
+    setFilteredResults(results);
+  }, [searchQuery, selectedCategories, selectedRadius]);
+
   return (
     <SearchPageContainer $closing={isClosing}>
       <SearchHeader onBackButtonClick={handleBackButtonClick} />
       <SearchInput query={searchQuery} setQuery={setSearchQuery} />
-      <SearchFilters />
-      <SearchResultList results={dummyData} />
+      <SearchFilters
+        selectedCategories={selectedCategories}
+        selectedRadius={selectedRadius}
+        onCategoryClick={handleCategoryClick}
+        onRadiusClick={handleRadiusClick}
+      />
+      <SearchResultList results={filteredResults} />
     </SearchPageContainer>
   );
 };

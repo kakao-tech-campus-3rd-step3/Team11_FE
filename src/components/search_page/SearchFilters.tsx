@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import styled from '@emotion/styled';
 import { colors } from '@/style/themes';
 
@@ -49,20 +48,19 @@ const FilterButton = styled.button`
 const categories = ['운동', '스터디', '취미', '맛집탐방'];
 const radii = ['1km', '3km', '5km'];
 
-export const SearchFilters = () => {
-  const [selectedCategories, setSelectedCategories] = useState<string[]>(['운동']);
-  const [selectedRadius, setSelectedRadius] = useState<string>('3km');
+interface SearchFiltersProps {
+  selectedCategories: string[];
+  selectedRadius: string | null;
+  onCategoryClick: (category: string) => void;
+  onRadiusClick: (radius: string) => void;
+}
 
-  const handleCategoryClick = (category: string) => {
-    setSelectedCategories((prev) =>
-      prev.includes(category) ? prev.filter((c) => c !== category) : [...prev, category],
-    );
-  };
-
-  const handleRadiusClick = (radius: string) => {
-    setSelectedRadius(radius);
-  };
-
+export const SearchFilters = ({
+  selectedCategories,
+  selectedRadius,
+  onCategoryClick,
+  onRadiusClick,
+}: SearchFiltersProps) => {
   return (
     <FiltersContainer>
       <FilterSection>
@@ -72,7 +70,7 @@ export const SearchFilters = () => {
             <FilterButton
               key={category}
               className={selectedCategories.includes(category) ? 'selected' : ''}
-              onClick={() => handleCategoryClick(category)}
+              onClick={() => onCategoryClick(category)}
             >
               {category}
             </FilterButton>
@@ -87,7 +85,7 @@ export const SearchFilters = () => {
             <FilterButton
               key={radius}
               className={selectedRadius === radius ? 'selected' : ''}
-              onClick={() => handleRadiusClick(radius)}
+              onClick={() => onRadiusClick(radius)}
             >
               {radius}
             </FilterButton>
