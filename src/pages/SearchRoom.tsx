@@ -4,6 +4,7 @@ import { Container } from '@/style/CommonStyle';
 import { SearchHeader } from '@/components/search_page/SearchHeader';
 import { useNavigate } from 'react-router-dom';
 import { SearchInput } from '@/components/search_page/SearchInput';
+import { SearchFilters } from '@/components/search_page/SearchFilters';
 const dummyData = [
   {
     id: 1,
@@ -68,6 +69,7 @@ const Search = () => {
     <SearchPageContainer $closing={isClosing}>
       <SearchHeader onBackButtonClick={handleBackButtonClick} />
       <SearchInput query={searchQuery} setQuery={setSearchQuery} />
+      <SearchFilters />
     </SearchPageContainer>
   );
 };

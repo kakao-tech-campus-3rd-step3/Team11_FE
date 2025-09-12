@@ -1,0 +1,99 @@
+import { useState } from 'react';
+import styled from '@emotion/styled';
+import { colors } from '@/style/themes';
+
+const FiltersContainer = styled.div`
+  width: 90%;
+  padding: 16px;
+  margin-bottom: 16px;
+  border: 1px dashed ${colors.secondary300};
+  border-radius: 8px;
+  box-sizing: border-box;
+`;
+
+const FilterSection = styled.div`
+  margin-bottom: 16px;
+  &:last-child {
+    margin-bottom: 0;
+  }
+`;
+
+const FilterTitle = styled.h3`
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin: 0 0 8px 0;
+  color: ${colors.secondary700};
+`;
+
+const FilterOptions = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+`;
+
+const FilterButton = styled.button`
+  padding: 8px 12px;
+  border-radius: 16px;
+  border: 1px solid ${colors.secondary300};
+  background-color: #fff;
+  cursor: pointer;
+  font-size: 0.9rem;
+
+  &.selected {
+    background-color: ${colors.primary100};
+    border-color: ${colors.primary400};
+    font-weight: 500;
+  }
+`;
+
+const categories = ['운동', '스터디', '취미', '맛집탐방'];
+const radii = ['1km', '3km', '5km'];
+
+export const SearchFilters = () => {
+  const [selectedCategories, setSelectedCategories] = useState<string[]>(['운동']);
+  const [selectedRadius, setSelectedRadius] = useState<string>('3km');
+
+  const handleCategoryClick = (category: string) => {
+    setSelectedCategories((prev) =>
+      prev.includes(category) ? prev.filter((c) => c !== category) : [...prev, category],
+    );
+  };
+
+  const handleRadiusClick = (radius: string) => {
+    setSelectedRadius(radius);
+  };
+
+  return (
+    <FiltersContainer>
+      <FilterSection>
+        <FilterTitle>카테고리</FilterTitle>
+        <FilterOptions>
+          {categories.map((category) => (
+            <FilterButton
+              key={category}
+              className={selectedCategories.includes(category) ? 'selected' : ''}
+              onClick={() => handleCategoryClick(category)}
+            >
+              {category}
+            </FilterButton>
+          ))}
+        </FilterOptions>
+      </FilterSection>
+
+      <FilterSection>
+        <FilterTitle>반경</FilterTitle>
+        <FilterOptions>
+          {radii.map((radius) => (
+            <FilterButton
+              key={radius}
+              className={selectedRadius === radius ? 'selected' : ''}
+              onClick={() => handleRadiusClick(radius)}
+            >
+              {radius}
+            </FilterButton>
+          ))}
+        </FilterOptions>
+      </FilterSection>
+    </FiltersContainer>
+  );
+};
