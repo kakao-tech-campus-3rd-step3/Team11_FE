@@ -1,5 +1,12 @@
 import styled from '@emotion/styled';
 import Send from '@/assets/meeting_room_page/send.svg?react';
+import React, { useState } from 'react';
+import type { ChatMessage } from '@/types/meeting_room_page/chatMessage';
+
+interface ChatInput {
+  chatMessages: ChatMessage[];
+  setChatMessages: React.Dispatch<React.SetStateAction<ChatMessage[]>>;
+}
 
 const Container = styled.div`
   position: absolute;
@@ -27,17 +34,51 @@ const TextArea = styled.textarea`
   border: none;
   border-radius: 1.5rem;
   padding-left: 1.5rem;
-  padding-top: 0.75rem;
+  padding-top: 0.8rem;
   box-sizing: border-box;
   overflow-y: auto;
   background-color: #efefef;
 `;
 
-export const ChatInput = () => {
+const Button = styled.button`
+  all: unset;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+export const ChatInput = ({ chatMessages, setChatMessages }: ChatInput) => {
+  const [text, setText] = useState('');
+
+  const sendMessage = () => {
+    const newMessage: ChatMessage = {
+      id: `${Date.now()}-${Math.random().toString(36).substring(2, 8)}`,
+      senderType: 'me',
+      content: text,
+      time: new Date(),
+    };
+
+    setChatMessages([...chatMessages, newMessage]);
+    setText('');
+  };
+
   return (
     <Container>
-      <TextArea />
-      <Send style={{ position: 'absolute', top: '0.75rem', right: '3rem' }} />
+      <TextArea
+        value={text}
+        onChange={(e) => setText(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+
+            sendMessage();
+          }
+        }}
+      />
+      <Button onClick={() => sendMessage()}>
+        <Send style={{ position: 'absolute', top: '0.75rem', right: '3rem' }} />
+      </Button>
     </Container>
   );
 };

@@ -1,5 +1,11 @@
 import styled from '@emotion/styled';
 import { Message } from './Message';
+import type { ChatMessage } from '@/types/meeting_room_page/chatMessage';
+import { useEffect, useRef } from 'react';
+
+interface ChatBox {
+  chatMessages: ChatMessage[];
+}
 
 const Container = styled.div`
   position: absolute;
@@ -12,6 +18,7 @@ const Container = styled.div`
   padding-top: 0.3rem;
   padding-left: 2rem;
   padding-right: 2rem;
+  padding-bottom: 2rem;
   justify-content: flex-start;
   align-items: center;
   box-sizing: border-box;
@@ -19,26 +26,19 @@ const Container = styled.div`
   overflow-y: auto;
 `;
 
-export const ChatBox = () => {
+export const ChatBox = ({ chatMessages }: ChatBox) => {
+  const ref = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    ref.current?.scrollIntoView({ behavior: 'auto' });
+  }, [chatMessages]);
+
   return (
     <Container>
-      <Message senderType="other" />
-      <Message senderType="me" />
-      <Message senderType="other" />
-      <Message senderType="me" />
-      <Message senderType="other" />
-      <Message senderType="me" />
-      <Message senderType="other" />
-      <Message senderType="me" />
-      <Message senderType="other" />
-      <Message senderType="me" />
-      <Message senderType="me" />
-      <Message senderType="me" />
-      <Message senderType="other" />
-      <Message senderType="other" />
-      <Message senderType="other" />
-      <Message senderType="me" />
-      <Message senderType="other" />
+      {chatMessages.map((message) => (
+        <Message key={message.id} senderType={message.senderType} content={message.content} />
+      ))}
+      <div ref={ref} />
     </Container>
   );
 };
