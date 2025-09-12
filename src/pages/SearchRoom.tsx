@@ -3,7 +3,7 @@ import styled, { keyframes } from 'styled-components';
 import { Container } from '@/style/CommonStyle';
 import { SearchHeader } from '@/components/search_page/SearchHeader';
 import { useNavigate } from 'react-router-dom';
-
+import { SearchInput } from '@/components/search_page/SearchInput';
 const dummyData = [
   {
     id: 1,
@@ -48,6 +48,7 @@ const SearchPageContainer = styled(Container)<{ $closing?: boolean }>`
 
 const Search = () => {
   const [isClosing, setIsClosing] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
 
   const handleBackButtonClick = () => {
@@ -66,6 +67,7 @@ const Search = () => {
   return (
     <SearchPageContainer $closing={isClosing}>
       <SearchHeader onBackButtonClick={handleBackButtonClick} />
+      <SearchInput query={searchQuery} setQuery={setSearchQuery} />
     </SearchPageContainer>
   );
 };
