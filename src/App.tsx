@@ -5,6 +5,8 @@ import Home from '@/pages/Home';
 import MeetingRoom from '@/pages/MeetingRoom';
 import GlobalStyle from '@/style/GlobalStyle';
 import RoomCreate from '@/pages/RoomCreate';
+import SearchRoom from '@/pages/SearchRoom';
+
 function App() {
   return (
     <BrowserRouter>
@@ -14,6 +16,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/home" element={<Home />} />
         <Route path="/create-room" element={<RoomCreate />} />
+        <Route path="/search-room" element={<SearchRoom />} />
         <Route path="/meeting-room" element={<MeetingRoom />} />
       </Routes>
     </BrowserRouter>
