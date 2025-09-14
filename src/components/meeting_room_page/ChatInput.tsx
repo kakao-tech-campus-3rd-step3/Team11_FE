@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import type { ChatMessage } from '@/types/meeting_room_page/chatMessage';
 import type { SetState } from '@/types/meeting_room_page/chatMessage';
 
-interface ChatInput {
+interface ChatInputProps {
   chatMessages: ChatMessage[];
   setChatMessages: SetState<ChatMessage[]>;
 }
@@ -49,14 +49,21 @@ const Button = styled.button`
   justify-content: center;
 `;
 
-export const ChatInput = ({ chatMessages, setChatMessages }: ChatInput) => {
-  const [text, setText] = useState('');
+export const ChatInput = ({ chatMessages, setChatMessages }: ChatInputProps) => {
+  const [text, setText] = React.useState('');
 
   const sendMessage = () => {
+    const trimmedText = text.trim();
+
+    if (!trimmedText) {
+      setText('');
+      return;
+    }
+
     const newMessage: ChatMessage = {
       id: `${Date.now()}-${Math.random().toString(36).substring(2, 8)}`,
       senderType: 'me',
-      content: text,
+      content: trimmedText,
       time: new Date(),
     };
 
@@ -72,7 +79,6 @@ export const ChatInput = ({ chatMessages, setChatMessages }: ChatInput) => {
         onKeyDown={(e) => {
           if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault();
-
             sendMessage();
           }
         }}
