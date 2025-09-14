@@ -72,7 +72,7 @@ export const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
           <Undo
             width={UNDO_SVG_SIZE}
             height={UNDO_SVG_SIZE}
-            fill={'#000000'}
+            fill="#000000"
             style={{ marginLeft: '0.7rem', marginBottom: '0.7rem' }}
           />
         </Button>
