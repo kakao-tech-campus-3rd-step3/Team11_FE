@@ -77,7 +77,7 @@ export const ChatInput = ({ chatMessages, setChatMessages }: ChatInput) => {
           }
         }}
       />
-      <Button onClick={() => sendMessage()}>
+      <Button onClick={sendMessage}>
         <Send style={{ position: 'absolute', top: '0.75rem', right: '3rem' }} />
       </Button>
     </Container>
