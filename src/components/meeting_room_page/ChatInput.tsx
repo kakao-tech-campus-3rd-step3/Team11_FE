@@ -2,10 +2,11 @@ import styled from '@emotion/styled';
 import Send from '@/assets/meeting_room_page/send.svg?react';
 import React, { useState } from 'react';
 import type { ChatMessage } from '@/types/meeting_room_page/chatMessage';
+import type { SetState } from '@/types/meeting_room_page/chatMessage';
 
-interface ChatInput {
+interface ChatInputProps {
   chatMessages: ChatMessage[];
-  setChatMessages: React.Dispatch<React.SetStateAction<ChatMessage[]>>;
+  setChatMessages: SetState<ChatMessage[]>;
 }
 
 const Container = styled.div`
@@ -48,14 +49,21 @@ const Button = styled.button`
   justify-content: center;
 `;
 
-export const ChatInput = ({ chatMessages, setChatMessages }: ChatInput) => {
-  const [text, setText] = useState('');
+export const ChatInput = ({ chatMessages, setChatMessages }: ChatInputProps) => {
+  const [text, setText] = React.useState('');
 
   const sendMessage = () => {
+    const trimmedText = text.trim();
+
+    if (!trimmedText) {
+      setText('');
+      return;
+    }
+
     const newMessage: ChatMessage = {
       id: `${Date.now()}-${Math.random().toString(36).substring(2, 8)}`,
       senderType: 'me',
-      content: text,
+      content: trimmedText,
       time: new Date(),
     };
 
@@ -68,15 +76,15 @@ export const ChatInput = ({ chatMessages, setChatMessages }: ChatInput) => {
       <TextArea
         value={text}
         onChange={(e) => setText(e.target.value)}
+        placeholder="메시지를 입력하세요 (Shift + Enter로 줄바꿈 가능)"
         onKeyDown={(e) => {
           if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault();
-
             sendMessage();
           }
         }}
       />
-      <Button onClick={() => sendMessage()}>
+      <Button onClick={sendMessage}>
         <Send style={{ position: 'absolute', top: '0.75rem', right: '3rem' }} />
       </Button>
     </Container>

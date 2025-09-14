@@ -34,11 +34,11 @@ interface Meeting {
   category: string;
 }
 
-interface SearchResultListProps {
+interface Props {
   results: Meeting[];
 }
 
-export const SearchResultList = ({ results }: SearchResultListProps) => {
+export const SearchResultList = ({ results }: Props) => {
   if (results.length === 0) {
     return <ItemInfo>검색 결과가 없습니다.</ItemInfo>;
   }

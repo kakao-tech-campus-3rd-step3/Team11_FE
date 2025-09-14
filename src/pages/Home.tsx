@@ -7,7 +7,7 @@ import apikey from '@/config/apikey';
 import { SearchButton } from '@/components/home_page/SearchButton';
 import { useKakaoMap } from '@/hooks/useKakaoMap';
 import { RoomCreateButton } from '@/components/home_page/RoomCreateButton';
-import { Overlay } from '@/components/common/Overlay';
+import { Overlay, OVERLAY_ANIMATION_DURATION } from '@/components/common/Overlay';
 
 const KakaoMapCssFix = createGlobalStyle`
   #kakaoMap img { max-width: none !important; }
@@ -50,7 +50,7 @@ const Home = () => {
     setIsSearchOpen(true);
     setTimeout(() => {
       navigate('/search-room');
-    }, 150);
+    }, OVERLAY_ANIMATION_DURATION);
   };
 
   const APP_KEY = (import.meta.env.VITE_KAKAO_MAP_KEY as string) || (apikey?.kakaoMapKey as string);
