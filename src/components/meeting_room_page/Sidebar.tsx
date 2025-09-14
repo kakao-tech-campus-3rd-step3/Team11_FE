@@ -2,9 +2,9 @@ import styled from '@emotion/styled';
 import Undo from '@/assets/meeting_room_page/undo.svg?react';
 import type React from 'react';
 
-interface Sidebar {
+interface SidebarProps {
   isOpen: boolean;
-  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  onClose: () => void;
 }
 
 const Container = styled.div<{ isOpen: boolean }>`
@@ -64,11 +64,11 @@ const Option = styled.button`
 
 const UNDO_SVG_SIZE = '25.6';
 
-export const Sidebar = ({ isOpen, setIsOpen }: Sidebar) => {
+export const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
   return (
     <Container isOpen={isOpen}>
       <Header>
-        <Button onClick={() => setIsOpen(false)}>
+        <Button onClick={onClose}>
           <Undo
             width={UNDO_SVG_SIZE}
             height={UNDO_SVG_SIZE}

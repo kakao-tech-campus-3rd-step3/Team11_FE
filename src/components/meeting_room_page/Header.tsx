@@ -1,8 +1,8 @@
 import styled from '@emotion/styled';
 import BackArrow from '@/assets/meeting_room_page/chevron_left.svg?react';
 import Menu from '@/assets/meeting_room_page/menu.svg?react';
-import { useState } from 'react';
 import { Sidebar } from '@/components/meeting_room_page/Sidebar';
+import { useBoolean } from '@/hooks/useBoolean';
 
 const HeaderContainer = styled.div`
   position: absolute;
@@ -60,7 +60,7 @@ const BACKARROW_SVG_SIZE = '32';
 const MENU_SVG_SIZE = '25.6';
 
 export const Header = () => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isSidebarOpen, { on: openSidebar, off: closeSidebar }] = useBoolean(false);
 
   return (
     <HeaderContainer>
@@ -71,7 +71,7 @@ export const Header = () => {
           style={{ position: 'absolute', left: 0 }}
         />
         <RoomTitle>축구할 사람 구해요~</RoomTitle>
-        <Button onClick={() => setIsOpen(true)}>
+        <Button onClick={openSidebar}>
           <Menu
             width={MENU_SVG_SIZE}
             height={MENU_SVG_SIZE}
@@ -79,8 +79,8 @@ export const Header = () => {
           />
         </Button>
       </HeaderContent>
-      {isOpen && <Overlay />}
-      <Sidebar isOpen={isOpen} setIsOpen={setIsOpen} />
+      {isSidebarOpen && <Overlay onClick={closeSidebar} />}
+      <Sidebar isOpen={isSidebarOpen} onClose={closeSidebar} />
     </HeaderContainer>
   );
 };
