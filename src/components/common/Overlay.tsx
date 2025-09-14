@@ -1,5 +1,7 @@
 import styled, { keyframes } from 'styled-components';
 
+export const OVERLAY_ANIMATION_DURATION = 150;
+
 const fadeIn = keyframes`
   from { opacity: 0; }
   to { opacity: 1; }
@@ -18,7 +20,8 @@ const OverlayContainer = styled.div<{ $closing?: boolean }>`
   height: 100%;
   background-color: rgba(0, 0, 0, 0.4);
   z-index: 99;
-  animation: ${({ $closing }) => ($closing ? fadeOut : fadeIn)} 0.3s forwards;
+  animation: ${({ $closing }) => ($closing ? fadeOut : fadeIn)} ${OVERLAY_ANIMATION_DURATION}ms
+    forwards;
 `;
 
 interface OverlayProps {
