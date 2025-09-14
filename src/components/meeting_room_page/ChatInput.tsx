@@ -2,10 +2,11 @@ import styled from '@emotion/styled';
 import Send from '@/assets/meeting_room_page/send.svg?react';
 import React, { useState } from 'react';
 import type { ChatMessage } from '@/types/meeting_room_page/chatMessage';
+import type { SetState } from '@/types/meeting_room_page/chatMessage';
 
 interface ChatInput {
   chatMessages: ChatMessage[];
-  setChatMessages: React.Dispatch<React.SetStateAction<ChatMessage[]>>;
+  setChatMessages: SetState<ChatMessage[]>;
 }
 
 const Container = styled.div`
