@@ -76,6 +76,7 @@ export const ChatInput = ({ chatMessages, setChatMessages }: ChatInputProps) => 
       <TextArea
         value={text}
         onChange={(e) => setText(e.target.value)}
+        placeholder="메시지를 입력하세요 (Shift + Enter로 줄바꿈 가능)"
         onKeyDown={(e) => {
           if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault();
