@@ -28,6 +28,8 @@ jobs:
         run: |
           npm ci
           npm run build
+        env:
+          VITE_KAKAO_MAP_KEY: ${{ secrets.VITE_KAKAO_MAP_KEY }}
 
       - name: Sync files to S3
         uses: jakejarvis/s3-sync-action@master
