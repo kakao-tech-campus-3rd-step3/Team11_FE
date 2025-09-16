@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { colors } from '@/style/themes';
-import { CreateHeader } from '@/components/room_create_page/CreateHeader';
+import { CreateHeader } from '@/components/room_create_page.tsx/CreateHeader';
 
 const slideUp = keyframes`
   from { transform: translateY(100%); }
