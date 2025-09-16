@@ -51,8 +51,9 @@ export const useCreateForm = () => {
   const [timeError, setTimeError] = useState<string | null>(null);
 
   const location = useLocation();
+
   useEffect(() => {
-    if (location.state && location.state.selectedLocation) {
+    if (location.state?.selectedLocation) {
       setFormState((prevState) => ({
         ...prevState,
         location: location.state.selectedLocation,

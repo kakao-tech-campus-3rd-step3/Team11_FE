@@ -66,9 +66,9 @@ const LocationButton = styled(Link)`
   width: 100%;
   padding: 12px;
   font-size: 1rem;
-  border: 1px solid ${colors.secondary200};
+  border: 1px solid #e5e7eb;
   border-radius: 8px;
-  background-color: #f9f9f9;
+  background-color: #f9fafb;
   color: #333;
   display: flex;
   align-items: center;
@@ -78,7 +78,6 @@ const LocationButton = styled(Link)`
   box-sizing: border-box;
   text-decoration: none;
 `;
-
 const SubmitButton = styled.button`
   width: 100%;
   padding: 16px;
@@ -123,7 +122,7 @@ const RoomCreate = () => {
   useEffect(() => {
     if (isClosing) {
       const timer = setTimeout(() => {
-        navigate(-1);
+        navigate('/home');
       }, 400);
       return () => clearTimeout(timer);
     }
@@ -192,7 +191,7 @@ const RoomCreate = () => {
 
         <InputGroup>
           <Label>위치 설정</Label>
-          <LocationButton to="/create/location">
+          <LocationButton to="/create-room/location">
             <span>{formState.location ? formState.location.name : '위치를 설정해주세요'}</span>
             <span>{formState.location ? '✅' : '>'}</span>
           </LocationButton>

@@ -6,6 +6,7 @@ import MeetingRoom from '@/pages/MeetingRoom';
 import GlobalStyle from '@/style/GlobalStyle';
 import RoomCreate from '@/pages/RoomCreate';
 import SearchRoom from '@/pages/SearchRoom';
+import LocationPicker from '@/pages/LocationPicker';
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
         <Route path="/create-room" element={<RoomCreate />} />
         <Route path="/search-room" element={<SearchRoom />} />
         <Route path="/meeting-room" element={<MeetingRoom />} />
+        <Route path="/create-room/location" element={<LocationPicker />} />
       </Routes>
     </BrowserRouter>
   );
