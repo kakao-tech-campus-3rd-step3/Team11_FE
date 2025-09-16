@@ -1,8 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import styled, { keyframes } from 'styled-components';
-import { useNavigate } from 'react-router-dom';
-import { colors } from '@/style/themes';
+import { useNavigate, Link } from 'react-router-dom';
+import { useCreateForm } from '@/components/room_create_page.tsx/useCreateForm';
 import { CreateHeader } from '@/components/room_create_page.tsx/CreateHeader';
+import { HobbySelector } from '@/components/room_create_page.tsx/HobbySelector';
+import { HashtagInput } from '@/components/room_create_page.tsx/HashtagInput';
+import { TimePicker } from '@/components/room_create_page.tsx/TimePicker';
+import { StyledInput } from '@/components/room_create_page.tsx/StyledComponents';
+import { colors } from '@/style/themes';
 
 const slideUp = keyframes`
   from { transform: translateY(100%); }
@@ -51,51 +56,27 @@ const Label = styled.label`
   margin-bottom: 8px;
 `;
 
-const StyledInput = styled.input`
-  width: 100%;
-  padding: 12px;
-  font-size: 1rem;
-  border: 1px solid ${colors.secondary200};
-  border-radius: 8px;
-  box-sizing: border-box;
-
-  &::placeholder {
-    color: ${colors.secondary300};
-  }
-
-  &:focus {
-    outline: none;
-    border-color: ${colors.primary400};
-  }
-`;
-
-const StyledSelect = styled(StyledInput).attrs({ as: 'select' })`
-  appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%239CA3AF' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 12px center;
-  padding-right: 40px;
-`;
-
 const Grid = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 16px;
 `;
 
-const LocationButton = styled.button`
+const LocationButton = styled(Link)`
   width: 100%;
   padding: 12px;
   font-size: 1rem;
   border: 1px solid ${colors.secondary200};
   border-radius: 8px;
   background-color: #f9f9f9;
-  color: #888;
+  color: #333;
   display: flex;
   align-items: center;
   justify-content: space-between;
   text-align: left;
   cursor: pointer;
+  box-sizing: border-box;
+  text-decoration: none;
 `;
 
 const SubmitButton = styled.button`
@@ -109,27 +90,20 @@ const SubmitButton = styled.button`
   border-radius: 12px;
   cursor: pointer;
   margin-top: 16px;
+  transition: background-color 0.2s;
+
+  &:disabled {
+    background-color: ${colors.secondary300};
+    cursor: not-allowed;
+  }
 `;
 
 const RoomCreate = () => {
-  const [formState, setFormState] = useState({
-    name: '',
-    hobby: 'futsal',
-    time: '',
-    hashtag: '',
-    capacity: '',
-    minTemp: '',
-  });
+  const { formState, hashtags, setHashtags, handleChange, timeError, isFormValid } =
+    useCreateForm();
+
   const [isClosing, setIsClosing] = useState(false);
   const navigate = useNavigate();
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setFormState((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
-  };
 
   const handleBackButtonClick = () => {
     setIsClosing(true);
@@ -137,7 +111,12 @@ const RoomCreate = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Form Data:', formState);
+    if (!isFormValid) return;
+    const finalFormState = {
+      ...formState,
+      hashtags,
+    };
+    console.log('Final Form Data:', finalFormState);
     alert('방 만들기 요청!');
   };
 
@@ -155,86 +134,73 @@ const RoomCreate = () => {
       <CreateHeader onBackButtonClick={handleBackButtonClick} />
       <FormContainer onSubmit={handleSubmit}>
         <InputGroup>
-          <Label htmlFor="name">이름</Label>
+          <Label htmlFor="name">모임 이름</Label>
           <StyledInput
             id="name"
             name="name"
             type="text"
             value={formState.name}
             onChange={handleChange}
+            placeholder="모임 이름을 입력하세요"
           />
         </InputGroup>
 
-        <Grid>
-          <InputGroup>
-            <Label htmlFor="hobby">취미</Label>
-            <StyledSelect id="hobby" name="hobby" value={formState.hobby} onChange={handleChange}>
-              <option value="futsal">풋살</option>
-              <option value="soccer">축구</option>
-              <option value="basketball">농구</option>
-            </StyledSelect>
-          </InputGroup>
-          <InputGroup>
-            <Label htmlFor="time">시작 - 종료 시간</Label>
-            <StyledInput
-              id="time"
-              name="time"
-              type="text"
-              placeholder="00:00 ~ 24:00"
-              value={formState.time}
-              onChange={handleChange}
-            />
-          </InputGroup>
-        </Grid>
+        <InputGroup>
+          <Label htmlFor="hobby">취미</Label>
+          <HobbySelector value={formState.hobby} onChange={handleChange} />
+        </InputGroup>
+
+        <InputGroup>
+          <Label>시작 및 종료 시간</Label>
+          <TimePicker
+            startTime={formState.startTime}
+            endTime={formState.endTime}
+            onChange={handleChange}
+            error={timeError}
+          />
+        </InputGroup>
+
+        <InputGroup>
+          <Label>해시태그</Label>
+          <HashtagInput hashtags={hashtags} setHashtags={setHashtags} />
+        </InputGroup>
 
         <Grid>
-          <InputGroup>
-            <Label htmlFor="hashtag">해시태그</Label>
-            <StyledInput
-              id="hashtag"
-              name="hashtag"
-              type="text"
-              value={formState.hashtag}
-              onChange={handleChange}
-            />
-          </InputGroup>
           <InputGroup>
             <Label htmlFor="capacity">모임 정원</Label>
             <StyledInput
               id="capacity"
               name="capacity"
-              type="text"
+              type="number"
               value={formState.capacity}
               onChange={handleChange}
+              placeholder="숫자만 입력"
             />
           </InputGroup>
-        </Grid>
-
-        <Grid>
           <InputGroup>
             <Label htmlFor="minTemp">입장 최저 온도</Label>
             <StyledInput
               id="minTemp"
               name="minTemp"
-              type="text"
+              type="number"
               value={formState.minTemp}
               onChange={handleChange}
+              placeholder="숫자만 입력"
             />
-          </InputGroup>
-          <InputGroup>
-            <Label>위치설정</Label>
-            <LocationButton type="button">
-              위치설정
-              <img
-                src="https://i.ibb.co/L8f11q1/image.png"
-                alt="location pin"
-                style={{ width: '20px', height: '20px' }}
-              />
-            </LocationButton>
           </InputGroup>
         </Grid>
 
-        <SubmitButton type="submit">만들기</SubmitButton>
+        <InputGroup>
+          <Label>위치 설정</Label>
+          <LocationButton to="/create/location">
+            <span>{formState.location ? formState.location.name : '위치를 설정해주세요'}</span>
+            <span>{formState.location ? '✅' : '>'}</span>
+          </LocationButton>
+        </InputGroup>
+
+        <SubmitButton type="submit" disabled={!isFormValid}>
+          만들기
+        </SubmitButton>
       </FormContainer>
     </PageContainer>
   );
