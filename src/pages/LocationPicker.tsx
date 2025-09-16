@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import apikey from '@/config/apikey';
 
@@ -17,12 +17,23 @@ const PageContainer = styled.div`
 `;
 
 const Header = styled.header`
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   padding: 1rem;
-  text-align: center;
   font-weight: bold;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   background: white;
   z-index: 10;
+`;
+
+const BackButton = styled.button`
+  all: unset;
+  position: absolute;
+  left: 1rem;
+  font-size: 1.5rem;
+  cursor: pointer;
 `;
 
 const MapContainer = styled.div`
@@ -56,7 +67,10 @@ const ConfirmButton = styled.button`
 const LocationPicker = () => {
   const mapRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
-  const [selectedLocation, setSelectedLocation] = useState<LocationInfo | null>(null);
+  const location = useLocation();
+  const [selectedLocation, setSelectedLocation] = useState<LocationInfo | null>(
+    location.state?.currentLocation || null,
+  );
   const markerRef = useRef<any>(null);
 
   useEffect(() => {
@@ -64,20 +78,30 @@ const LocationPicker = () => {
     const script = document.createElement('script');
     script.async = true;
     script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${APP_KEY}&libraries=services&autoload=false`;
-
     document.head.appendChild(script);
 
     script.onload = () => {
       window.kakao.maps.load(() => {
         if (!mapRef.current) return;
 
+        const initialLocation = location.state?.currentLocation;
+        const center = initialLocation
+          ? new window.kakao.maps.LatLng(initialLocation.lat, initialLocation.lng)
+          : new window.kakao.maps.LatLng(35.179554, 129.075642);
+
         const options = {
-          center: new window.kakao.maps.LatLng(35.179554, 129.075642),
+          center: center,
           level: 3,
           cursor: 'crosshair',
         };
         const map = new window.kakao.maps.Map(mapRef.current, options);
         const geocoder = new window.kakao.maps.services.Geocoder();
+
+        if (initialLocation) {
+          const newMarker = new window.kakao.maps.Marker({ position: center });
+          newMarker.setMap(map);
+          markerRef.current = newMarker;
+        }
 
         window.kakao.maps.event.addListener(map, 'click', (mouseEvent: any) => {
           const latlng = mouseEvent.latLng;
@@ -114,9 +138,16 @@ const LocationPicker = () => {
     }
   };
 
+  const handleBack = () => {
+    navigate(-1);
+  };
+
   return (
     <PageContainer>
-      <Header>지도에서 위치 선택</Header>
+      <Header>
+        <BackButton onClick={handleBack}>{'<'}</BackButton>
+        <span>지도에서 위치 선택</span>
+      </Header>
       <MapContainer ref={mapRef} />
       <ConfirmButton onClick={handleConfirm} disabled={!selectedLocation}>
         {selectedLocation ? `'${selectedLocation.name}' 확정` : '지도를 클릭하여 위치 선택'}
