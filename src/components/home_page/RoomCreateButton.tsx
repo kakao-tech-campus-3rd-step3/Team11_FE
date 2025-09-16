@@ -44,5 +44,3 @@ export const RoomCreate = ({ to = '/create-room', onClick, onAction, ...rest }: 
     </RoomCreateLink>
   );
 };
-
-export const RoomCreateButton = RoomCreate;

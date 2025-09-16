@@ -1,48 +1,42 @@
-import React, { useState } from 'react';
-import styled from 'styled-components';
+import React, { useState, useEffect } from 'react';
+import styled, { keyframes } from 'styled-components';
+import { useNavigate } from 'react-router-dom';
 import { colors } from '@/style/themes';
+import { CreateHeader } from '@/components/room_create_page/CreateHeader';
 
-const PageContainer = styled.div`
+const slideUp = keyframes`
+  from { transform: translateY(100%); }
+  to { transform: translateY(0%); }
+`;
+
+const slideDown = keyframes`
+  from { transform: translateY(0%); }
+  to { transform: translateY(100%); }
+`;
+
+const PageContainer = styled.div<{ $closing?: boolean }>`
   width: 100%;
   max-width: 720px;
   height: 100vh;
-  margin: 0 auto; /* 중앙 정렬 */
+  margin: 0 auto;
   display: flex;
   flex-direction: column;
-  background-color: #f0f0f0; /* 스크린샷의 연한 회색 배경 */
-`;
-
-const AppBar = styled.header`
-  display: flex;
-  align-items: center;
-  padding: 12px 16px;
-  background-color: #ffffff;
-  flex-shrink: 0; /* 내용이 많아져도 줄어들지 않음 */
-  border-bottom: 1px solid ${colors.secondary200};
-`;
-
-const BackButton = styled.button`
-  background: none;
-  border: none;
-  padding: 8px;
-  margin-right: 8px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
-
-const Title = styled.h1`
-  font-size: 1.25rem; /* 20px */
-  font-weight: 600;
-  margin: 0;
+  background-color: #f0f0f0;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 100;
+  animation: ${({ $closing }) => ($closing ? slideDown : slideUp)} 0.4s ease-out forwards;
 `;
 
 const FormContainer = styled.form`
-  flex: 1; /* 남은 공간을 모두 차지 */
+  flex: 1;
   background-color: #ffffff;
   padding: 24px 16px;
-  overflow-y: auto; /* 내용이 길어지면 스크롤 */
+  overflow-y: auto;
+  padding-top: 7rem;
 `;
 
 const InputGroup = styled.div`
@@ -51,7 +45,7 @@ const InputGroup = styled.div`
 
 const Label = styled.label`
   display: block;
-  font-size: 0.875rem; /* 14px */
+  font-size: 0.875rem;
   font-weight: 500;
   color: #555;
   margin-bottom: 8px;
@@ -63,7 +57,7 @@ const StyledInput = styled.input`
   font-size: 1rem;
   border: 1px solid ${colors.secondary200};
   border-radius: 8px;
-  box-sizing: border-box; /* 패딩과 테두리가 너비에 포함되도록 설정 */
+  box-sizing: border-box;
 
   &::placeholder {
     color: ${colors.secondary300};
@@ -80,7 +74,7 @@ const StyledSelect = styled(StyledInput).attrs({ as: 'select' })`
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%239CA3AF' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 12px center;
-  padding-right: 40px; /* 화살표 아이콘 공간 확보 */
+  padding-right: 40px;
 `;
 
 const Grid = styled.div`
@@ -104,11 +98,10 @@ const LocationButton = styled.button`
   cursor: pointer;
 `;
 
-// --- 만들기 버튼 ---
 const SubmitButton = styled.button`
   width: 100%;
   padding: 16px;
-  font-size: 1.125rem; /* 18px */
+  font-size: 1.125rem;
   font-weight: 600;
   color: #ffffff;
   background-color: ${colors.primary400};
@@ -121,12 +114,14 @@ const SubmitButton = styled.button`
 const RoomCreate = () => {
   const [formState, setFormState] = useState({
     name: '',
-    hobby: 'futsal', // 기본값 '풋살'
+    hobby: 'futsal',
     time: '',
     hashtag: '',
     capacity: '',
     minTemp: '',
   });
+  const [isClosing, setIsClosing] = useState(false);
+  const navigate = useNavigate();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -136,28 +131,28 @@ const RoomCreate = () => {
     }));
   };
 
+  const handleBackButtonClick = () => {
+    setIsClosing(true);
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     console.log('Form Data:', formState);
     alert('방 만들기 요청!');
   };
 
+  useEffect(() => {
+    if (isClosing) {
+      const timer = setTimeout(() => {
+        navigate(-1);
+      }, 400);
+      return () => clearTimeout(timer);
+    }
+  }, [isClosing, navigate]);
+
   return (
-    <PageContainer>
-      <AppBar>
-        <BackButton onClick={() => window.history.back()}>
-          <svg
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path d="M15.41 7.41L14 6L8 12L14 18L15.41 16.59L10.83 12L15.41 7.41Z" fill="#333" />
-          </svg>
-        </BackButton>
-        <Title>방 생성</Title>
-      </AppBar>
+    <PageContainer $closing={isClosing}>
+      <CreateHeader onBackButtonClick={handleBackButtonClick} />
       <FormContainer onSubmit={handleSubmit}>
         <InputGroup>
           <Label htmlFor="name">이름</Label>
