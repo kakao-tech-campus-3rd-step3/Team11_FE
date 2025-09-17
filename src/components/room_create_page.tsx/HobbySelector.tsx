@@ -1,5 +1,4 @@
 import React from 'react';
-import styled from 'styled-components';
 import { StyledSelect } from './StyledComponents'; // 스타일 재사용
 
 // 취미 데이터를 카테고리별로 그룹화
