@@ -17,6 +17,7 @@ import {
 } from "./Login.styled";
 import apikey from "@/config/apikey";
 
+
 const Login = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -48,6 +49,7 @@ const Login = () => {
     const kakaoAuthURL = `https://kauth.kakao.com/oauth/authorize?client_id=${REST_API_KEY}&redirect_uri=${REDIRECT_URI}&response_type=code`;
     
     console.log("카카오 인증 URL:", kakaoAuthURL);
+
     window.location.href = kakaoAuthURL;
   };
 
@@ -95,6 +97,7 @@ const Login = () => {
                 </Link>
               </LinkText>
             </div>
+
           </LoginSection>
         </LoginMain>
       </ContentContanier>

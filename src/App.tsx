@@ -11,7 +11,6 @@ import RoomCreate from '@/pages/RoomCreate';
 import SearchRoom from '@/pages/SearchRoom';
 import LocationPicker from '@/pages/LocationPicker';
 
-
 function App() {
   return (
     <BrowserRouter>
@@ -26,6 +25,7 @@ function App() {
         <Route path="/meeting-room" element={<MeetingRoom />} />
         <Route path="/kakaoLogin" element={<KakaoLogin/>} />
         <Route path="/create-room/location" element={<LocationPicker />} />
+
       </Routes>
     </BrowserRouter>
   );
