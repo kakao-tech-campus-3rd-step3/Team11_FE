@@ -21,3 +21,7 @@ export const Text = styled.div`
 export const ContentContanier = styled.div`
   width: 88%
 `
+export const Spacer = styled.div<{ h?: number; w?: number }>`
+  height: ${({ h }) => (h ? `${h}px` : "0")};
+  width: ${({ w }) => (w ? `${w}px` : "0")};
+`;

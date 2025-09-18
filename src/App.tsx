@@ -4,6 +4,7 @@ import Login from './pages/Login';
 import Home from './pages/Home';
 import MeetingRoom from './pages/MeetingRoom';
 import GlobalStyle from './style/GlobalStyle';
+import KakaoLogin from './pages/KakaoLogin';
 function App() {
   return (
     <BrowserRouter>
@@ -13,6 +14,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/home" element={<Home />} />
         <Route path="/meeting-room" element={<MeetingRoom />} />
+        <Route path="/kakaoLogin" element={<KakaoLogin/>} />
       </Routes>
     </BrowserRouter>
   );

@@ -20,7 +20,7 @@ export const LoginMain = styled.main`
 `;
 
 export const Logo = styled.img`
-  width: 80%;
+  width: 50%;
   max-width : 320px;
   color: rgb(42, 48, 56);
 `;
@@ -37,7 +37,7 @@ export const InputSection = styled.input<{ hasError?: boolean }>`
   transition: border-color 200ms;
   border-style: solid;
   min-height: 2.75rem;
-  font-size: 1rem;
+  font-size: 16px;
   font-weight: 400;
   line-height: 1.375rem;
   padding: 8px 0px;
@@ -52,13 +52,44 @@ export const InputSection = styled.input<{ hasError?: boolean }>`
 
 export const LoginButton = styled.button<{ notVaild?: boolean }>`
   width: 100%;
-  height: 2.75rem;
-  font-size: 0.875rem;
+  height: 48px;
+  font-size: 20px;
   font-weight: 400;
   line-height: 1.1875rem;
-  color: rgb(42, 48, 56);
+  color: rgba(255, 255, 255, 1);
   background-color: ${colors.primary};
-  border-radius: 4px;
+  border-radius: 3px;
+  border: none;
+  cursor: ${({notVaild}) => (notVaild?  'not-allowed' :'pointer' ) };
+  opacity: ${({notVaild}) => (notVaild?  '0.5' :'1' ) };
+  transition: background-color 200ms;
+`;
+
+export const KaKaoLoginBTn = styled.button<{ notVaild?: boolean }>`
+  width: 100%;
+  height: 48px;
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 1.1875rem;
+  color: #000000;
+  background-color: #FEE500;
+  border-radius: 3px;
+  border: none;
+  cursor: ${({notVaild}) => (notVaild?  'not-allowed' :'pointer' ) };
+  opacity: ${({notVaild}) => (notVaild?  '0.5' :'1' ) };
+  transition: background-color 200ms;
+`;
+
+
+export const RegisterButton = styled.button<{ notVaild?: boolean }>`
+  width: 100%;
+  height: 48px;
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 1.1875rem;
+  color: rgba(255, 255, 255, 1);
+  background-color: ${colors.secondary600};
+  border-radius: 3px;
   border: none;
   cursor: ${({notVaild}) => (notVaild?  'not-allowed' :'pointer' ) };
   opacity: ${({notVaild}) => (notVaild?  '0.5' :'1' ) };
@@ -72,8 +103,4 @@ export const ErrorMessage = styled.div`
   margin-top: 4px;
 `;
 
-export const Spacer = styled.div<{ h?: number; w?: number }>`
-  height: ${({ h }) => (h ? `${h}px` : "0")};
-  width: ${({ w }) => (w ? `${w}px` : "0")};
-`;
 
