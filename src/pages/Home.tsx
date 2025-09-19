@@ -13,36 +13,9 @@ declare global {
   }
 }
 
-function loadKakaoSDK(appKey: string) {
-  if (typeof window !== 'undefined' && window.kakao?.maps) return Promise.resolve();
-  return new Promise<void>((resolve, reject) => {
-    const scriptId = 'kakao-maps-sdk';
-    const existing = document.getElementById(scriptId) as HTMLScriptElement | null;
-    if (existing) {
-      if (window.kakao?.maps) return window.kakao.maps.load(() => resolve());
-      existing.addEventListener('load', () => window.kakao.maps.load(() => resolve()), {
-        once: true,
-      });
-      existing.addEventListener('error', () => reject(new Error('Kakao Maps SDK load error')), {
-        once: true,
-      });
-      return;
-    }
-    const script = document.createElement('script');
-    script.id = scriptId;
-    script.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${encodeURIComponent(appKey)}&autoload=false`;
-    script.async = true;
-    script.onload = () => window.kakao.maps.load(() => resolve());
-    script.onerror = () => reject(new Error('Kakao Maps SDK load error'));
-    document.head.appendChild(script);
-  });
-}
-
-
 import { useKakaoMap } from '@/hooks/useKakaoMap';
 import { RoomCreateButton } from '@/components/home_page/RoomCreateButton';
 import { Overlay, OVERLAY_ANIMATION_DURATION } from '@/components/common/Overlay';
-
 
 const KakaoMapCssFix = createGlobalStyle`
   #kakaoMap img { max-width: none !important; }
