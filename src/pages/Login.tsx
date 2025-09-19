@@ -15,7 +15,7 @@ import {
   KaKaoLoginBTn,
   LinkText,
 } from "./Login.styled";
-import apikey from "@/config/apikey.example";
+import apikey from "@/config/apikey";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -44,8 +44,10 @@ const Login = () => {
     }
     
     const REST_API_KEY = apikey.kakaoRestApiKey;
-    const REDIRECT_URI = "http://localhost:5173/login";
+    const REDIRECT_URI = "http://localhost:5173/kakaoLogin";
     const kakaoAuthURL = `https://kauth.kakao.com/oauth/authorize?client_id=${REST_API_KEY}&redirect_uri=${REDIRECT_URI}&response_type=code`;
+    
+    console.log("카카오 인증 URL:", kakaoAuthURL);
     window.location.href = kakaoAuthURL;
   };
 

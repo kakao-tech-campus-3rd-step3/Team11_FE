@@ -4,7 +4,7 @@ import styled, { createGlobalStyle } from 'styled-components';
 
 import GlobalStyle from '../style/GlobalStyle';
 import { colors } from '../style/themes';
-import apikey from '@/config/apikey.example';
+import apikey from '@/config/apikey';
 import { SearchButton } from '../components/home_page/SearchButton';
 
 declare global {
