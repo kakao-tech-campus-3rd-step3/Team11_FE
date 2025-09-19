@@ -20,8 +20,9 @@ export const LoginMain = styled.main`
 `;
 
 export const Logo = styled.img`
-  width: 50%;
-  max-width : 320px;
+
+  width: 80%;
+  max-width: 320px;
   color: rgb(42, 48, 56);
 `;
 export const LoginSection = styled.section`
@@ -45,9 +46,8 @@ export const InputSection = styled.input<{ hasError?: boolean }>`
   border-color: ${({ hasError }) => (hasError ? 'red' : 'rgb(220, 222, 227)')};
   &:focus {
     outline: none;
-    border-color: ${({ hasError }) => hasError ? 'red' : 'rgb(42, 48, 56)'};
+    border-color: ${({ hasError }) => (hasError ? 'red' : 'rgb(42, 48, 56)')};
   }
-  
 `;
 
 export const LoginButton = styled.button<{ notVaild?: boolean }>`
@@ -91,17 +91,17 @@ export const RegisterButton = styled.button<{ notVaild?: boolean }>`
   background-color: ${colors.secondary600};
   border-radius: 3px;
   border: none;
-  cursor: ${({notVaild}) => (notVaild?  'not-allowed' :'pointer' ) };
-  opacity: ${({notVaild}) => (notVaild?  '0.5' :'1' ) };
+  cursor: ${({ notVaild }) => (notVaild ? 'not-allowed' : 'pointer')};
+  opacity: ${({ notVaild }) => (notVaild ? '0.5' : '1')};
   transition: background-color 200ms;
 `;
-
 
 export const ErrorMessage = styled.div`
   color: red;
   font-size: 0.75rem;
   margin-top: 4px;
 `;
+
 
 export const LinkText = styled.span`
   color: rgb(42, 48, 56);
@@ -110,3 +110,8 @@ export const LinkText = styled.span`
 `;
 
 
+
+export const Spacer = styled.div<{ h?: number; w?: number }>`
+  height: ${({ h }) => (h ? `${h}px` : '0')};
+  width: ${({ w }) => (w ? `${w}px` : '0')};
+`;

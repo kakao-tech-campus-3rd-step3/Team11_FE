@@ -1,25 +1,46 @@
-import React, { useEffect, useRef } from 'react';
-import styled from '@emotion/styled';
-import { colors } from '../../style/themes';
+import styled from 'styled-components';
+import { colors } from '@/style/themes';
 
-const SearchInput = styled.input`
+const SearchContainer = styled.button`
   position: absolute;
-  top: 32px;
+  top: 20px;
   left: 50%;
   transform: translateX(-50%);
   z-index: 10;
-  width: 80%;
-  height: 44px;
-  padding: 0 15px;
+  width: 90%;
+  max-width: 480px;
+  height: 48px;
+  border-radius: 24px;
+  background-color: #fff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  text-decoration: none;
+  color: ${colors.secondary400};
+  font-weight: 500;
+  cursor: pointer;
   border: none;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-  font-size: 16px;
-  &:focus {
-    outline: 1px solid ${colors.primary400};
+  transition: box-shadow 0.2s ease-in-out;
+
+  &:hover {
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
   }
 `;
 
-export const SearchButton = () => {
-  return <SearchInput type="text" placeholder="어떤 모임을 찾으시나요?" />;
+const SearchText = styled.span`
+  margin-left: 8px;
+`;
+
+interface SearchButtonProps {
+  onClick: () => void;
+}
+
+export const SearchButton = ({ onClick }: SearchButtonProps) => {
+  return (
+    <SearchContainer onClick={onClick}>
+      <span>🔍</span>
+      <SearchText>모임 검색!</SearchText>
+    </SearchContainer>
+  );
 };

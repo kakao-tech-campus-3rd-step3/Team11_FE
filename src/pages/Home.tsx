@@ -1,5 +1,7 @@
-import { useEffect, useRef } from 'react';
+import { useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled, { createGlobalStyle } from 'styled-components';
+
 import GlobalStyle from '../style/GlobalStyle';
 import { colors } from '../style/themes';
 import apikey from '@/config/apikey.example';
@@ -36,6 +38,12 @@ function loadKakaoSDK(appKey: string) {
   });
 }
 
+
+import { useKakaoMap } from '@/hooks/useKakaoMap';
+import { RoomCreateButton } from '@/components/home_page/RoomCreateButton';
+import { Overlay, OVERLAY_ANIMATION_DURATION } from '@/components/common/Overlay';
+
+
 const KakaoMapCssFix = createGlobalStyle`
   #kakaoMap img { max-width: none !important; }
 `;
@@ -67,94 +75,21 @@ const MapContainer = styled.div.attrs({ id: 'kakaoMap' })`
   height: 100%;
 `;
 
-const CreateMoimButton = styled.button`
-  position: absolute;
-  bottom: 20px;
-  right: 20px;
-  z-index: 10;
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
-  border: none;
-  background-color: ${colors.primary400};
-  color: #fff;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  font-size: 32px;
-  line-height: 56px;
-  cursor: pointer;
-`;
-
 const Home = () => {
   const mapRef = useRef<HTMLDivElement>(null);
   const overlayRef = useRef<any>(null);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    const MAX_RETRIES = 3;
-    const RETRY_DELAY = 2000;
+  const handleSearchClick = () => {
+    setIsSearchOpen(true);
+    setTimeout(() => {
+      navigate('/search-room');
+    }, OVERLAY_ANIMATION_DURATION);
+  };
 
-    let cleanupFunc: (() => void) | null = null;
-
-    const initMap = (attempt = 1) => {
-      const APP_KEY =
-        (import.meta.env.VITE_KAKAO_MAP_KEY as string) || (apikey?.kakaoMapKey as string);
-
-      if (!APP_KEY) {
-        console.error('API 키를 찾을 수 없음.');
-        return;
-      }
-
-      let ro: ResizeObserver | null = null;
-
-      loadKakaoSDK(APP_KEY.trim())
-        .then(() => {
-          if (!mapRef.current) return;
-          const { kakao } = window as any;
-
-          const center = new kakao.maps.LatLng(35.2335, 129.081);
-          const map = new kakao.maps.Map(mapRef.current, { center, level: 4 });
-
-          const content = `
-            <div class="custom-div-icon">
-              <div class="marker-pin"></div>
-            </div>
-          `;
-          const overlay = new kakao.maps.CustomOverlay({
-            position: center,
-            content,
-            yAnchor: 1,
-            map,
-          });
-          overlayRef.current = overlay;
-
-          ro = new ResizeObserver(() => map.relayout());
-          ro.observe(mapRef.current);
-
-          cleanupFunc = () => {
-            if (ro && mapRef.current) ro.unobserve(mapRef.current);
-            if (overlayRef.current) {
-              overlayRef.current.setMap(null);
-              overlayRef.current = null;
-            }
-          };
-        })
-        .catch((error) => {
-          console.error(`지도 로딩 실패:`, error);
-          if (attempt < MAX_RETRIES) {
-            setTimeout(() => initMap(attempt + 1), RETRY_DELAY);
-          } else {
-            console.error('API 키 또는 네트워크 확인.');
-          }
-        });
-    };
-
-    initMap();
-
-    return () => {
-      if (cleanupFunc) {
-        cleanupFunc();
-      }
-    };
-  }, []);
+  const APP_KEY = (import.meta.env.VITE_KAKAO_MAP_KEY as string) || (apikey?.kakaoMapKey as string);
+  useKakaoMap({ mapRef, overlayRef, appKey: APP_KEY });
 
   return (
     <>
@@ -163,10 +98,11 @@ const Home = () => {
       <MarkerStyles />
       <HomeContainer>
         <MapArea>
-          <SearchButton />
+          <SearchButton onClick={handleSearchClick} />
           <MapContainer ref={mapRef} />
-          <CreateMoimButton>+</CreateMoimButton>
+          <RoomCreateButton to="/create-room" />
         </MapArea>
+        {isSearchOpen && <Overlay />}
       </HomeContainer>
     </>
   );

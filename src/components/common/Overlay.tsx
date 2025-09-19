@@ -1,0 +1,34 @@
+import styled, { keyframes } from 'styled-components';
+
+export const OVERLAY_ANIMATION_DURATION = 150;
+
+const fadeIn = keyframes`
+  from { opacity: 0; }
+  to { opacity: 1; }
+`;
+
+const fadeOut = keyframes`
+  from { opacity: 1; }
+  to { opacity: 0; }
+`;
+
+const OverlayContainer = styled.div<{ $closing?: boolean }>`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+  z-index: 99;
+  animation: ${({ $closing }) => ($closing ? fadeOut : fadeIn)} ${OVERLAY_ANIMATION_DURATION}ms
+    forwards;
+`;
+
+interface OverlayProps {
+  onClick?: () => void;
+  closing?: boolean;
+}
+
+export const Overlay = ({ onClick, closing }: OverlayProps) => {
+  return <OverlayContainer onClick={onClick} $closing={closing} />;
+};
