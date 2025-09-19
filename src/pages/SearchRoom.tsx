@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { Container } from '@/style/CommonStyle';
 import { SearchHeader } from '@/components/search_page/SearchHeader';
@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { SearchInput } from '@/components/search_page/SearchInput';
 import { SearchFilters } from '@/components/search_page/SearchFilters';
 import { SearchResultList } from '@/components/search_page/SearchResultList';
+
 const dummyData = [
   {
     id: 1,
@@ -81,7 +82,22 @@ const SearchRoom = () => {
 
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [selectedRadius, setSelectedRadius] = useState<string | null>(null);
-  const [filteredResults, setFilteredResults] = useState(dummyData);
+
+  const filteredResults = useMemo(() => {
+    let results = dummyData;
+
+    if (searchQuery) {
+      results = results.filter((item) =>
+        item.title.toLowerCase().includes(searchQuery.toLowerCase()),
+      );
+    }
+
+    if (selectedCategories.length > 0) {
+      results = results.filter((item) => selectedCategories.includes(item.category));
+    }
+
+    return results;
+  }, [searchQuery, selectedCategories]);
 
   const handleBackButtonClick = () => {
     setIsClosing(true);
@@ -105,22 +121,6 @@ const SearchRoom = () => {
       return () => clearTimeout(timer);
     }
   }, [isClosing, navigate]);
-
-  useEffect(() => {
-    let results = dummyData;
-
-    if (searchQuery) {
-      results = results.filter((item) =>
-        item.title.toLowerCase().includes(searchQuery.toLowerCase()),
-      );
-    }
-
-    if (selectedCategories.length > 0) {
-      results = results.filter((item) => selectedCategories.includes(item.category));
-    }
-
-    setFilteredResults(results);
-  }, [searchQuery, selectedCategories, selectedRadius]);
 
   return (
     <SearchPageContainer $closing={isClosing}>

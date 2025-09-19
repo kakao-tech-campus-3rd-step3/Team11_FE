@@ -1,6 +1,5 @@
 import styled from '@emotion/styled';
 import Undo from '@/assets/meeting_room_page/undo.svg?react';
-import type React from 'react';
 
 interface SidebarProps {
   isOpen: boolean;

@@ -11,7 +11,6 @@ node_modules
 dist
 dist-ssr
 *.local
-src/config/apikey.ts
 .env
 .env.*.local
 

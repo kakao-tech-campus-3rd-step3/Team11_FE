@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import Send from '@/assets/meeting_room_page/send.svg?react';
-import React, { useState } from 'react';
+import React from 'react';
 import type { ChatMessage } from '@/types/meeting_room_page/chatMessage';
 import type { SetState } from '@/types/meeting_room_page/chatMessage';
 

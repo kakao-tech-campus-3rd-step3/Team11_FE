@@ -68,6 +68,9 @@ const GlobalStyle = createGlobalStyle`
 
 
 
+    *{
+        font-family: 'Escoredream', sans-serif;
+    }
 
   body {
     font-family: 'Escoredream', sans-serif;

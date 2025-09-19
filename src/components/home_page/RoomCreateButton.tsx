@@ -28,7 +28,7 @@ type Props = React.ComponentProps<typeof Link> & {
   onAction?: () => void;
 };
 
-export const RoomCreate = ({ to = '/create-room', onClick, onAction, ...rest }: Props) => {
+export const RoomCreateButton = ({ to = '/create-room', onClick, onAction, ...rest }: Props) => {
   const handleClick: React.MouseEventHandler<HTMLAnchorElement> = (e) => {
     onClick?.(e);
     if (e.defaultPrevented) return;
@@ -44,5 +44,3 @@ export const RoomCreate = ({ to = '/create-room', onClick, onAction, ...rest }: 
     </RoomCreateLink>
   );
 };
-
-export const RoomCreateButton = RoomCreate;
