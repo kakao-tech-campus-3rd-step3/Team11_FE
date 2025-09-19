@@ -24,16 +24,13 @@ const KakaoLogin = () => {
     try {
       console.log("카카오 로그인 처리 시작");
       
-      // 방법 1: 카카오에서 사용자 정보를 받아서 일반 로그인 API 사용
-      // (실제로는 카카오 API를 통해 사용자 정보를 먼저 받아야 함)
       
-      // 임시로 테스트용 계정으로 로그인 시도
+      // 임시로 테스트용 계정
       const testEmail = "alice@test.com";
       const testPassword = "testpass1212!";
       
       console.log("테스트 계정으로 로그인 시도:", testEmail);
       
-      // 일반 로그인 API 사용
       const { login } = await import("@/api/auth");
       const result = await login(testEmail, testPassword);
       
