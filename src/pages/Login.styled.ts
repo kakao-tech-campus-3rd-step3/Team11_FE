@@ -103,4 +103,10 @@ export const ErrorMessage = styled.div`
   margin-top: 4px;
 `;
 
+export const LinkText = styled.span`
+  color: rgb(42, 48, 56);
+  font-size: 14px;
+  font-weight: 400;
+`;
+
 
