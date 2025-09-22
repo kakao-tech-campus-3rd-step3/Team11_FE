@@ -39,7 +39,7 @@ export const HashtagInput = ({ hashtags, setHashtags }: HashtagInputProps) => {
     if (e.key === ' ' && inputValue.trim() !== '') {
       e.preventDefault();
       if (hashtags.length < 3) {
-        setHashtags([...hashtags, `#${inputValue.trim()}`]);
+        setHashtags((prevHashTags) => [...prevHashTags, `#${inputValue.trim()}`]);
         setInputValue('');
       }
     }
