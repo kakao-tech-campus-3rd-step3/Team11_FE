@@ -1,8 +1,6 @@
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { login } from "@/api/auth";
-import { handleLoginSuccess, handleLoginError } from "@/utils/authUtils";
+import { Link } from "react-router-dom";
+import { useLogin } from "@/hooks/useLogin";
 
 import { Container, ContentContanier, Spacer } from "@/style/CommonStyle";
 import LogoImg from "@/assets/momeetLogo.svg";
@@ -18,22 +16,16 @@ import {
 import apikey from "@/config/apikey";
 
 const Login = () => {
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const { handleEmailLogin } = useLogin();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [errors, setErrors] = useState<{ [key: string]: string[] }>({});
+  const [errors, setErrors] = useState<{ [key: string]: string[] | string }>({});
 
   // 로그인 핸들러
   const handleLogin = async () => {
     setErrors({});
-    try {
-      const result = await login(email, password);
-      handleLoginSuccess(result, dispatch, navigate, 'email');
-    } catch (err: any) {
-      handleLoginError(err, navigate, 'email');
-    }
+    handleEmailLogin(email, password);
   };
 
   // 카카오 로그인 핸들러
