@@ -55,7 +55,7 @@ export const HashtagInput = ({ hashtags, setHashtags }: HashtagInputProps) => {
   };
 
   const removeHashtag = (tagToRemove: string) => {
-    setHashtags(hashtags.filter((tag) => tag !== tagToRemove));
+    setHashtags((prevHashtags) => prevHashtags.filter((tag) => tag !== tagToRemove));
   };
 
   return (
