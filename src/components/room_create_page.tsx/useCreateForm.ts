@@ -49,10 +49,12 @@ export const useCreateForm = () => {
   });
 
   const [hashtags, setHashtags] = useState<string[]>([]);
-
-  const [timeError, setTimeError] = useState<string | null>(null);
-
   const location = useLocation();
+
+  const timeError = useMemo(
+    () => validateTime(formState.startTime, formState.endTime),
+    [formState.startTime, formState.endTime],
+  );
 
   useEffect(() => {
     if (location.state?.selectedLocation) {
@@ -70,11 +72,6 @@ export const useCreateForm = () => {
       [name]: value,
     }));
   };
-
-  useEffect(() => {
-    const error = validateTime(formState.startTime, formState.endTime);
-    setTimeError(error);
-  }, [formState.startTime, formState.endTime]);
 
   const isFormValid = useMemo(() => {
     return (
