@@ -1,46 +1,96 @@
-import { Container, ContentContanier } from '@/style/CommonStyle';
-import LogoImg from '@/asset/LogoImg.png';
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import { useLogin } from "@/hooks/useLogin";
+
+import { Container, ContentContanier, Spacer } from "@/style/CommonStyle";
+import LogoImg from "@/assets/momeetLogo.svg";
 import {
   InputSection,
   Logo,
   LoginButton,
   LoginMain,
   LoginSection,
-  Spacer,
-} from './Login.styled';
-import { useNavigate } from 'react-router-dom';
+  KaKaoLoginBTn,
+  LinkText,
+} from "./Login.styled";
+import apikey from "@/config/apikey";
 
 const Login = () => {
-  const navigate = useNavigate();
+  const { handleEmailLogin } = useLogin();
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [errors, setErrors] = useState<{ [key: string]: string[] | string }>({});
+
+  // 로그인 핸들러
+  const handleLogin = async () => {
+    setErrors({});
+    handleEmailLogin(email, password);
+  };
+
+  // 카카오 로그인 핸들러
+  const handleKakaoLogin = () => {
+    if (!apikey.kakaoRestApiKey) {
+      alert("카카오 API 키가 설정되지 않았습니다. 관리자에게 문의하세요.");
+      return;
+    }
+    
+    const REST_API_KEY = apikey.kakaoRestApiKey;
+    const REDIRECT_URI = "http://localhost:5173/kakaoLogin";
+    const kakaoAuthURL = `https://kauth.kakao.com/oauth/authorize?client_id=${REST_API_KEY}&redirect_uri=${REDIRECT_URI}&response_type=code`;
+    
+    console.log("카카오 인증 URL:", kakaoAuthURL);
+    window.location.href = kakaoAuthURL;
+  };
 
   return (
     <Container>
       <ContentContanier>
-      <LoginMain>
+        <LoginMain>
           <Logo alt="모밋 로고" src={LogoImg} />
-          <Spacer h={24}/>
+          <Spacer h={48} />
           <LoginSection>
             <div>
               <InputSection
-              placeholder="이메일"
+                placeholder="이메일"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
               />
+              {errors.email && (
+                <div style={{ color: "red" }}>{errors.email[0]}</div>
+              )}
             </div>
+            <Spacer h={24} />
             <div>
               <InputSection
                 type="password"
                 placeholder="비밀번호"
-
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
               />
+              {errors.password && (
+                <div style={{ color: "red" }}>{errors.password[0]}</div>
+              )}
             </div>
-            <Spacer h={24}/>
-            <LoginButton onClick={() => navigate('/home')}>
-              로그인
-            </LoginButton>
+            <Spacer h={24} />
+            <LoginButton onClick={handleLogin}>로그인</LoginButton>
+            <Spacer h={12} />
+            <KaKaoLoginBTn onClick={handleKakaoLogin}>
+              카카오 간편 로그인
+            </KaKaoLoginBTn>
+            <Spacer h={12} />
+            <div style={{ textAlign: "center" }}>
+              <LinkText>
+                계정이 없으신가요?{" "}
+                <Link to="/signup" style={{ color: "#007bff", textDecoration: "none" }}>
+                  회원가입하기
+                </Link>
+              </LinkText>
+            </div>
           </LoginSection>
         </LoginMain>
-        </ContentContanier>
+      </ContentContanier>
     </Container>
-
   );
 };
 

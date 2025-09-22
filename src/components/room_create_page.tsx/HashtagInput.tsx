@@ -1,0 +1,83 @@
+import React, { useState } from 'react';
+import styled from 'styled-components';
+import { StyledInput } from './StyledComponents';
+
+const MaxTextLength = 7;
+const MaxHashtags = 3;
+const HashtagContainer = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+`;
+
+const Hashtag = styled.span`
+  background-color: #eef2ff;
+  color: #4f46e5;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 0.875rem;
+  display: flex;
+  align-items: center;
+`;
+
+const RemoveButton = styled.button`
+  all: unset;
+  margin-left: 6px;
+  cursor: pointer;
+  font-weight: bold;
+`;
+
+export type SetState<T> = React.Dispatch<React.SetStateAction<T>>;
+
+interface HashtagInputProps {
+  hashtags: string[];
+  onChangeHashtags: (newHashtags: string[]) => void;
+}
+
+export const HashtagInput = ({ hashtags, onChangeHashtags }: HashtagInputProps) => {
+  const [inputValue, setInputValue] = useState('');
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === ' ' && inputValue.trim() !== '') {
+      e.preventDefault();
+      const newTag = `#${inputValue.trim()}`;
+      if (hashtags.length < MaxHashtags && !hashtags.includes(newTag)) {
+        onChangeHashtags([...hashtags, newTag]);
+        setInputValue('');
+      }
+    }
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.value.length <= MaxTextLength) {
+      setInputValue(e.target.value);
+    }
+  };
+
+  const removeHashtag = (tagToRemove: string) => {
+    onChangeHashtags(hashtags.filter((tag) => tag !== tagToRemove));
+  };
+
+  return (
+    <>
+      <StyledInput
+        type="text"
+        value={inputValue}
+        onChange={handleChange}
+        onKeyDown={handleKeyDown}
+        placeholder="태그 입력 후 스페이스바"
+        disabled={hashtags.length >= 3}
+      />
+      <HashtagContainer>
+        {hashtags.map((tag) => (
+          <Hashtag key={tag}>
+            {tag}
+            <RemoveButton onClick={() => removeHashtag(tag)}>x</RemoveButton>
+          </Hashtag>
+        ))}
+      </HashtagContainer>
+    </>
+  );
+};

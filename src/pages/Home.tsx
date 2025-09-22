@@ -1,10 +1,18 @@
 import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled, { createGlobalStyle } from 'styled-components';
-import GlobalStyle from '@/style/GlobalStyle';
-import { colors } from '@/style/themes';
+
+import GlobalStyle from '../style/GlobalStyle';
+import { colors } from '../style/themes';
 import apikey from '@/config/apikey';
-import { SearchButton } from '@/components/home_page/SearchButton';
+import { SearchButton } from '../components/home_page/SearchButton';
+
+declare global {
+  interface Window {
+    kakao: any;
+  }
+}
+
 import { useKakaoMap } from '@/hooks/useKakaoMap';
 import { RoomCreateButton } from '@/components/home_page/RoomCreateButton';
 import { Overlay, OVERLAY_ANIMATION_DURATION } from '@/components/common/Overlay';
