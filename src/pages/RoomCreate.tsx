@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { useNavigate, Link } from 'react-router-dom';
 import { useCreateForm } from '@/components/room_create_page.tsx/useCreateForm';
+import { useBoolean } from '@/hooks/useBoolean';
 import { CreateHeader } from '@/components/room_create_page.tsx/CreateHeader';
 import { HobbySelector } from '@/components/room_create_page.tsx/HobbySelector';
 import { HashtagInput } from '@/components/room_create_page.tsx/HashtagInput';
@@ -101,11 +102,11 @@ const RoomCreate = () => {
   const { formState, hashtags, setHashtags, handleChange, timeError, isFormValid } =
     useCreateForm();
 
-  const [isClosing, setIsClosing] = useState(false);
+  const [isClosing, { on: startClosing }] = useBoolean(false);
   const navigate = useNavigate();
 
   const handleBackButtonClick = () => {
-    setIsClosing(true);
+    startClosing();
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -161,7 +162,7 @@ const RoomCreate = () => {
 
         <InputGroup>
           <Label>해시태그</Label>
-          <HashtagInput hashtags={hashtags} setHashtags={setHashtags} />
+          <HashtagInput hashtags={hashtags} onChangeHashtags={setHashtags} />
         </InputGroup>
 
         <Grid>
