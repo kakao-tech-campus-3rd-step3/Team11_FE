@@ -17,20 +17,22 @@ export interface FormState {
   location: LocationData | null;
 }
 
+const ONE_DAY_IN_MILLISECONDS = 24 * 60 * 60 * 1000;
+
 const validateTime = (startTime: string, endTime: string): string | null => {
   if (!startTime || !endTime) return null;
 
   const now = new Date();
   const start = new Date(startTime);
   const end = new Date(endTime);
-  const in24Hours = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+  const in24Hours = new Date(now.getTime() + ONE_DAY_IN_MILLISECONDS);
 
   if (start <= now) return '시작 시간은 현재 시간 이후여야 합니다.';
   if (start > in24Hours) return '모임은 24시간 이내에 시작해야 합니다.';
   if (end <= start) return '종료 시간은 시작 시간 이후여야 합니다.';
 
   const duration = end.getTime() - start.getTime();
-  if (duration > 24 * 60 * 60 * 1000) return '총 모임 시간은 24시간을 넘을 수 없습니다.';
+  if (duration > ONE_DAY_IN_MILLISECONDS) return '총 모임 시간은 24시간을 넘을 수 없습니다.';
 
   return null;
 };
@@ -47,10 +49,12 @@ export const useCreateForm = () => {
   });
 
   const [hashtags, setHashtags] = useState<string[]>([]);
-
-  const [timeError, setTimeError] = useState<string | null>(null);
-
   const location = useLocation();
+
+  const timeError = useMemo(
+    () => validateTime(formState.startTime, formState.endTime),
+    [formState.startTime, formState.endTime],
+  );
 
   useEffect(() => {
     if (location.state?.selectedLocation) {
@@ -68,11 +72,6 @@ export const useCreateForm = () => {
       [name]: value,
     }));
   };
-
-  useEffect(() => {
-    const error = validateTime(formState.startTime, formState.endTime);
-    setTimeError(error);
-  }, [formState.startTime, formState.endTime]);
 
   const isFormValid = useMemo(() => {
     return (
