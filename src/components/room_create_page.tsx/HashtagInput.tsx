@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { StyledInput } from './StyledComponents';
 
 const MaxTextLength = 7;
-
+const MaxHashtags = 3;
 const HashtagContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
@@ -29,34 +29,35 @@ const RemoveButton = styled.button`
   font-weight: bold;
 `;
 
+export type SetState<T> = React.Dispatch<React.SetStateAction<T>>;
+
 interface HashtagInputProps {
   hashtags: string[];
-  setHashtags: React.Dispatch<React.SetStateAction<string[]>>;
+  onChangeHashtags: (newHashtags: string[]) => void;
 }
 
-export const HashtagInput = ({ hashtags, setHashtags }: HashtagInputProps) => {
+export const HashtagInput = ({ hashtags, onChangeHashtags }: HashtagInputProps) => {
   const [inputValue, setInputValue] = useState('');
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === ' ' && inputValue.trim() !== '') {
       e.preventDefault();
       const newTag = `#${inputValue.trim()}`;
-      if (hashtags.length < 3 && !hashtags.includes(newTag)) {
-        setHashtags((prevHashtags) => [...prevHashtags, newTag]);
+      if (hashtags.length < MaxHashtags && !hashtags.includes(newTag)) {
+        onChangeHashtags([...hashtags, newTag]);
         setInputValue('');
       }
     }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // 7자 글자 수 제한
     if (e.target.value.length <= MaxTextLength) {
       setInputValue(e.target.value);
     }
   };
 
   const removeHashtag = (tagToRemove: string) => {
-    setHashtags((prevHashtags) => prevHashtags.filter((tag) => tag !== tagToRemove));
+    onChangeHashtags(hashtags.filter((tag) => tag !== tagToRemove));
   };
 
   return (
