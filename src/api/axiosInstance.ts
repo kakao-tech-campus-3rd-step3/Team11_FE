@@ -1,8 +1,14 @@
+import { clearTokens } from "@/utils/tokenStorage";
 import axios from "axios";
 
+// HTTP 상태 코드 상수
+const HTTP_STATUS = {
+  UNAUTHORIZED: 401,
+} as const;
+
 const api = axios.create({
-  baseURL: import.meta.env.DEV ? "" : "http://swallow104.gonetis.com:18081", // 개발환경에서는 프록시 사용
-  timeout: 10000, // 10초 타임아웃
+  baseURL: import.meta.env.DEV ? "" : "http://swallow104.gonetis.com:18081", 
+  timeout: 10000, // 10초 
   headers: {
     "Content-Type": "application/json",
     "Accept": "application/json",
@@ -25,9 +31,8 @@ api.interceptors.response.use(
   },
   (error) => {
     // 401 에러 시 토큰 제거
-    if (error.response?.status === 401) {
-      localStorage.removeItem("accessToken");
-      localStorage.removeItem("refreshToken");
+    if (error.response?.status === HTTP_STATUS.UNAUTHORIZED) {
+      clearTokens();
     }
     
     return Promise.reject(error);

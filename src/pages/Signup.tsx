@@ -1,8 +1,6 @@
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { signup } from "@/api/auth";
-import { handleLoginSuccess, handleLoginError } from "@/utils/authUtils";
+import { Link } from "react-router-dom";
+import { useLogin } from "@/hooks/useLogin";
 
 import { Container, ContentContanier, Spacer } from "@/style/CommonStyle";
 import LogoImg from "@/assets/momeetLogo.svg";
@@ -16,8 +14,7 @@ import {
 } from "./Login.styled";
 
 const Signup = () => {
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const { handleSignup } = useLogin();
 
   const [email, setEmail] = useState("");
   const [password1, setPassword1] = useState("");
@@ -26,13 +23,12 @@ const Signup = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   // 회원가입 핸들러
-  const handleSignup = async () => {
+  const handleSignupSubmit = async () => {
     setErrors({});
     setIsLoading(true);
 
     try {
-      const result = await signup(email, password1, password2);
-      handleLoginSuccess(result, dispatch, navigate, 'email');
+      await handleSignup(email, password1, password2);
     } catch (err: any) {
       console.error("회원가입 에러:", err);
       
@@ -51,7 +47,7 @@ const Signup = () => {
           alert(firstError);
         }
       } else {
-        handleLoginError(err, navigate, 'email');
+        alert("회원가입에 실패했습니다. 다시 시도해주세요.");
       }
     } finally {
       setIsLoading(false);
@@ -61,7 +57,7 @@ const Signup = () => {
   // 엔터키 처리
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
-      handleSignup();
+      handleSignupSubmit();
     }
   };
 
@@ -118,7 +114,7 @@ const Signup = () => {
             </div>
             <Spacer h={24} />
             <LoginButton 
-              onClick={handleSignup} 
+              onClick={handleSignupSubmit} 
               disabled={isLoading}
               style={{ opacity: isLoading ? 0.7 : 1 }}
             >
