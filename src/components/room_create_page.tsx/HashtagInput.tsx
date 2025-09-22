@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { StyledInput } from './StyledComponents';
 
+const MaxTextLength = 7;
+
 const HashtagContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
@@ -47,7 +49,7 @@ export const HashtagInput = ({ hashtags, setHashtags }: HashtagInputProps) => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     // 7자 글자 수 제한
-    if (e.target.value.length <= 7) {
+    if (e.target.value.length <= MaxTextLength) {
       setInputValue(e.target.value);
     }
   };
