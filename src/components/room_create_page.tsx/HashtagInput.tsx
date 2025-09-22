@@ -40,8 +40,9 @@ export const HashtagInput = ({ hashtags, setHashtags }: HashtagInputProps) => {
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === ' ' && inputValue.trim() !== '') {
       e.preventDefault();
-      if (hashtags.length < 3) {
-        setHashtags((prevHashTags) => [...prevHashTags, `#${inputValue.trim()}`]);
+      const newTag = `#${inputValue.trim()}`;
+      if (hashtags.length < 3 && !hashtags.includes(newTag)) {
+        setHashtags((prevHashtags) => [...prevHashtags, newTag]);
         setInputValue('');
       }
     }
