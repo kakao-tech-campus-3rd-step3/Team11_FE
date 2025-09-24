@@ -1,21 +1,19 @@
 import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled, { createGlobalStyle } from 'styled-components';
-
-import GlobalStyle from '../style/GlobalStyle';
-import { colors } from '../style/themes';
+import GlobalStyle from '@/style/GlobalStyle';
+import { colors } from '@/style/themes';
 import apikey from '@/config/apikey';
-import { SearchButton } from '../components/home_page/SearchButton';
-
+import { SearchButton } from '@/components/home_page/SearchButton';
+import { useKakaoMap } from '@/hooks/useKakaoMap';
+import { Overlay, OVERLAY_ANIMATION_DURATION } from '@/components/common/Overlay';
+import { RoomCreateButton } from '@/components/home_page/RoomCreateButton';
+import BottomNav from '@/components/common/BottomNav';
 declare global {
   interface Window {
     kakao: any;
   }
 }
-
-import { useKakaoMap } from '@/hooks/useKakaoMap';
-import { RoomCreateButton } from '@/components/home_page/RoomCreateButton';
-import { Overlay, OVERLAY_ANIMATION_DURATION } from '@/components/common/Overlay';
 
 const KakaoMapCssFix = createGlobalStyle`
   #kakaoMap img { max-width: none !important; }
@@ -32,7 +30,10 @@ const MarkerStyles = createGlobalStyle`
 
 const HomeContainer = styled.div`
   position: fixed;
-  inset: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 60px;
   display: flex;
   flex-direction: column;
 `;
@@ -77,6 +78,7 @@ const Home = () => {
         </MapArea>
         {isSearchOpen && <Overlay />}
       </HomeContainer>
+      <BottomNav />
     </>
   );
 };
