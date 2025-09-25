@@ -3,6 +3,7 @@ import BackArrow from '@/assets/meeting_room_page/chevron_left.svg?react';
 import Menu from '@/assets/meeting_room_page/menu.svg?react';
 import { Sidebar } from '@/components/meeting_room_page/Sidebar';
 import { useBoolean } from '@/hooks/useBoolean';
+import { useNavigate } from 'react-router-dom';
 
 const HeaderContainer = styled.div`
   position: absolute;
@@ -60,16 +61,19 @@ const BACKARROW_SVG_SIZE = '32';
 const MENU_SVG_SIZE = '25.6';
 
 export const Header = () => {
+  const naviagate = useNavigate();
   const [isSidebarOpen, { on: openSidebar, off: closeSidebar }] = useBoolean(false);
 
   return (
     <HeaderContainer>
       <HeaderContent>
-        <BackArrow
-          width={BACKARROW_SVG_SIZE}
-          height={BACKARROW_SVG_SIZE}
-          style={{ position: 'absolute', left: 0 }}
-        />
+        <Button onClick={() => naviagate(-1)}>
+          <BackArrow
+            width={BACKARROW_SVG_SIZE}
+            height={BACKARROW_SVG_SIZE}
+            style={{ position: 'absolute', left: 0 }}
+          />
+        </Button>
         <RoomTitle>축구할 사람 구해요~</RoomTitle>
         <Button onClick={openSidebar}>
           <Menu

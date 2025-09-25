@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 import BackArrow from '@/assets/meeting_room_page/chevron_left.svg?react';
 import { keyframes } from '@emotion/react';
+import { useNavigate } from 'react-router-dom';
 
 const slideUp = keyframes`
   from {
@@ -57,10 +58,12 @@ const Button = styled.button`
 const BACKARROW_SVG_SIZE = '32';
 
 export const Header = () => {
+  const navigate = useNavigate();
+
   return (
     <HeaderContainer>
       <HeaderContent>
-        <Button>
+        <Button onClick={() => navigate('/home')}>
           <BackArrow
             width={BACKARROW_SVG_SIZE}
             height={BACKARROW_SVG_SIZE}
