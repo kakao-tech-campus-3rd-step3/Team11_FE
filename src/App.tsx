@@ -10,7 +10,7 @@ import KakaoLogin from '@/pages/KakaoLogin';
 import RoomCreate from '@/pages/RoomCreate';
 import SearchRoom from '@/pages/SearchRoom';
 import LocationPicker from '@/pages/LocationPicker';
-import ParticipantEvaluation from './pages/participantEvaluation';
+import ParticipantEvaluation from './pages/ParticipantEvaluation';
 
 function App() {
   return (

@@ -1,7 +1,16 @@
+import { EvaluationGuideLabel } from '@/components/participant_evaluation_page/EvaluationGuideLabel';
+import { Header } from '@/components/participant_evaluation_page/Header';
+import { ParticipantList } from '@/components/participant_evaluation_page/ParticipantList';
 import { Container } from '@/style/CommonStyle';
 
 const ParticipantEvaluation = () => {
-  return <Container>참가자 평가 페이지</Container>;
+  return (
+    <Container>
+      <Header />
+      <EvaluationGuideLabel />
+      <ParticipantList />
+    </Container>
+  );
 };
 
 export default ParticipantEvaluation;
