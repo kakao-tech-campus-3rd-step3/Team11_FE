@@ -9,6 +9,7 @@ import { useKakaoMap } from '@/hooks/useKakaoMap';
 import { Overlay, OVERLAY_ANIMATION_DURATION } from '@/components/common/Overlay';
 import { RoomCreateButton } from '@/components/home_page/RoomCreateButton';
 import BottomNav from '@/components/common/BottomNav';
+import { Container } from '@/style/CommonStyle';
 declare global {
   interface Window {
     kakao: any;
@@ -28,20 +29,15 @@ const MarkerStyles = createGlobalStyle`
     background: #fff; position: absolute; border-radius: 50%; }
 `;
 
-const HomeContainer = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 60px;
-  display: flex;
-  flex-direction: column;
+const HomePageContainer = styled(Container)`
+  justify-content: space-between;
 `;
 
 const MapArea = styled.div`
   flex: 1;
   position: relative;
   overflow: hidden;
+  width: 100%;
 `;
 
 const MapContainer = styled.div.attrs({ id: 'kakaoMap' })`
@@ -70,15 +66,15 @@ const Home = () => {
       <GlobalStyle />
       <KakaoMapCssFix />
       <MarkerStyles />
-      <HomeContainer>
+      <HomePageContainer>
         <MapArea>
           <SearchButton onClick={handleSearchClick} />
           <MapContainer ref={mapRef} />
           <RoomCreateButton to="/create-room" />
+          {isSearchOpen && <Overlay />}
         </MapArea>
-        {isSearchOpen && <Overlay />}
-      </HomeContainer>
-      <BottomNav />
+        <BottomNav />
+      </HomePageContainer>
     </>
   );
 };
