@@ -9,7 +9,8 @@ import {
 import { colors } from '@/style/themes';
 
 const NavContainer = styled.nav`
-  position: fixed;
+  position: center;
+  width: 720px;
   bottom: 0;
   left: 0;
   right: 0;
@@ -43,7 +44,7 @@ const BottomNav = () => {
   const navigate = useNavigate();
   const location = useLocation();
   {
-    /*추후 로직 수정 예정 */
+    /*추후 로직 수정 예정 - 속한 모임 있는지 없는지 여부 */
   }
   const userIsInGroup = true;
 
