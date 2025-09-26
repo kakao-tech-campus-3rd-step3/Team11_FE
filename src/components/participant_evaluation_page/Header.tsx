@@ -1,9 +1,16 @@
 import styled from '@emotion/styled';
 import BackArrow from '@/assets/meeting_room_page/chevron_left.svg?react';
-import Menu from '@/assets/meeting_room_page/menu.svg?react';
-import { Sidebar } from '@/components/meeting_room_page/Sidebar';
-import { useBoolean } from '@/hooks/useBoolean';
+import { keyframes } from '@emotion/react';
 import { useNavigate } from 'react-router-dom';
+
+const slideUp = keyframes`
+  from {
+    transform: translateY(3rem);
+  }
+  to {
+    transform: translateY(0);
+  }
+`;
 
 const HeaderContainer = styled.div`
   position: absolute;
@@ -18,6 +25,7 @@ const HeaderContainer = styled.div`
   justify-content: flex-end;
   align-items: center;
   box-sizing: border-box;
+  overflow: hidden;
 `;
 
 const HeaderContent = styled.div`
@@ -36,6 +44,7 @@ const RoomTitle = styled.div`
   top: 1.1rem;
   font-size: 1rem;
   font-weight: 500;
+  animation: ${slideUp} 1s ease-in-out forwards;
 `;
 
 const Button = styled.button`
@@ -46,45 +55,23 @@ const Button = styled.button`
   justify-content: center;
 `;
 
-const Overlay = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  max-width: 720px;
-  height: 100vh;
-  background: rgba(0, 0, 0, 0.4);
-  z-index: 999;
-`;
-
 const BACKARROW_SVG_SIZE = '32';
-const MENU_SVG_SIZE = '25.6';
 
 export const Header = () => {
-  const naviagate = useNavigate();
-  const [isSidebarOpen, { on: openSidebar, off: closeSidebar }] = useBoolean(false);
+  const navigate = useNavigate();
 
   return (
     <HeaderContainer>
       <HeaderContent>
-        <Button onClick={() => naviagate(-1)}>
+        <Button onClick={() => navigate('/home')}>
           <BackArrow
             width={BACKARROW_SVG_SIZE}
             height={BACKARROW_SVG_SIZE}
             style={{ position: 'absolute', left: 0 }}
           />
         </Button>
-        <RoomTitle>축구할 사람 구해요~</RoomTitle>
-        <Button onClick={openSidebar}>
-          <Menu
-            width={MENU_SVG_SIZE}
-            height={MENU_SVG_SIZE}
-            style={{ position: 'absolute', right: 0, top: '0.85rem' }}
-          />
-        </Button>
+        <RoomTitle>모임은 어떠셨나요?</RoomTitle>
       </HeaderContent>
-      {isSidebarOpen && <Overlay onClick={closeSidebar} />}
-      <Sidebar isOpen={isSidebarOpen} onClose={closeSidebar} />
     </HeaderContainer>
   );
 };

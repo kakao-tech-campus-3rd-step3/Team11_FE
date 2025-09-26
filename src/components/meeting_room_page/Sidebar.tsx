@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import Undo from '@/assets/meeting_room_page/undo.svg?react';
+import { useNavigate } from 'react-router-dom';
 
 interface SidebarProps {
   isOpen: boolean;
@@ -64,6 +65,8 @@ const Option = styled.button`
 const UNDO_SVG_SIZE = '25.6';
 
 export const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
+  const navigate = useNavigate();
+
   return (
     <Container isOpen={isOpen}>
       <Header>
@@ -76,7 +79,7 @@ export const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
           />
         </Button>
       </Header>
-      <Option>실제 모임 시작</Option>
+      <Option onClick={() => navigate('/participant-evaluation')}>실제 모임 시작</Option>
       <Option>방 나가기</Option>
       <Option>방 수정하기</Option>
       <Option>마감 기한 연장</Option>

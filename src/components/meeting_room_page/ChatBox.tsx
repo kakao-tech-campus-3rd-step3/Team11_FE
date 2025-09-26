@@ -3,7 +3,7 @@ import { Message } from './Message';
 import type { ChatMessage } from '@/types/meeting_room_page/chatMessage';
 import { useEffect, useRef } from 'react';
 
-interface ChatBox {
+interface ChatBoxProps {
   chatMessages: ChatMessage[];
 }
 
@@ -26,7 +26,7 @@ const Container = styled.div`
   overflow-y: auto;
 `;
 
-export const ChatBox = ({ chatMessages }: ChatBox) => {
+export const ChatBox = ({ chatMessages }: ChatBoxProps) => {
   const ref = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
