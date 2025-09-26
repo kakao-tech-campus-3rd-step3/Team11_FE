@@ -5,7 +5,7 @@ import { colors } from '@/style/themes';
 
 const RoomCreateLink = styled(Link)`
   position: absolute;
-  bottom: 40px;
+  bottom: 80px;
   right: 20px;
   z-index: 900;
   width: 56px;
