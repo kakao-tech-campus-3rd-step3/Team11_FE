@@ -9,11 +9,12 @@ import {
 import { colors } from '@/style/themes';
 
 const NavContainer = styled.nav`
-  position: center;
-  width: 720px;
+  position: fixed;
   bottom: 0;
-  left: 0;
-  right: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 720px;
   height: 60px;
   padding-bottom: 5px;
   background-color: #ffffff;

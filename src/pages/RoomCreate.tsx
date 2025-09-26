@@ -3,7 +3,7 @@ import styled, { keyframes } from 'styled-components';
 import { useNavigate, Link } from 'react-router-dom';
 import { useCreateForm } from '@/components/room_create_page.tsx/useCreateForm';
 import { useBoolean } from '@/hooks/useBoolean';
-import { CreateHeader } from '@/components/room_create_page.tsx/CreateHeader';
+import { CommonHeader } from '@/components/common/CommonHeader';
 import { HobbySelector } from '@/components/room_create_page.tsx/HobbySelector';
 import { HashtagInput } from '@/components/room_create_page.tsx/HashtagInput';
 import { TimePicker } from '@/components/room_create_page.tsx/TimePicker';
@@ -131,7 +131,7 @@ const RoomCreate = () => {
 
   return (
     <PageContainer $closing={isClosing}>
-      <CreateHeader onBackButtonClick={handleBackButtonClick} />
+      <CommonHeader title="모임 만들기" onBackButtonClick={handleBackButtonClick} />
       <FormContainer onSubmit={handleSubmit}>
         <InputGroup>
           <Label htmlFor="name">모임 이름</Label>
