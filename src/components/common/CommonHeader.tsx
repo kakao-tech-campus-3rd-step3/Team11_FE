@@ -9,7 +9,7 @@ const HeaderContainer = styled.header`
   flex-direction: column;
   width: 100%;
   max-width: 720px;
-  height: 6rem;
+  height: 4rem;
   padding: 0 2rem;
   justify-content: flex-end;
   align-items: center;
