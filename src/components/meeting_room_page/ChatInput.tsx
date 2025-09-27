@@ -35,7 +35,8 @@ const TextArea = styled.textarea`
   border: none;
   border-radius: 1.5rem;
   padding-left: 1.5rem;
-  padding-top: 0.8rem;
+  padding-top: 1rem;
+  padding-right: 3rem;
   box-sizing: border-box;
   overflow-y: auto;
   background-color: #efefef;
@@ -47,6 +48,12 @@ const Button = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
+`;
+
+const HelperText = styled.div`
+  font-size: 0.75rem;
+  color: gray;
+  margin-top: 0.3rem;
 `;
 
 export const ChatInput = ({ chatMessages, setChatMessages }: ChatInputProps) => {
@@ -76,7 +83,7 @@ export const ChatInput = ({ chatMessages, setChatMessages }: ChatInputProps) => 
       <TextArea
         value={text}
         onChange={(e) => setText(e.target.value)}
-        placeholder="메시지를 입력하세요 (Shift + Enter로 줄바꿈 가능)"
+        placeholder="대화를 시작해 보세요!"
         onKeyDown={(e) => {
           if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault();
@@ -87,6 +94,7 @@ export const ChatInput = ({ chatMessages, setChatMessages }: ChatInputProps) => 
       <Button onClick={sendMessage}>
         <Send style={{ position: 'absolute', top: '0.75rem', right: '3rem' }} />
       </Button>
+      <HelperText>Enter: 전송, Shift + Enter: 줄바꿈</HelperText>
     </Container>
   );
 };

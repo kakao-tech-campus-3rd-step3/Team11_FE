@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { Container } from '@/style/CommonStyle';
-import { SearchHeader } from '@/components/search_page/SearchHeader';
+import { CommonHeader } from '@/components/common/CommonHeader';
 import { useNavigate } from 'react-router-dom';
 import { SearchInput } from '@/components/search_page/SearchInput';
 import { SearchFilters } from '@/components/search_page/SearchFilters';
@@ -124,7 +124,7 @@ const SearchRoom = () => {
 
   return (
     <SearchPageContainer $closing={isClosing}>
-      <SearchHeader onBackButtonClick={handleBackButtonClick} />
+      <CommonHeader title="모임 검색" onBackButtonClick={handleBackButtonClick} />
       <SearchInput query={searchQuery} setQuery={setSearchQuery} />
       <SearchFilters
         selectedCategories={selectedCategories}

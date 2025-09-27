@@ -1,21 +1,20 @@
 import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled, { createGlobalStyle } from 'styled-components';
-
-import GlobalStyle from '../style/GlobalStyle';
-import { colors } from '../style/themes';
+import GlobalStyle from '@/style/GlobalStyle';
+import { colors } from '@/style/themes';
 import apikey from '@/config/apikey';
-import { SearchButton } from '../components/home_page/SearchButton';
-
+import { SearchButton } from '@/components/home_page/SearchButton';
+import { useKakaoMap } from '@/hooks/useKakaoMap';
+import { Overlay, OVERLAY_ANIMATION_DURATION } from '@/components/common/Overlay';
+import { RoomCreateButton } from '@/components/home_page/RoomCreateButton';
+import BottomNav from '@/components/common/BottomNav';
+import { Container } from '@/style/CommonStyle';
 declare global {
   interface Window {
     kakao: any;
   }
 }
-
-import { useKakaoMap } from '@/hooks/useKakaoMap';
-import { RoomCreateButton } from '@/components/home_page/RoomCreateButton';
-import { Overlay, OVERLAY_ANIMATION_DURATION } from '@/components/common/Overlay';
 
 const KakaoMapCssFix = createGlobalStyle`
   #kakaoMap img { max-width: none !important; }
@@ -30,17 +29,15 @@ const MarkerStyles = createGlobalStyle`
     background: #fff; position: absolute; border-radius: 50%; }
 `;
 
-const HomeContainer = styled.div`
-  position: fixed;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
+const HomePageContainer = styled(Container)`
+  justify-content: space-between;
 `;
 
 const MapArea = styled.div`
   flex: 1;
   position: relative;
   overflow: hidden;
+  width: 100%;
 `;
 
 const MapContainer = styled.div.attrs({ id: 'kakaoMap' })`
@@ -69,14 +66,15 @@ const Home = () => {
       <GlobalStyle />
       <KakaoMapCssFix />
       <MarkerStyles />
-      <HomeContainer>
+      <HomePageContainer>
         <MapArea>
           <SearchButton onClick={handleSearchClick} />
           <MapContainer ref={mapRef} />
           <RoomCreateButton to="/create-room" />
+          {isSearchOpen && <Overlay />}
         </MapArea>
-        {isSearchOpen && <Overlay />}
-      </HomeContainer>
+        <BottomNav />
+      </HomePageContainer>
     </>
   );
 };

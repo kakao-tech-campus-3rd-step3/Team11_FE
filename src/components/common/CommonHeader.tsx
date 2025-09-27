@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import { colors } from '@/style/themes';
+import React from 'react';
 
 const HeaderContainer = styled.header`
   position: absolute;
@@ -8,7 +9,7 @@ const HeaderContainer = styled.header`
   flex-direction: column;
   width: 100%;
   max-width: 720px;
-  height: 6rem;
+  height: 4rem;
   padding: 0 2rem;
   justify-content: flex-end;
   align-items: center;
@@ -44,16 +45,27 @@ const Title = styled.h1`
   margin: 0;
 `;
 
-interface CreateHeaderProps {
-  onBackButtonClick: () => void;
+const RightContent = styled.div`
+  position: absolute;
+  right: 0;
+  display: flex;
+  align-items: center;
+  height: 100%;
+`;
+
+interface CommonHeaderProps {
+  title: string;
+  onBackButtonClick?: () => void;
+  children?: React.ReactNode;
 }
 
-export const CreateHeader = ({ onBackButtonClick }: CreateHeaderProps) => {
+export const CommonHeader = ({ title, onBackButtonClick, children }: CommonHeaderProps) => {
   return (
     <HeaderContainer>
       <HeaderContent>
-        <BackButton onClick={onBackButtonClick}>{'<'}</BackButton>
-        <Title>방 생성</Title>
+        {onBackButtonClick && <BackButton onClick={onBackButtonClick}>{'<'}</BackButton>}
+        <Title>{title}</Title>
+        {children && <RightContent>{children}</RightContent>}
       </HeaderContent>
     </HeaderContainer>
   );

@@ -13,6 +13,7 @@ const Container = styled.div<{ isMine: boolean }>`
   min-height: ${({ isMine }) => (isMine ? '3rem' : '4rem')};
   justify-content: flex-start;
   align-items: flex-start;
+  margin-bottom: 0.4rem;
 `;
 
 const Profile = styled.div`
@@ -41,8 +42,10 @@ const Content = styled.div<{ isMine: boolean }>`
   display: flex;
   width: auto;
   min-width: 3rem;
+  max-width: 15rem;
   height: auto;
   min-height: 1.5rem;
+  line-height: 1.25rem;
   justify-content: center;
   align-items: center;
   border: 1px solid black;
