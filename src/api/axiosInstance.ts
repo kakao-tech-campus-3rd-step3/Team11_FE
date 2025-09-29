@@ -1,13 +1,12 @@
 import { clearTokens } from "@/utils/tokenStorage";
 import axios from "axios";
 
-// HTTP 상태 코드 상수
 const HTTP_STATUS = {
   UNAUTHORIZED: 401,
 } as const;
 
 const api = axios.create({
-  baseURL: import.meta.env.DEV ? "" : "http://swallow104.gonetis.com:18081", 
+  baseURL: import.meta.env.VITE_API_BASE_URL || "http://swallow104.gonetis.com:18081", 
   timeout: 10000, // 10초 
   headers: {
     "Content-Type": "application/json",

@@ -45,6 +45,28 @@ const MapContainer = styled.div.attrs({ id: 'kakaoMap' })`
   height: 100%;
 `;
 
+const MyPageButton = styled.button`
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: white;
+  border: 2px solid ${colors.primary};
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+  
+  &:hover {
+    background-color: #f8f9fa;
+  }
+`;
+
 const Home = () => {
   const mapRef = useRef<HTMLDivElement>(null);
   const overlayRef = useRef<any>(null);
@@ -71,6 +93,9 @@ const Home = () => {
           <SearchButton onClick={handleSearchClick} />
           <MapContainer ref={mapRef} />
           <RoomCreateButton to="/create-room" />
+          <MyPageButton onClick={() => navigate('/my')}>
+            👤
+          </MyPageButton>
           {isSearchOpen && <Overlay />}
         </MapArea>
         <BottomNav />

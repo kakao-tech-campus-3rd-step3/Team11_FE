@@ -36,10 +36,11 @@ const Login = () => {
     }
     
     const REST_API_KEY = apikey.kakaoRestApiKey;
-    const REDIRECT_URI = "http://localhost:5173/kakaoLogin";
+    const REDIRECT_URI = `${window.location.origin}/kakaoLogin`;
     const kakaoAuthURL = `https://kauth.kakao.com/oauth/authorize?client_id=${REST_API_KEY}&redirect_uri=${REDIRECT_URI}&response_type=code`;
     
     console.log("카카오 인증 URL:", kakaoAuthURL);
+    console.log("현재 도메인:", window.location.origin);
     window.location.href = kakaoAuthURL;
   };
 
