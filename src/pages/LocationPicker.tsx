@@ -1,7 +1,15 @@
-import { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import styled from 'styled-components';
+import styled, { createGlobalStyle } from 'styled-components';
+import GlobalStyle from '@/style/GlobalStyle';
 import apikey from '@/config/apikey';
+import { CommonHeader } from '@/components/common/CommonHeader';
+
+declare global {
+  interface Window {
+    kakao: any;
+  }
+}
 
 interface LocationInfo {
   name: string;
@@ -9,31 +17,26 @@ interface LocationInfo {
   lng: number;
 }
 
+const KakaoMapCssFix = createGlobalStyle`
+  div[style*="width: 1px; height: 1px;"] {
+    display: none !important;
+  }
+`;
+
 const PageContainer = styled.div`
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+  height: 100vh;
+
   position: fixed;
-  inset: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
   display: flex;
   flex-direction: column;
-`;
-
-const Header = styled.header`
-  position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 1rem;
-  font-weight: bold;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  background: white;
-  z-index: 10;
-`;
-
-const BackButton = styled.button`
-  all: unset;
-  position: absolute;
-  left: 1rem;
-  font-size: 1.5rem;
-  cursor: pointer;
 `;
 
 const MapContainer = styled.div`
@@ -92,19 +95,19 @@ const LocationPicker = () => {
         const options = {
           center: center,
           level: 3,
-          cursor: 'crosshair',
         };
         const map = new window.kakao.maps.Map(mapRef.current, options);
         const geocoder = new window.kakao.maps.services.Geocoder();
 
         if (initialLocation) {
-          const newMarker = new window.kakao.maps.Marker({ position: center });
-          newMarker.setMap(map);
-          markerRef.current = newMarker;
+          const initialMarker = new window.kakao.maps.Marker({ position: center });
+          initialMarker.setMap(map);
+          markerRef.current = initialMarker;
         }
 
         window.kakao.maps.event.addListener(map, 'click', (mouseEvent: any) => {
           const latlng = mouseEvent.latLng;
+          map.setCenter(latlng);
 
           if (markerRef.current) {
             markerRef.current.setPosition(latlng);
@@ -128,12 +131,22 @@ const LocationPicker = () => {
         });
       });
     };
-  }, []);
+
+    return () => {
+      const scripts = document.head.getElementsByTagName('script');
+      for (let i = 0; i < scripts.length; i++) {
+        if (scripts[i].src.includes('dapi.kakao.com')) {
+          document.head.removeChild(scripts[i]);
+        }
+      }
+    };
+  }, [location.state?.currentLocation]);
 
   const handleConfirm = () => {
     if (selectedLocation) {
       navigate('/create-room', {
         state: { selectedLocation: selectedLocation },
+        replace: true,
       });
     }
   };
@@ -143,16 +156,17 @@ const LocationPicker = () => {
   };
 
   return (
-    <PageContainer>
-      <Header>
-        <BackButton onClick={handleBack}>{'<'}</BackButton>
-        <span>지도에서 위치 선택</span>
-      </Header>
-      <MapContainer ref={mapRef} />
-      <ConfirmButton onClick={handleConfirm} disabled={!selectedLocation}>
-        {selectedLocation ? `'${selectedLocation.name}' 확정` : '지도를 클릭하여 위치 선택'}
-      </ConfirmButton>
-    </PageContainer>
+    <>
+      <GlobalStyle />
+      <KakaoMapCssFix />
+      <PageContainer>
+        <CommonHeader title="지도에서 위치 선택" onBackButtonClick={handleBack} />
+        <MapContainer ref={mapRef} />
+        <ConfirmButton onClick={handleConfirm} disabled={!selectedLocation}>
+          {selectedLocation ? `'${selectedLocation.name}' 확정` : '지도를 클릭하여 위치 선택'}
+        </ConfirmButton>
+      </PageContainer>
+    </>
   );
 };
 
