@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 declare global {
   interface Window {
@@ -8,7 +8,6 @@ declare global {
 
 type UseKakaoMapParams = {
   mapRef: React.RefObject<HTMLDivElement | null>;
-  overlayRef?: React.MutableRefObject<any>;
   appKey: string;
   center?: { lat: number; lng: number };
   level?: number;
@@ -41,15 +40,15 @@ function loadKakaoSDK(appKey: string) {
 
 export function useKakaoMap({
   mapRef,
-  overlayRef,
   appKey,
   center = { lat: 35.2335, lng: 129.081 },
   level = 4,
 }: UseKakaoMapParams) {
+  const [mapInstance, setMapInstance] = useState<any>(null);
+
   useEffect(() => {
     const MAX_RETRIES = 3;
     const RETRY_DELAY = 2000;
-
     let cleanupFunc: (() => void) | null = null;
 
     const initMap = (attempt = 1) => {
@@ -58,39 +57,22 @@ export function useKakaoMap({
         console.error('API 키를 찾을 수 없음.');
         return;
       }
-
       let ro: ResizeObserver | null = null;
 
       loadKakaoSDK(APP_KEY)
         .then(() => {
           if (!mapRef.current) return;
           const { kakao } = window as any;
-
           const centerLatLng = new kakao.maps.LatLng(center.lat, center.lng);
           const map = new kakao.maps.Map(mapRef.current, { center: centerLatLng, level });
 
-          const content = `
-            <div class="custom-div-icon">
-              <div class="marker-pin"></div>
-            </div>
-          `;
-          const overlay = new kakao.maps.CustomOverlay({
-            position: centerLatLng,
-            content,
-            yAnchor: 1,
-            map,
-          });
-          if (overlayRef) overlayRef.current = overlay;
+          setMapInstance(map);
 
           ro = new ResizeObserver(() => map.relayout());
           ro.observe(mapRef.current!);
 
           cleanupFunc = () => {
             if (ro && mapRef.current) ro.unobserve(mapRef.current);
-            if (overlayRef?.current) {
-              overlayRef.current.setMap(null);
-              overlayRef.current = null;
-            }
           };
         })
         .catch((error) => {
@@ -102,11 +84,11 @@ export function useKakaoMap({
           }
         });
     };
-
     initMap();
-
     return () => {
       if (cleanupFunc) cleanupFunc();
     };
-  }, [appKey, center.lat, center.lng, level, mapRef, overlayRef]);
+  }, [appKey, center.lat, center.lng, level, mapRef]);
+
+  return mapInstance;
 }
