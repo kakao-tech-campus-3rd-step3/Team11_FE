@@ -7,7 +7,6 @@ import apikey from '@/config/apikey';
 import { SearchButton } from '@/components/home_page/SearchButton';
 import { useKakaoMap } from '@/hooks/useKakaoMap';
 import { Overlay, OVERLAY_ANIMATION_DURATION } from '@/components/common/Overlay';
-import { RoomCreateButton } from '@/components/home_page/RoomCreateButton';
 import BottomNav from '@/components/common/BottomNav';
 import { Container } from '@/style/CommonStyle';
 import type { Meeting } from '@/types/meeting';
@@ -108,7 +107,6 @@ const Home = () => {
         <MapArea>
           <SearchButton onClick={handleSearchClick} />
           <MapContainer ref={mapRef} />
-          <RoomCreateButton to="/create-room" />
           {isSearchOpen && <Overlay />}
           {selectedMeeting && (
             <MeetingDetailModal meeting={selectedMeeting} onClose={handleCloseModal} />
