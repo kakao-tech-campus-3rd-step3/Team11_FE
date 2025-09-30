@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { login, kakaoLogin, signup } from '@/api/auth';
+import { login, kakaoLogin, signup, getMyProfile } from '@/api/auth';
 import { setMyProfile } from '@/store/slices/myProfileSlice';
 import { saveTokens } from '@/utils/tokenStorage';
 
@@ -10,21 +10,34 @@ export const useLogin = () => {
   const dispatch = useDispatch();
 
   // 로그인 성공
-  const handleLoginSuccess = useCallback((
+  const handleLoginSuccess = useCallback(async (
     result: any,
     loginType: 'email' | 'kakao' = 'email'
   ) => {
-    // 토큰 저장
-    saveTokens(result.accessToken, result.refreshToken);
+    try {
+      // 토큰 저장
+      saveTokens(result.accessToken, result.refreshToken);
 
-    // Redux 업데이트
-    const userData = result.user || {};
-    dispatch(setMyProfile({ 
-      name: userData.name || userData.nickname || result.email
-    }));
+      // 프로필 조회 및 Redux 업데이트
+      try {
+        const profileData = await getMyProfile();
+        dispatch(setMyProfile(profileData));
+      } catch (profileError) {
+        console.error('프로필 조회 실패:', profileError);
+        // 프로필 조회 실패 시 기본 데이터로 설정
+        const userData = result.user || {};
+        dispatch(setMyProfile({ 
+          name: userData.name || userData.nickname || result.email
+        }));
+      }
 
-    alert(`${loginType === 'kakao' ? '카카오' : ''}로그인 성공!`);
-    navigate("/home");
+      alert(`${loginType === 'kakao' ? '카카오' : ''}로그인 성공!`);
+      navigate("/home");
+    } catch (error) {
+      console.error('로그인 후 처리 실패:', error);
+      alert('로그인은 성공했지만 프로필을 불러오는데 실패했습니다.');
+      navigate("/home");
+    }
   }, [dispatch, navigate]);
 
   // 로그인 실패 
@@ -68,12 +81,13 @@ export const useLogin = () => {
   // 회원가입
   const handleSignup = useCallback(async (email: string, password1: string, password2: string) => {
     try {
-      const result = await signup(email, password1, password2);
-      handleLoginSuccess(result, 'email');
+      await signup(email, password1, password2);
+      navigate("/onboarding");
     } catch (error: any) {
       handleLoginError(error, 'email');
+      throw error; 
     }
-  }, [handleLoginSuccess, handleLoginError]);
+  }, [navigate, handleLoginError]);
 
   return {
     handleEmailLogin,

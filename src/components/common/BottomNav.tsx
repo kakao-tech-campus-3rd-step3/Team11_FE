@@ -76,7 +76,7 @@ const BottomNav = () => {
       <NavButton isActive={location.pathname === '/create-room'} onClick={handleCreateRoomClick}>
         <IoAddCircleOutline />
       </NavButton>
-      <NavButton isActive={location.pathname === '/profile'} onClick={() => navigate('/profile')}>
+      <NavButton isActive={location.pathname === '/my'} onClick={() => navigate('/my')}>
         <IoPersonOutline />
       </NavButton>
     </NavContainer>
