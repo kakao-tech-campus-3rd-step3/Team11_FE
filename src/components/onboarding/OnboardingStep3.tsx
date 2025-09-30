@@ -15,9 +15,8 @@ import {
   SuggestionItem,
   SearchInputContainer,
   SearchIcon,
-  TopTitle,
   TopSubtitle,
-  StepTitle
+  StepTitle,
 } from './OnboardingStyles';
 import backArrow from '@/assets/onoboarding_page/chevron-left.svg';
 import searchIcon from '@/assets/onoboarding_page/search.svg';
@@ -29,20 +28,14 @@ const OnboardingStep3 = ({ data, onNext, onPrev }: OnboardingStepProps) => {
   const [showSuggestions, setShowSuggestions] = useState(false);
 
   // 더미 위치 데이터 (실제로는 API에서 가져와야 함)
-  const dummyLocations = [
-    '서울특별시',
-    '세명시',
-    '인천광역시',
-    '부산광역시',
-    '대구광역시'
-  ];
+  const dummyLocations = ['서울특별시', '세명시', '인천광역시', '부산광역시', '대구광역시'];
 
   const handleLocationChange = (value: string) => {
     setLocation(value);
-    
+
     if (value.trim()) {
-      const filtered = dummyLocations.filter(loc => 
-        loc.toLowerCase().includes(value.toLowerCase())
+      const filtered = dummyLocations.filter((loc) =>
+        loc.toLowerCase().includes(value.toLowerCase()),
       );
       setSuggestions(filtered);
       setShowSuggestions(true);
@@ -67,7 +60,6 @@ const OnboardingStep3 = ({ data, onNext, onPrev }: OnboardingStepProps) => {
 
   return (
     <>
-
       <FixedHeaderContainer>
         <BackButton onClick={onPrev}>
           <BackArrowIcon src={backArrow} alt="back" />
@@ -84,7 +76,9 @@ const OnboardingStep3 = ({ data, onNext, onPrev }: OnboardingStepProps) => {
               type="text"
               placeholder="예: 부산"
               value={location}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleLocationChange(e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                handleLocationChange(e.target.value)
+              }
               onFocus={() => setShowSuggestions(true)}
               onBlur={() => setTimeout(() => setShowSuggestions(false), 100)}
             />
@@ -108,13 +102,10 @@ const OnboardingStep3 = ({ data, onNext, onPrev }: OnboardingStepProps) => {
           <StepDot $active={true} />
           <StepDot $active={false} />
         </StepIndicator>
-        <SignupButton onClick={handleNext}>
-          다음
-        </SignupButton>
+        <SignupButton onClick={handleNext}>다음</SignupButton>
       </FixedFooterContainer>
     </>
   );
 };
 
 export default OnboardingStep3;
-
