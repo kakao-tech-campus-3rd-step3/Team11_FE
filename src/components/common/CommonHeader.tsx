@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import { colors } from '@/style/themes';
 import React from 'react';
+import BackArrow from '@/assets/meeting_room_page/chevron_left.svg?react';
 
 const HeaderContainer = styled.header`
   position: absolute;
@@ -36,7 +37,6 @@ const BackButton = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.5rem;
 `;
 
 const Title = styled.h1`
@@ -52,7 +52,8 @@ const RightContent = styled.div`
   align-items: center;
   height: 100%;
 `;
-
+const BACKARROW_SVG_SIZE = '32';
+const MENU_SVG_SIZE = '25.6';
 interface CommonHeaderProps {
   title: string;
   onBackButtonClick?: () => void;
@@ -63,7 +64,11 @@ export const CommonHeader = ({ title, onBackButtonClick, children }: CommonHeade
   return (
     <HeaderContainer>
       <HeaderContent>
-        {onBackButtonClick && <BackButton onClick={onBackButtonClick}>{'<'}</BackButton>}
+        {onBackButtonClick && (
+          <BackButton onClick={onBackButtonClick}>
+            <BackArrow width={BACKARROW_SVG_SIZE} height={MENU_SVG_SIZE} />
+          </BackButton>
+        )}
         <Title>{title}</Title>
         {children && <RightContent>{children}</RightContent>}
       </HeaderContent>

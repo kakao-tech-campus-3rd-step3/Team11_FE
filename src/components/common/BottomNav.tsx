@@ -47,7 +47,7 @@ const BottomNav = () => {
   {
     /*추후 로직 수정 예정 - 속한 모임 있는지 없는지 여부 */
   }
-  const userIsInGroup = true;
+  const userIsInGroup = false;
 
   const handleChatClick = () => {
     if (userIsInGroup) {
