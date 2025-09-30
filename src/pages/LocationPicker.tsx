@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import styled, { createGlobalStyle } from 'styled-components';
 import GlobalStyle from '@/style/GlobalStyle';
@@ -107,7 +107,6 @@ const LocationPicker = () => {
 
         window.kakao.maps.event.addListener(map, 'click', (mouseEvent: any) => {
           const latlng = mouseEvent.latLng;
-          map.setCenter(latlng);
 
           if (markerRef.current) {
             markerRef.current.setPosition(latlng);
