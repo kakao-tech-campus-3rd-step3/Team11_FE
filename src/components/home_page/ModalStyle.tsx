@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import { colors } from '@/style/themes';
 import { motion } from 'framer-motion';
+
 export const ModalBackdrop = styled(motion.div)`
   position: fixed;
   top: 0;
@@ -8,7 +9,7 @@ export const ModalBackdrop = styled(motion.div)`
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
-  z-index: 100;
+  z-index: 1100;
 `;
 
 export const ModalContainer = styled(motion.div)`
@@ -24,7 +25,7 @@ export const ModalContainer = styled(motion.div)`
   border-top-left-radius: 20px;
   border-top-right-radius: 20px;
   box-shadow: 0px -2px 10px rgba(0, 0, 0, 0.1);
-  z-index: 101;
+  z-index: 1101;
   display: flex;
   flex-direction: column;
 `;
