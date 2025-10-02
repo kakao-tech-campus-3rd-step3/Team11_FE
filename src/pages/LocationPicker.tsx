@@ -78,12 +78,8 @@ const LocationPicker = () => {
 
   useEffect(() => {
     const APP_KEY = (import.meta.env.VITE_KAKAO_MAP_KEY as string) || apikey?.kakaoMapKey;
-    const script = document.createElement('script');
-    script.async = true;
-    script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${APP_KEY}&libraries=services&autoload=false`;
-    document.head.appendChild(script);
 
-    script.onload = () => {
+    const loadMap = () => {
       window.kakao.maps.load(() => {
         if (!mapRef.current) return;
 
@@ -131,14 +127,22 @@ const LocationPicker = () => {
       });
     };
 
-    return () => {
-      const scripts = document.head.getElementsByTagName('script');
-      for (let i = 0; i < scripts.length; i++) {
-        if (scripts[i].src.includes('dapi.kakao.com')) {
-          document.head.removeChild(scripts[i]);
-        }
-      }
-    };
+    const scriptId = 'kakao-map-script';
+    const existingScript = document.getElementById(scriptId);
+
+    if (!existingScript) {
+      const script = document.createElement('script');
+      script.id = scriptId;
+      script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${APP_KEY}&libraries=services&autoload=false`;
+      script.async = true;
+      document.head.appendChild(script);
+
+      script.onload = () => {
+        loadMap();
+      };
+    } else {
+      loadMap();
+    }
   }, [currentLocation]);
 
   const handleConfirm = () => {
