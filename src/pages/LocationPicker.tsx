@@ -127,21 +127,27 @@ const LocationPicker = () => {
       });
     };
 
-    const scriptId = 'kakao-map-script';
-    const existingScript = document.getElementById(scriptId);
-
-    if (!existingScript) {
-      const script = document.createElement('script');
-      script.id = scriptId;
-      script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${APP_KEY}&libraries=services&autoload=false`;
-      script.async = true;
-      document.head.appendChild(script);
-
-      script.onload = () => {
-        loadMap();
-      };
-    } else {
+    if (window.kakao && window.kakao.maps) {
       loadMap();
+    } else {
+      const scriptId = 'kakao-map-script';
+      const existingScript = document.getElementById(scriptId) as HTMLScriptElement | null;
+
+      if (!existingScript) {
+        const script = document.createElement('script');
+        script.id = scriptId;
+        script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${APP_KEY}&libraries=services&autoload=false`;
+        script.async = true;
+        document.head.appendChild(script);
+
+        script.onload = () => {
+          loadMap();
+        };
+      } else {
+        existingScript.onload = () => {
+          loadMap();
+        };
+      }
     }
   }, [currentLocation]);
 
