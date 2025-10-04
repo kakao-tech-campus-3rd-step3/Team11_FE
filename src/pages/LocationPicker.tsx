@@ -28,13 +28,11 @@ const PageContainer = styled.div`
   max-width: 720px;
   margin: 0 auto;
   height: 100vh;
-
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-
   display: flex;
   flex-direction: column;
 `;
@@ -71,23 +69,21 @@ const LocationPicker = () => {
   const mapRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const location = useLocation();
+  const { formValues, hashtags, currentLocation } = location.state || {};
+
   const [selectedLocation, setSelectedLocation] = useState<LocationInfo | null>(
-    location.state?.currentLocation || null,
+    currentLocation || null,
   );
   const markerRef = useRef<any>(null);
 
   useEffect(() => {
     const APP_KEY = (import.meta.env.VITE_KAKAO_MAP_KEY as string) || apikey?.kakaoMapKey;
-    const script = document.createElement('script');
-    script.async = true;
-    script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${APP_KEY}&libraries=services&autoload=false`;
-    document.head.appendChild(script);
 
-    script.onload = () => {
+    const loadMap = () => {
       window.kakao.maps.load(() => {
         if (!mapRef.current) return;
 
-        const initialLocation = location.state?.currentLocation;
+        const initialLocation = currentLocation;
         const center = initialLocation
           ? new window.kakao.maps.LatLng(initialLocation.lat, initialLocation.lng)
           : new window.kakao.maps.LatLng(35.179554, 129.075642);
@@ -131,20 +127,38 @@ const LocationPicker = () => {
       });
     };
 
-    return () => {
-      const scripts = document.head.getElementsByTagName('script');
-      for (let i = 0; i < scripts.length; i++) {
-        if (scripts[i].src.includes('dapi.kakao.com')) {
-          document.head.removeChild(scripts[i]);
-        }
+    if (window.kakao && window.kakao.maps) {
+      loadMap();
+    } else {
+      const scriptId = 'kakao-map-script';
+      const existingScript = document.getElementById(scriptId) as HTMLScriptElement | null;
+
+      if (!existingScript) {
+        const script = document.createElement('script');
+        script.id = scriptId;
+        script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${APP_KEY}&libraries=services&autoload=false`;
+        script.async = true;
+        document.head.appendChild(script);
+
+        script.onload = () => {
+          loadMap();
+        };
+      } else {
+        existingScript.onload = () => {
+          loadMap();
+        };
       }
-    };
-  }, [location.state?.currentLocation]);
+    }
+  }, [currentLocation]);
 
   const handleConfirm = () => {
     if (selectedLocation) {
       navigate('/create-room', {
-        state: { selectedLocation: selectedLocation },
+        state: {
+          formValues: formValues,
+          hashtags: hashtags,
+          selectedLocation: selectedLocation,
+        },
         replace: true,
       });
     }
