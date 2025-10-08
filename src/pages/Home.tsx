@@ -1,4 +1,5 @@
 import { useRef, useState, useEffect } from 'react';
+import ReactDOM from 'react-dom/client';
 import { useNavigate } from 'react-router-dom';
 import styled, { createGlobalStyle } from 'styled-components';
 import GlobalStyle from '@/style/GlobalStyle';
@@ -12,6 +13,7 @@ import { Container } from '@/style/CommonStyle';
 import type { Meeting } from '@/types/meeting';
 import { MeetingDetailModal } from '@/components/home_page/MeetingDetailModal';
 import { getMeetings } from '@/api/main_meetings';
+import MeetingIcon from '@/components/home_page/MeetingIcon';
 
 declare global {
   interface Window {
@@ -24,14 +26,32 @@ const KakaoMapCssFix = createGlobalStyle`
 `;
 
 const MarkerStyles = createGlobalStyle`
-  .custom-div-icon { position: relative; width: 30px; height: 42px; }
-  .marker-pin { width: 30px; height: 30px; border-radius: 50% 50% 50% 0;
-    background: ${colors.primary400}; position: absolute; transform: rotate(-45deg);
-    left: 50%; top: 50%;
-    margin: -15px 0 0 -15px;
+  .custom-div-icon { 
+    position: relative; 
+    width: 30px; 
+    height: 42px; 
   }
-  .marker-pin::after { content: ''; width: 24px; height: 24px; margin: 3px 0 0 3px;
-    background: #fff; position: absolute; border-radius: 50%; }
+  .marker-pin { 
+    width: 30px; 
+    height: 30px; 
+    border-radius: 50% 50% 50% 0;
+    background: #fff;
+    border: 3px solid ${colors.primary400};
+    position: absolute; 
+    transform: rotate(-45deg);
+    left: 50%; 
+    top: 50%;
+    margin: -15px 0 0 -15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .marker-icon {
+    width: 16px;
+    height: 16px;
+    transform: rotate(45deg);
+    fill: ${colors.primary400};
+  }
 `;
 
 const HomePageContainer = styled(Container)`
@@ -112,16 +132,23 @@ const Home = () => {
 
     meetings.forEach((meeting) => {
       const position = new window.kakao.maps.LatLng(meeting.latitude, meeting.longitude);
-      const markerContent = `<div class="custom-div-icon"><div class="marker-pin"></div></div>`;
 
-      const overlayElement = document.createElement('div');
-      overlayElement.innerHTML = markerContent;
-      overlayElement.style.cursor = 'pointer';
-      overlayElement.onclick = () => handleMarkerClick(meeting);
+      const markerContainer = document.createElement('div');
+      markerContainer.className = 'custom-div-icon';
+      markerContainer.onclick = () => handleMarkerClick(meeting);
+      markerContainer.style.cursor = 'pointer';
+
+      const pinElement = document.createElement('div');
+      pinElement.className = 'marker-pin';
+      markerContainer.appendChild(pinElement);
+
+      ReactDOM.createRoot(pinElement).render(
+        <MeetingIcon category={meeting.category} className="marker-icon" />,
+      );
 
       const customOverlay = new window.kakao.maps.CustomOverlay({
         position: position,
-        content: overlayElement,
+        content: markerContainer,
         yAnchor: 1,
       });
 
