@@ -17,6 +17,7 @@
     "@stomp/stompjs": "^7.2.0",
     "axios": "^1.12.2",
     "framer-motion": "^12.23.22",
+    "js-cookie": "^3.0.5",
     "react": "^19.1.1",
     "react-component": "^0.0.0",
     "react-dom": "^19.1.1",
@@ -29,6 +30,7 @@
   "devDependencies": {
     "@emotion/babel-plugin": "^11.13.5",
     "@eslint/js": "^9.33.0",
+    "@types/js-cookie": "^3.0.6",
     "@types/node": "^24.3.0",
     "@types/react": "^19.1.12",
     "@types/react-dom": "^19.1.7",

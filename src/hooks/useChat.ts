@@ -2,6 +2,7 @@ import { useEffect, useRef, useCallback } from 'react';
 import SockJS from 'sockjs-client';
 import { Client } from '@stomp/stompjs';
 import type { IMessage } from '@stomp/stompjs';
+import Cookies from 'js-cookie';
 
 interface ChatMessage {
   type: 'TEXT' | 'IMAGE' | 'SYSTEM';
@@ -10,6 +11,7 @@ interface ChatMessage {
 
 export function useChat(meetupId: string) {
   const clientRef = useRef<Client | null>(null);
+  const accessToken = Cookies.get('accessToken');
 
   // 연결
   const connect = useCallback(() => {
@@ -23,6 +25,9 @@ export function useChat(meetupId: string) {
     const client = new Client({
       webSocketFactory: () => new SockJS(socketUrl),
       reconnectDelay: 3000, // 연결 끊어지면 3초 후 재연결
+      connectHeaders: {
+        Authorization: `Bearer ${accessToken}`,
+      },
     });
 
     client.onConnect = () => {
