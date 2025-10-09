@@ -1,70 +1,196 @@
 import api from "./axiosInstance";
 import type { MyProfileState } from '@/store/slices/myProfileSlice';
 
-// 프로필 조회 
+// 프로필 조회
 export const getMyProfile = async (): Promise<MyProfileState> => {
   try {
     const response = await api.get('/api/profiles/me');
     return response.data;
-  } catch (error) {
+  } catch (error: any) {
     console.error('프로필 조회 실패:', error);
-    throw error;
+    
+    if (!error.response) {
+      if (error.code === 'ECONNABORTED') {
+        throw new Error("서버 응답 시간이 초과되었습니다. 잠시 후 다시 시도해주세요.");
+      } else if (error.code === 'ERR_NETWORK') {
+        throw new Error("네트워크 연결에 실패했습니다. 인터넷 연결을 확인해주세요.");
+      } else {
+        throw new Error("서버에 연결할 수 없습니다. 잠시 후 다시 시도해주세요.");
+      }
+    }
+    
+    // 서버 응답 에러 처리
+    const errorMessage = error.response.data?.detail || 
+                        error.response.data?.message || 
+                        "프로필 정보를 불러오는데 실패했습니다.";
+    throw new Error(errorMessage);
   }
 };
 
 // 온보딩용 프로필 저장
 export const saveOnboardingProfile = async (profileData: MyProfileState) => {
   try {
-    const apiData = [
-      {
-        key: "nickname",
-        value: profileData.nickname || '',
-        description: "",
-        type: "text",
-        enabled: true
-      },
-      {
-        key: "age", 
-        value: profileData.age?.toString() || '',
-        description: "",
-        type: "text",
-        enabled: true
-      },
-      {
-        key: "gender",
-        value: profileData.gender?.toUpperCase() || '',
-        description: "",
-        type: "text", 
-        enabled: true
-      },
-      {
-        key: "image",
-        value: profileData.imageUrl ? [profileData.imageUrl] : [],
-        description: "",
-        type: "file",
-        enabled: true
-      },
-      {
-        key: "description",
-        value: profileData.description || '',
-        description: "",
-        type: "text",
-        enabled: true
-      },
-      {
-        key: "baseLocation",
-        value: profileData.baseLocation || '',
-        description: "",
-        type: "text",
-        enabled: true
+    const formData = new FormData();
+
+    if (profileData.nickname) {
+      formData.append("nickname", profileData.nickname);
+    }
+    if (profileData.age !== undefined && profileData.age !== null) {
+      formData.append("age", profileData.age.toString());
+    }
+    if (profileData.gender) {
+      formData.append("gender", profileData.gender.toUpperCase());
+    }
+    if (profileData.description) {
+      formData.append("description", profileData.description);
+    }
+    if (profileData.baseLocation) {
+      formData.append("baseLocation", profileData.baseLocation);
+    }
+
+    // 이미지 필드 처리
+    if (profileData.imageUrl) {
+      // imageUrl이 File 객체인 경우
+      if (profileData.imageUrl instanceof File) {
+        formData.append("image", profileData.imageUrl);
+      } else {
+        // imageUrl이 문자열 URL인 경우, Blob으로 변환
+        try {
+          const response = await fetch(profileData.imageUrl);
+          const blob = await response.blob();
+          const file = new File([blob], 'profile-image.jpg', { type: blob.type });
+          formData.append("image", file);
+        } catch (error) {
+          console.warn('이미지 URL을 File로 변환하는데 실패했습니다:', error);
+        }
       }
-    ];
+    }
+
+    // FormData 내용
+    console.log('프로필 저장 요청 데이터 (FormData):');
+    for (let [key, value] of formData.entries()) {
+      console.log(`${key}: ${value}`);
+    }
+    console.log('원본 데이터:', profileData);
     
-    const response = await api.post('/api/profiles', apiData);
+    const response = await api.post('/api/profiles', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
     return response.data;
   } catch (error: any) {
     console.error('프로필 저장 실패:', error);
-    throw error;
+    
+    // 네트워크 에러 처리 (response가 없는 경우)
+    if (!error.response) {
+      if (error.code === 'ECONNABORTED') {
+        throw new Error("서버 응답 시간이 초과되었습니다. 잠시 후 다시 시도해주세요.");
+      } else if (error.code === 'ERR_NETWORK') {
+        throw new Error("네트워크 연결에 실패했습니다. 인터넷 연결을 확인해주세요.");
+      } else {
+        throw new Error("서버에 연결할 수 없습니다. 잠시 후 다시 시도해주세요.");
+      }
+    }
+    
+    // 유효성 검사 에러 처리
+    if (error.response.data?.validationErrors) {
+      const validationErrors = error.response.data.validationErrors;
+      const errorMessages = Object.entries(validationErrors)
+        .map(([field, messages]) => (messages as string[]).join('\n'))
+        .join('\n');
+      throw new Error(errorMessages || "유효성 검사에 실패했습니다.");
+    }
+    
+    // 서버 응답 에러 처리
+    const errorMessage = error.response.data?.detail || 
+                        error.response.data?.message || 
+                        "프로필 저장에 실패했습니다.";
+    throw new Error(errorMessage);
+  }
+};
+
+// 프로필 수정 API
+export const updateProfile = async (profileData: MyProfileState) => {
+  try {
+    const formData = new FormData();
+
+    // 텍스트 필드들을 FormData에 추가
+    if (profileData.nickname) {
+      formData.append("nickname", profileData.nickname);
+    }
+    if (profileData.age !== undefined && profileData.age !== null) {
+      formData.append("age", profileData.age.toString());
+    }
+    if (profileData.gender) {
+      formData.append("gender", profileData.gender.toUpperCase());
+    }
+    if (profileData.description) {
+      formData.append("description", profileData.description);
+    }
+    if (profileData.baseLocation) {
+      formData.append("baseLocation", profileData.baseLocation);
+    }
+
+    // 이미지 필드 처리
+    if (profileData.imageUrl) {
+      // imageUrl이 File 객체인 경우
+      if (profileData.imageUrl instanceof File) {
+        formData.append("image", profileData.imageUrl);
+      } else {
+        // imageUrl이 문자열 URL인 경우, Blob으로 변환
+        try {
+          const response = await fetch(profileData.imageUrl);
+          const blob = await response.blob();
+          const file = new File([blob], 'profile-image.jpg', { type: blob.type });
+          formData.append("image", file);
+        } catch (error) {
+          console.warn('이미지 URL을 File로 변환하는데 실패했습니다:', error);
+        }
+      }
+    }
+
+    // FormData 내용 로깅
+    console.log('프로필 수정 요청 데이터 (FormData):');
+    for (let [key, value] of formData.entries()) {
+      console.log(`${key}: ${value}`);
+    }
+    console.log('원본 데이터:', profileData);
+    
+    const response = await api.put('/api/profiles/me', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return response.data;
+  } catch (error: any) {
+    console.error('프로필 수정 실패:', error);
+    
+    // 네트워크 에러 처리 (response가 없는 경우)
+    if (!error.response) {
+      if (error.code === 'ECONNABORTED') {
+        throw new Error("서버 응답 시간이 초과되었습니다. 잠시 후 다시 시도해주세요.");
+      } else if (error.code === 'ERR_NETWORK') {
+        throw new Error("네트워크 연결에 실패했습니다. 인터넷 연결을 확인해주세요.");
+      } else {
+        throw new Error("서버에 연결할 수 없습니다. 잠시 후 다시 시도해주세요.");
+      }
+    }
+    
+    // 유효성 검사 에러 처리
+    if (error.response.data?.validationErrors) {
+      const validationErrors = error.response.data.validationErrors;
+      const errorMessages = Object.entries(validationErrors)
+        .map(([field, messages]) => (messages as string[]).join('\n'))
+        .join('\n');
+      throw new Error(errorMessages || "유효성 검사에 실패했습니다.");
+    }
+    
+    // 서버 응답 에러 처리
+    const errorMessage = error.response.data?.detail || 
+                        error.response.data?.message || 
+                        "프로필 수정에 실패했습니다.";
+    throw new Error(errorMessage);
   }
 };
 
@@ -75,7 +201,19 @@ export const login = async (email: string, password: string) => {
     return res.data;
   } catch (error: any) {
     console.error("로그인 실패:", error);
-    throw new Error(error.response?.data?.message || "로그인 오류");
+    
+    // 유효성 검사 에러 처리
+    if (error.response?.data?.validationErrors) {
+      const validationErrors = error.response.data.validationErrors;
+      const errorMessages = Object.entries(validationErrors)
+        .map(([field, messages]) => (messages as string[]).join('\n'))
+        .join('\n');
+      throw new Error(errorMessages || "유효성 검사에 실패했습니다.");
+    }
+    
+    const errorMessage = error.response?.data?.detail || 
+                        "로그인 오류가 발생했습니다222.";
+    throw new Error(errorMessage);
   }
 };
 
@@ -91,9 +229,17 @@ export const kakaoLogin = async (code: string) => {
     console.error("에러 응답:", error.response?.data);
     console.error("에러 상태:", error.response?.status);
     
-    const errorMessage = error.response?.data?.message || 
-                        error.response?.data?.detail || 
-                        error.message || 
+    // 유효성 검사 에러 처리
+    if (error.response?.data?.validationErrors) {
+      const validationErrors = error.response.data.validationErrors;
+      const errorMessages = Object.entries(validationErrors)
+        .map(([field, messages]) => (messages as string[]).join('\n'))
+        .join('\n');
+      throw new Error(errorMessages || "유효성 검사에 실패했습니다.");
+    }
+    
+    const errorMessage = error.response?.data?.detail || 
+
                         "카카오 로그인 오류";
     throw new Error(errorMessage);
   }
@@ -106,6 +252,18 @@ export const signup = async (email: string, password1: string, password2: string
     return res.data; 
   } catch (error: any) {
     console.error("회원가입 실패:", error);
-    throw new Error(error.response?.data?.message || "회원가입 오류");
+    
+    // 유효성 검사 에러 처리
+    if (error.response?.data?.validationErrors) {
+      const validationErrors = error.response.data.validationErrors;
+      const errorMessages = Object.entries(validationErrors)
+        .map(([field, messages]) => (messages as string[]).join('\n'))
+        .join('\n');
+      throw new Error(errorMessages || "유효성 검사에 실패했습니다.");
+    }
+    
+    const errorMessage = error.response?.data?.detail || 
+                        "회원가입 오류가 발생했습니다.";
+    throw new Error(errorMessage);
   }
 };

@@ -6,7 +6,7 @@ const HTTP_STATUS = {
 } as const;
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || "http://swallow104.gonetis.com:18081", 
+  baseURL: import.meta.env.VITE_API_BASE_URL, 
   timeout: 10000, // 10초 
   headers: {
     "Content-Type": "application/json",

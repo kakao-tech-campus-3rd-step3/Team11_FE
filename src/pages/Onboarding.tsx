@@ -36,13 +36,16 @@ const Onboarding = () => {
   const handleComplete = async (finalData: Partial<MyProfileState>) => {
     const completeData = { ...onboardingData, ...finalData };
     
+    // 디버깅을 위한 로그
+    console.log('온보딩 완료 데이터:', completeData);
+    
     try {
       await saveOnboardingProfile(completeData as MyProfileState);
       alert('프로필 설정이 완료되었습니다!');
       navigate('/home');
     } catch (error: any) {
       console.error('프로필 설정 실패:', error);
-      alert('프로필 설정에 실패했습니다. 다시 시도해주세요.');
+      alert(`프로필 설정 실패: ${error.message}`);
     }
   };
 

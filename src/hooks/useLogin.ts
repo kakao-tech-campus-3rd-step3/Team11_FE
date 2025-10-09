@@ -40,22 +40,20 @@ export const useLogin = () => {
     }
   }, [dispatch, navigate]);
 
-  // 로그인 실패 
+
   const handleLoginError = useCallback((
     error: any,
     loginType: 'email' | 'kakao' = 'email'
   ) => {
     console.error(`${loginType === 'kakao' ? '카카오 ' : ''}로그인 에러:`, error);
     
-    if (error.response?.status === 401) {
-      alert("이메일 또는 비밀번호가 잘못되었습니다.");
-    } else if (error.response?.data?.detail) {
-      alert(error.response.data.detail);
-    } else if (error.message) {
-      alert(`${loginType === 'kakao' ? '카카오 ' : ''}로그인 실패: ${error.message}`);
-    } else {
-      alert(`${loginType === 'kakao' ? '카카오 ' : ''}로그인에 실패했습니다. 네트워크 연결을 확인해주세요.`);
-    }
+
+    const errorMessage = error.response?.data?.detail || 
+                        error.response?.data?.message || 
+                        error.message ||
+                        `${loginType === 'kakao' ? '카카오 ' : ''}로그인에 실패했습니다. 네트워크 연결을 확인해주세요.`;
+    
+    alert(errorMessage);
   }, []);
 
   // 이메일 로그인
@@ -81,7 +79,13 @@ export const useLogin = () => {
   // 회원가입
   const handleSignup = useCallback(async (email: string, password1: string, password2: string) => {
     try {
-      await signup(email, password1, password2);
+      const result = await signup(email, password1, password2);
+      
+      if (result.accessToken && result.refreshToken) {
+        saveTokens(result.accessToken, result.refreshToken);
+        console.log('회원가입 성공 - 토큰 저장 완료');
+      }
+      
       navigate("/onboarding");
     } catch (error: any) {
       handleLoginError(error, 'email');
