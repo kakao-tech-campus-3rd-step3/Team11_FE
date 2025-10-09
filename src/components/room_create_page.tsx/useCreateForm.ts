@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
 
 export interface LocationData {
@@ -38,32 +38,34 @@ const validateTime = (startTime: string, endTime: string): string | null => {
 };
 
 export const useCreateForm = () => {
-  const [formState, setFormState] = useState<FormState>({
-    name: '',
-    hobby: '풋살',
-    startTime: '',
-    endTime: '',
-    capacity: '',
-    minTemp: '',
-    location: null,
+  const location = useLocation();
+
+  const [formState, setFormState] = useState<FormState>(() => {
+    const initialState = location.state?.formValues || {
+      name: '',
+      hobby: '풋살',
+      startTime: '',
+      endTime: '',
+      capacity: '',
+      minTemp: '',
+      location: null,
+    };
+
+    if (location.state?.selectedLocation) {
+      initialState.location = location.state.selectedLocation;
+    }
+
+    return initialState;
   });
 
-  const [hashtags, setHashtags] = useState<string[]>([]);
-  const location = useLocation();
+  const [hashtags, setHashtags] = useState<string[]>(() => {
+    return location.state?.hashtags || [];
+  });
 
   const timeError = useMemo(
     () => validateTime(formState.startTime, formState.endTime),
     [formState.startTime, formState.endTime],
   );
-
-  useEffect(() => {
-    if (location.state?.selectedLocation) {
-      setFormState((prevState) => ({
-        ...prevState,
-        location: location.state.selectedLocation,
-      }));
-    }
-  }, [location.state]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;

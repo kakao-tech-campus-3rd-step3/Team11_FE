@@ -192,7 +192,14 @@ const RoomCreate = () => {
 
         <InputGroup>
           <Label>위치 설정</Label>
-          <LocationButton to="/create-room/location">
+          <LocationButton
+            to="/create-room/location"
+            state={{
+              formValues: formState,
+              hashtags: hashtags,
+              currentLocation: formState.location,
+            }}
+          >
             <span>{formState.location ? formState.location.name : '위치를 설정해주세요'}</span>
             <span>{formState.location ? '✅' : '>'}</span>
           </LocationButton>
