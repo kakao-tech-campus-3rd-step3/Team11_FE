@@ -6,7 +6,7 @@ const HTTP_STATUS = {
 } as const;
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || "https://test.leeswallow.click", 
+  baseURL: import.meta.env.VITE_API_BASE_URL, 
   timeout: 10000, // 10초 
   headers: {
     "Content-Type": "application/json",
