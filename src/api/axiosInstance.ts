@@ -1,22 +1,22 @@
-import { clearTokens } from "@/utils/tokenStorage";
-import axios from "axios";
+import { clearTokens } from '@/utils/tokenStorage';
+import axios from 'axios';
 
 const HTTP_STATUS = {
   UNAUTHORIZED: 401,
 } as const;
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL, 
-  timeout: 10000, // 10초 
+  baseURL: import.meta.env.VITE_API_BASE_URL,
+  timeout: 10000, // 10초
   headers: {
-    "Content-Type": "application/json",
-    "Accept": "application/json",
+    'Content-Type': 'application/json',
+    Accept: 'application/json',
   },
   withCredentials: false, // CORS 문제 해결을 위해 false로 설정
 });
 
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem("accessToken");
+  const token = localStorage.getItem('accessToken');
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
@@ -33,9 +33,9 @@ api.interceptors.response.use(
     if (error.response?.status === HTTP_STATUS.UNAUTHORIZED) {
       clearTokens();
     }
-    
+
     return Promise.reject(error);
-  }
+  },
 );
 
 export default api;

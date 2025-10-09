@@ -16,15 +16,6 @@ export function useAuth() {
 
       const { accessToken, refreshToken } = res.data;
 
-      Cookies.set('accessToken', accessToken, {
-        sameSite: 'none',
-        secure: true,
-      });
-      Cookies.set('refreshToken', refreshToken, {
-        sameSite: 'none',
-        secure: true,
-      });
-
       console.log(
         `로그인 성공, 쿠키 저장 완료 - accessToken: ${accessToken}, refreshToken: ${refreshToken}`,
       );
