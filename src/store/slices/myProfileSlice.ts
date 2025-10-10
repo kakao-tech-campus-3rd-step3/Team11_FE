@@ -6,7 +6,7 @@ export interface MyProfileState {
   age: number | null;
   gender: string | null;
   nickname: string | null;
-  imageUrl: string | null;
+  imageUrl: string | File | null;
   description: string | null;
   baseLocation: string | null;
   temperature: number | null;
