@@ -52,7 +52,7 @@ export const saveOnboardingProfile = async (profileData: MyProfileState) => {
     // 이미지 필드 처리
     if (profileData.imageUrl) {
       // imageUrl이 File 객체인 경우
-      if (profileData.imageUrl instanceof File) {
+      if (profileData.imageUrl && typeof profileData.imageUrl !== 'string') {
         formData.append('image', profileData.imageUrl);
       } else {
         // imageUrl이 문자열 URL인 경우, Blob으로 변환
@@ -135,7 +135,7 @@ export const updateProfile = async (profileData: MyProfileState) => {
     // 이미지 필드 처리
     if (profileData.imageUrl) {
       // imageUrl이 File 객체인 경우
-      if (profileData.imageUrl instanceof File) {
+      if (profileData.imageUrl && typeof profileData.imageUrl !== 'string') {
         formData.append('image', profileData.imageUrl);
       } else {
         // imageUrl이 문자열 URL인 경우, Blob으로 변환

@@ -16,29 +16,29 @@ const Onboarding = () => {
     age: null,
     gender: null,
     nickname: null,
-    imageUrl: null,
+    imageUrl: undefined,
     description: null,
     baseLocation: null,
     temperature: null,
     likes: null,
-    dislikes: null
+    dislikes: null,
   });
 
   const handleNext = (stepData: Partial<MyProfileState>) => {
-    setOnboardingData(prev => ({ ...prev, ...stepData }));
-    setCurrentStep(prev => prev + 1);
+    setOnboardingData((prev) => ({ ...prev, ...stepData }));
+    setCurrentStep((prev) => prev + 1);
   };
 
   const handlePrev = () => {
-    setCurrentStep(prev => prev - 1);
+    setCurrentStep((prev) => prev - 1);
   };
 
   const handleComplete = async (finalData: Partial<MyProfileState>) => {
     const completeData = { ...onboardingData, ...finalData };
-    
+
     // 디버깅을 위한 로그
     console.log('온보딩 완료 데이터:', completeData);
-    
+
     try {
       await saveOnboardingProfile(completeData as MyProfileState);
       alert('프로필 설정이 완료되었습니다!');
@@ -58,7 +58,14 @@ const Onboarding = () => {
       case 3:
         return <OnboardingStep3 data={onboardingData} onNext={handleNext} onPrev={handlePrev} />;
       case 4:
-        return <OnboardingStep4 data={onboardingData} onComplete={handleComplete} onPrev={handlePrev} onNext={() => {}} />;
+        return (
+          <OnboardingStep4
+            data={onboardingData}
+            onComplete={handleComplete}
+            onPrev={handlePrev}
+            onNext={() => {}}
+          />
+        );
       default:
         return <OnboardingStep1 data={onboardingData} onNext={handleNext} />;
     }
@@ -66,12 +73,9 @@ const Onboarding = () => {
 
   return (
     <Container>
-      <ContentContanier>
-        {renderCurrentStep()}
-      </ContentContanier>
+      <ContentContanier>{renderCurrentStep()}</ContentContanier>
     </Container>
   );
 };
 
 export default Onboarding;
-
