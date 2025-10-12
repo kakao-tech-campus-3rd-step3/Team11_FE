@@ -33,20 +33,17 @@ export const saveOnboardingProfile = async (profileData: MyProfileState) => {
   try {
     const formData = new FormData();
 
-    if (profileData.nickname) {
-      formData.append('nickname', profileData.nickname);
+    const fields = ['nickname', 'age', 'gender', 'description'] as const;
+    for (const key of fields) {
+      const value = profileData[key as keyof MyProfileState];
+      if (value) {
+        formData.append(key, value.toString());
+      }
     }
-    if (profileData.age !== undefined && profileData.age !== null) {
-      formData.append('age', profileData.age.toString());
-    }
-    if (profileData.gender) {
-      formData.append('gender', profileData.gender.toUpperCase());
-    }
-    if (profileData.description) {
-      formData.append('description', profileData.description);
-    }
+
+    // baseLocation 임시방편!!! 추후 수정필요
     if (profileData.baseLocation) {
-      formData.append('baseLocation', profileData.baseLocation);
+      formData.append('baseLocation.baseLocationId', '26410');
     }
 
     // 이미지 필드 처리
@@ -116,20 +113,20 @@ export const updateProfile = async (profileData: MyProfileState) => {
     const formData = new FormData();
 
     // 텍스트 필드들을 FormData에 추가
-    if (profileData.nickname) {
-      formData.append('nickname', profileData.nickname);
+    const fields = ['nickname', 'age', 'gender', 'description'] as const;
+    for (const key of fields) {
+      const value = profileData[key as keyof MyProfileState];
+      if (value) {
+        const formattedValue = key === 'gender' ? (value as string).toUpperCase() : 
+                              key === 'age' ? (value as number).toString() : 
+                              value as string;
+        formData.append(key, formattedValue);
+      }
     }
-    if (profileData.age !== undefined && profileData.age !== null) {
-      formData.append('age', profileData.age.toString());
-    }
-    if (profileData.gender) {
-      formData.append('gender', profileData.gender.toUpperCase());
-    }
-    if (profileData.description) {
-      formData.append('description', profileData.description);
-    }
+
+    // baseLocation  추후 수정필요
     if (profileData.baseLocation) {
-      formData.append('baseLocation', profileData.baseLocation);
+      formData.append('baseLocation.baseLocationId', '26410');
     }
 
     // 이미지 필드 처리

@@ -64,14 +64,14 @@ const OnboardingStep4 = ({ data, onComplete, onPrev }: OnboardingStepProps) => {
           <FormLabel>성별</FormLabel>
           <div style={{ display: 'flex', gap: '12px', marginTop: '16px' }}>
             <GenderButton
-              $active={formData.gender === 'male'}
-              onClick={() => handleGenderChange('male')}
+              $active={formData.gender === 'MALE'}
+              onClick={() => handleGenderChange('MALE')}
             >
               남성
             </GenderButton>
             <GenderButton
-              $active={formData.gender === 'female'}
-              onClick={() => handleGenderChange('female')}
+              $active={formData.gender === 'FEMALE'}
+              onClick={() => handleGenderChange('FEMALE')}
             >
               여성
             </GenderButton>
