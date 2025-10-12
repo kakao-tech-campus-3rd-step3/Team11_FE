@@ -37,7 +37,7 @@ export const StepDot = styled.span<{ $active: boolean }>`
   background-color: ${({ $active }) => ($active ? '#ff6b6b' : '#ddd')};
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   transform: ${({ $active }) => ($active ? 'scale(1.1)' : 'scale(1)')};
-  
+
   &:hover {
     transform: scale(1.2);
   }
@@ -50,7 +50,7 @@ export const ProfileImageContainer = styled.div`
   margin: 40px 0;
   cursor: pointer;
   transition: opacity 0.3s ease;
-  
+
   &:hover {
     opacity: 0.8;
   }
@@ -95,11 +95,11 @@ export const SuggestionItem = styled.li`
   color: #333;
   transition: background-color 0.2s ease;
   border-bottom: 1px solid #f8f9fa;
-  
+
   &:last-child {
     border-bottom: none;
   }
-  
+
   &:hover {
     background-color: #f8f9fa;
     color: ${colors.primary};
@@ -123,7 +123,7 @@ export const GenderButton = styled.button<{ $active: boolean }>`
   cursor: pointer;
   transition: all 0.3s ease;
   flex: 1;
-  
+
   &:hover {
     background-color: ${({ $active }) => ($active ? '#ff5252' : '#f8f9fa')};
     border-color: ${({ $active }) => ($active ? '#ff5252' : '#dee2e6')};
@@ -150,7 +150,7 @@ export const AgeButton = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
-  
+
   &:hover {
     color: ${colors.primary};
   }
@@ -178,13 +178,13 @@ export const TextArea = styled.textarea`
   background-color: #f8f9fa;
   color: #212529;
   transition: 0.3s ease;
-  
+
   &::placeholder {
     color: #6c757d;
     font-size: 16px;
     font-weight: 300;
   }
-  
+
   &:focus {
     outline: none;
     border-color: ${colors.primary};
@@ -211,7 +211,7 @@ export const StepTitle = styled.h1`
 export const TopSubtitle = styled.p`
   font-size: 16px;
   color: #6c757d;
-  font-weight:400;
+  font-weight: 400;
   margin: 0;
   text-align: left;
 `;
@@ -248,12 +248,12 @@ export const FormInput = styled.input`
   color: #212529;
   outline: none;
   transition: border-color 0.3s ease;
-  
+
   &:focus {
     border-bottom-color: ${colors.primary};
     border-bottom-width: 3px;
   }
-  
+
   &::placeholder {
     color: #6c757d;
     font-size: 20px;
@@ -291,7 +291,7 @@ export const SignupButton = styled.button`
   cursor: pointer;
   transition: all 0.3s ease;
   margin-top: 16px;
-  
+
   &:hover {
     background: ${colors.primary400};
   }

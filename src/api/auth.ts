@@ -10,9 +10,12 @@ const createProfileFormData = async (profileData: MyProfileState): Promise<FormD
   for (const key of fields) {
     const value = profileData[key as keyof MyProfileState];
     if (value) {
-      const formattedValue = key === 'gender' ? (value as string).toUpperCase() : 
-                            key === 'age' ? (value as number).toString() : 
-                            value as string;
+      const formattedValue =
+        key === 'gender'
+          ? (value as string).toUpperCase()
+          : key === 'age'
+            ? (value as number).toString()
+            : (value as string);
       formData.append(key, formattedValue);
     }
   }
@@ -115,7 +118,7 @@ export const updateProfile = async (profileData: MyProfileState) => {
     return response.data;
   } catch (error: any) {
     console.error('프로필 수정 실패:', error);
-    throw error; // axios 인터셉터에서 이미 변환된 에러 메시지 사용
+    throw error;
   }
 };
 
@@ -126,7 +129,7 @@ export const login = async (email: string, password: string) => {
     return res.data;
   } catch (error: any) {
     console.error('로그인 실패:', error);
-    throw error; // axios 인터셉터에서 이미 변환된 에러 메시지 사용
+    throw error;
   }
 };
 

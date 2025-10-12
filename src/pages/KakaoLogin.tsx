@@ -31,13 +31,15 @@ const KakaoLogin = () => {
   }, [handleKakaoLogin, searchParams, navigate]);
 
   return (
-    <div style={{ 
-      display: 'flex', 
-      justifyContent: 'center', 
-      alignItems: 'center', 
-      height: '100vh',
-      fontSize: '18px'
-    }}>
+    <div
+      style={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: '100vh',
+        fontSize: '18px',
+      }}
+    >
       카카오 로그인 처리 중...
     </div>
   );
