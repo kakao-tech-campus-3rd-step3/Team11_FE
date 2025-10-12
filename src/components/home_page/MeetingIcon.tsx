@@ -12,24 +12,20 @@ interface MeetingIconProps {
 }
 
 const MeetingIcon: React.FC<MeetingIconProps> = ({ category, className }) => {
-  const getIcon = () => {
-    switch (category) {
-      case 'STUDY':
-        return <StudyIcon className={className} />;
-      case 'SPORTS':
-        return <SportsIcon className={className} />;
-      case 'GAME':
-        return <GameIcon className={className} />;
-      case 'MUKBANG':
-        return <MukbangIcon className={className} />;
-      case 'MOVIE':
-        return <MovieIcon className={className} />;
-      default:
-        return <DefaultIcon className={className} />;
-    }
-  };
-
-  return getIcon();
+  switch (category) {
+    case 'STUDY':
+      return <StudyIcon className={className} />;
+    case 'SPORTS':
+      return <SportsIcon className={className} />;
+    case 'GAME':
+      return <GameIcon className={className} />;
+    case 'MUKBANG':
+      return <MukbangIcon className={className} />;
+    case 'MOVIE':
+      return <MovieIcon className={className} />;
+    default:
+      return <DefaultIcon className={className} />;
+  }
 };
 
 export default MeetingIcon;
