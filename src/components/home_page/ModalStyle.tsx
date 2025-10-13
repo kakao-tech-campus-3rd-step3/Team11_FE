@@ -1,8 +1,7 @@
-import styled from 'styled-components';
+import styled from '@emotion/styled';
 import { colors } from '@/style/themes';
-import { motion } from 'framer-motion';
 
-export const ModalBackdrop = styled(motion.div)`
+export const ModalBackdrop = styled.div<{ $isVisible: boolean }>`
   position: fixed;
   top: 0;
   left: 0;
@@ -10,9 +9,11 @@ export const ModalBackdrop = styled(motion.div)`
   height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
   z-index: 1100;
+  opacity: ${({ $isVisible }) => ($isVisible ? 1 : 0)};
+  transition: opacity 0.3s ease-in-out;
 `;
 
-export const ModalContainer = styled(motion.div)`
+export const ModalContainer = styled.div<{ $isVisible: boolean }>`
   position: fixed;
   bottom: 0;
   left: 0;
@@ -28,6 +29,8 @@ export const ModalContainer = styled(motion.div)`
   z-index: 1101;
   display: flex;
   flex-direction: column;
+  transform: translateY(${({ $isVisible }) => ($isVisible ? '0%' : '100%')});
+  transition: transform 0.3s ease-in-out;
 `;
 
 export const Handle = styled.div`
@@ -36,7 +39,6 @@ export const Handle = styled.div`
   background-color: ${colors.secondary300};
   border-radius: 2px;
   margin: 10px auto;
-  cursor: grab;
 `;
 
 export const Content = styled.div`

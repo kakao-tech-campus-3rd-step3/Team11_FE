@@ -1,5 +1,4 @@
-import { AnimatePresence } from 'framer-motion';
-import type { PanInfo } from 'framer-motion';
+import { useState, useEffect } from 'react';
 import type { Meeting } from '@/types/meeting';
 import {
   EnterButton,
@@ -20,39 +19,32 @@ import {
 interface MeetingDetailModalProps {
   meeting: Meeting;
   onClose: () => void;
+  isOpen: boolean;
 }
 
-const modalVariants = {
-  hidden: { y: '100%' },
-  visible: { y: '0%' },
-};
+export const MeetingDetailModal = ({ meeting, onClose, isOpen }: MeetingDetailModalProps) => {
+  const [isVisible, setIsVisible] = useState(false);
 
-export const MeetingDetailModal = ({ meeting, onClose }: MeetingDetailModalProps) => {
-  const handleDragEnd = (_event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
-    if (info.offset.y > 100 || info.velocity.y > 200) {
-      onClose();
+  useEffect(() => {
+    if (isOpen) {
+      const timer = setTimeout(() => setIsVisible(true), 10);
+      return () => clearTimeout(timer);
     }
+  }, [isOpen]);
+
+  const handleClose = () => {
+    setIsVisible(false);
+    setTimeout(onClose, 300);
   };
 
+  if (!isOpen) {
+    return null;
+  }
+
   return (
-    <AnimatePresence>
-      <ModalBackdrop
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        onClick={onClose}
-      />
-      <ModalContainer
-        variants={modalVariants}
-        initial="hidden"
-        animate="visible"
-        exit="hidden"
-        transition={{ type: 'spring', damping: 40, stiffness: 400 }}
-        drag="y"
-        dragConstraints={{ top: 0, bottom: 0 }}
-        dragElastic={{ top: 0, bottom: 0.5 }}
-        onDragEnd={handleDragEnd}
-      >
+    <>
+      <ModalBackdrop onClick={handleClose} $isVisible={isVisible} />
+      <ModalContainer $isVisible={isVisible}>
         <Handle />
         <Content>
           <Category>{meeting.category}</Category>
@@ -81,6 +73,6 @@ export const MeetingDetailModal = ({ meeting, onClose }: MeetingDetailModalProps
           <EnterButton onClick={() => alert(`${meeting.title} 방에 입장합니다!`)}>입장</EnterButton>
         </Content>
       </ModalContainer>
-    </AnimatePresence>
+    </>
   );
 };

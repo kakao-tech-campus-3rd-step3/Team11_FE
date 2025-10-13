@@ -13,7 +13,8 @@ import { Container } from '@/style/CommonStyle';
 import type { Meeting } from '@/types/meeting';
 import { MeetingDetailModal } from '@/components/home_page/MeetingDetailModal';
 import { getMeetings } from '@/api/main_meetings';
-import MeetingIcon from '@/components/home_page/MeetingIcon';
+import MeetingIcon, { type MeetingCategory } from '@/components/home_page/MeetingIcon';
+import { ERROR_MESSAGES, INFO_MESSAGES } from '@/constants/messages';
 
 declare global {
   interface Window {
@@ -114,9 +115,9 @@ const Home = () => {
       } catch (err: any) {
         console.error('모임 정보를 불러오는 데 실패했습니다.', err);
         if (err.response?.status === 401) {
-          setError('로그인이 필요합니다. 다시 로그인해주세요.');
+          setError(ERROR_MESSAGES.LOGIN_REQUIRED);
         } else {
-          setError('모임을 불러오는 중 오류가 발생했습니다.');
+          setError(ERROR_MESSAGES.MEETING_FETCH_FAILED);
         }
         setMeetings([]);
       } finally {
@@ -143,7 +144,7 @@ const Home = () => {
       markerContainer.appendChild(pinElement);
 
       ReactDOM.createRoot(pinElement).render(
-        <MeetingIcon category={meeting.category} className="marker-icon" />,
+        <MeetingIcon category={meeting.category as MeetingCategory} className="marker-icon" />,
       );
 
       const customOverlay = new window.kakao.maps.CustomOverlay({
@@ -172,10 +173,10 @@ const Home = () => {
   };
 
   const renderMessage = () => {
-    if (isLoading) return <MessageOverlay>주변 모임을 불러오는 중...</MessageOverlay>;
+    if (isLoading) return <MessageOverlay>{INFO_MESSAGES.LOADING_MEETINGS}</MessageOverlay>;
     if (error) return <MessageOverlay>{error}</MessageOverlay>;
     if (meetings.length === 0)
-      return <MessageOverlay>주변에 진행 중인 모임이 없어요.</MessageOverlay>;
+      return <MessageOverlay>{INFO_MESSAGES.NO_MEETINGS_FOUND}</MessageOverlay>;
     return null;
   };
 
