@@ -6,30 +6,24 @@ import MukbangIcon from '@/assets/meeting_icons/mukbang.svg?react';
 import MovieIcon from '@/assets/meeting_icons/movie.svg?react';
 import DefaultIcon from '@/assets/meeting_icons/other.svg?react';
 
+const iconComponents = {
+  STUDY: StudyIcon,
+  SPORTS: SportsIcon,
+  GAME: GameIcon,
+  MUKBANG: MukbangIcon,
+  MOVIE: MovieIcon,
+};
+
+export type MeetingCategory = keyof typeof iconComponents;
+
 interface MeetingIconProps {
-  category: string;
+  category: MeetingCategory;
   className?: string;
 }
 
-const MeetingIcon: React.FC<MeetingIconProps> = ({ category, className }) => {
-  const getIcon = () => {
-    switch (category) {
-      case 'STUDY':
-        return <StudyIcon className={className} />;
-      case 'SPORTS':
-        return <SportsIcon className={className} />;
-      case 'GAME':
-        return <GameIcon className={className} />;
-      case 'MUKBANG':
-        return <MukbangIcon className={className} />;
-      case 'MOVIE':
-        return <MovieIcon className={className} />;
-      default:
-        return <DefaultIcon className={className} />;
-    }
-  };
-
-  return getIcon();
+const MeetingIcon = ({ category, className }: MeetingIconProps) => {
+  const IconComponent = iconComponents[category] || DefaultIcon;
+  return <IconComponent className={className} />;
 };
 
 export default MeetingIcon;
