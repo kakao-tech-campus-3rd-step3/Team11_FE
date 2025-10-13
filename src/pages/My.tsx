@@ -39,7 +39,7 @@ import {
   FormTextArea,
   ButtonGroup,
   CancelButton,
-  HeaderSection
+  HeaderSection,
 } from './My.styled';
 import BottomNav from '@/components/common/BottomNav';
 
@@ -54,7 +54,7 @@ const My = () => {
     gender: myProfile.gender || '',
     description: myProfile.description || '',
     temperature: myProfile.temperature || '',
-    baseLocation: myProfile.baseLocation || ''
+    baseLocation: myProfile.baseLocation || '',
   });
 
   // 페이지 로드 시 프로필 조회
@@ -87,7 +87,6 @@ const My = () => {
     fetchProfile();
   }, [dispatch]);
 
-
   const handleCancel = () => {
     setIsEditing(false);
     setEditData({
@@ -96,7 +95,7 @@ const My = () => {
       gender: myProfile.gender || '',
       description: myProfile.description || '',
       temperature: myProfile.temperature || '',
-      baseLocation: myProfile.baseLocation || ''
+      baseLocation: myProfile.baseLocation || '',
     });
   };
 
@@ -109,15 +108,18 @@ const My = () => {
       ...myProfile, // 기존 프로필 데이터 유지
       ...editData,
       age: typeof editData.age === 'string' ? parseInt(editData.age) || null : editData.age,
-      temperature: typeof editData.temperature === 'string' ? parseFloat(editData.temperature) || null : editData.temperature
+      temperature:
+        typeof editData.temperature === 'string'
+          ? parseFloat(editData.temperature) || null
+          : editData.temperature,
     };
-    
+
     try {
       await updateProfile(profileData);
       dispatch(setMyProfile(profileData));
       localStorage.setItem('myProfile', JSON.stringify(profileData));
       console.log('프로필 수정 성공:', profileData);
-      
+
       alert('프로필이 성공적으로 수정되었습니다!');
       setIsEditing(false);
     } catch (error: any) {
@@ -127,7 +129,7 @@ const My = () => {
   };
 
   const handleInputChange = (field: string, value: string | number) => {
-    setEditData(prev => ({ ...prev, [field]: value }));
+    setEditData((prev) => ({ ...prev, [field]: value }));
   };
 
   return (
@@ -137,9 +139,7 @@ const My = () => {
       </HeaderSection>
       <ContentContanier>
         {isLoading ? (
-          <div style={{ textAlign: 'center', padding: '20px' }}>
-            프로필 정보를 불러오는 중...
-          </div>
+          <div style={{ textAlign: 'center', padding: '20px' }}>프로필 정보를 불러오는 중...</div>
         ) : (
           <>
             <MainContentCard>
@@ -149,7 +149,13 @@ const My = () => {
                 ) : (
                   <ProfileImagePlaceholder>
                     <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
-                      <path d="M20 21V19C20 17.9391 19.5786 16.9217 18.8284 16.1716C18.0783 15.4214 17.0609 15 16 15H8C6.93913 15 5.92172 15.4214 5.17157 16.1716C4.42143 16.9217 4 17.9391 4 19V21" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                      <path
+                        d="M20 21V19C20 17.9391 19.5786 16.9217 18.8284 16.1716C18.0783 15.4214 17.0609 15 16 15H8C6.93913 15 5.92172 15.4214 5.17157 16.1716C4.42143 16.9217 4 17.9391 4 19V21"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
                       <circle cx="12" cy="7" r="4" stroke="currentColor" strokeWidth="2" />
                     </svg>
                   </ProfileImagePlaceholder>
@@ -167,7 +173,9 @@ const My = () => {
               <ProfileInfoSection>
                 <ProfileInfoItem>
                   <InfoLabel>온도</InfoLabel>
-                  <InfoValue>{myProfile.temperature ? `${myProfile.temperature}°C` : '-'}</InfoValue>
+                  <InfoValue>
+                    {myProfile.temperature ? `${myProfile.temperature}°C` : '-'}
+                  </InfoValue>
                 </ProfileInfoItem>
 
                 <ProfileInfoItem>
@@ -186,8 +194,6 @@ const My = () => {
                   </SelfIntroContent>
                 </SelfIntroItem>
               </ProfileInfoSection>
-
-
 
               <ActionButtons>
                 <SaveButton onClick={handleEdit}>편집</SaveButton>
@@ -242,7 +248,6 @@ const My = () => {
                         placeholder="자기소개를 입력하세요"
                       />
                     </FormField>
-
 
                     <FormField>
                       <FormLabel>기본 위치</FormLabel>
