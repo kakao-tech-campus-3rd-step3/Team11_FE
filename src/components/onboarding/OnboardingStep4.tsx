@@ -17,7 +17,7 @@ import {
   BackButton,
   BackArrowIcon,
   TopTitle,
-  TopSubtitle
+  TopSubtitle,
 } from './OnboardingStyles';
 import backArrow from '@/assets/onoboarding_page/chevron-left.svg';
 import { Spacer } from '@/style/CommonStyle';
@@ -26,25 +26,23 @@ const OnboardingStep4 = ({ data, onComplete, onPrev }: OnboardingStepProps) => {
   const [formData, setFormData] = useState({
     gender: data.gender || '',
     age: data.age || 25,
-    description: data.description || ''
+    description: data.description || '',
   });
 
   const handleGenderChange = (gender: string) => {
-    setFormData(prev => ({ ...prev, gender }));
+    setFormData((prev) => ({ ...prev, gender }));
   };
 
   const handleAgeChange = (change: number) => {
     const newAge = Math.max(18, Math.min(100, formData.age + change));
-    setFormData(prev => ({ ...prev, age: newAge }));
+    setFormData((prev) => ({ ...prev, age: newAge }));
   };
 
-
   const handleIntroductionChange = (value: string) => {
-    setFormData(prev => ({ ...prev, description: value }));
+    setFormData((prev) => ({ ...prev, description: value }));
   };
 
   const handleComplete = () => {
-
     onComplete?.(formData);
   };
 
@@ -64,14 +62,14 @@ const OnboardingStep4 = ({ data, onComplete, onPrev }: OnboardingStepProps) => {
           <FormLabel>성별</FormLabel>
           <div style={{ display: 'flex', gap: '12px', marginTop: '16px' }}>
             <GenderButton
-              $active={formData.gender === 'male'}
-              onClick={() => handleGenderChange('male')}
+              $active={formData.gender === 'MALE'}
+              onClick={() => handleGenderChange('MALE')}
             >
               남성
             </GenderButton>
             <GenderButton
-              $active={formData.gender === 'female'}
-              onClick={() => handleGenderChange('female')}
+              $active={formData.gender === 'FEMALE'}
+              onClick={() => handleGenderChange('FEMALE')}
             >
               여성
             </GenderButton>
@@ -94,7 +92,9 @@ const OnboardingStep4 = ({ data, onComplete, onPrev }: OnboardingStepProps) => {
           <TextArea
             placeholder="자신을 소개해주세요"
             value={formData.description}
-            onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => handleIntroductionChange(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+              handleIntroductionChange(e.target.value)
+            }
             rows={4}
           />
         </FormField>
@@ -106,14 +106,11 @@ const OnboardingStep4 = ({ data, onComplete, onPrev }: OnboardingStepProps) => {
           <StepDot $active={false} />
           <StepDot $active={true} />
         </StepIndicator>
-        
-        <SignupButton onClick={handleComplete}>
-          완료!
-        </SignupButton>
+
+        <SignupButton onClick={handleComplete}>완료!</SignupButton>
       </FixedFooterContainer>
     </>
   );
 };
 
 export default OnboardingStep4;
-
