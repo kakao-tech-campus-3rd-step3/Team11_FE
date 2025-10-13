@@ -1,7 +1,15 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import styled from 'styled-components';
+import styled, { createGlobalStyle } from 'styled-components';
+import GlobalStyle from '@/style/GlobalStyle';
 import apikey from '@/config/apikey';
+import { CommonHeader } from '@/components/common/CommonHeader';
+
+declare global {
+  interface Window {
+    kakao: any;
+  }
+}
 
 interface LocationInfo {
   name: string;
@@ -9,31 +17,24 @@ interface LocationInfo {
   lng: number;
 }
 
+const KakaoMapCssFix = createGlobalStyle`
+  div[style*="width: 1px; height: 1px;"] {
+    display: none !important;
+  }
+`;
+
 const PageContainer = styled.div`
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+  height: 100vh;
   position: fixed;
-  inset: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   display: flex;
   flex-direction: column;
-`;
-
-const Header = styled.header`
-  position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 1rem;
-  font-weight: bold;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  background: white;
-  z-index: 10;
-`;
-
-const BackButton = styled.button`
-  all: unset;
-  position: absolute;
-  left: 1rem;
-  font-size: 1.5rem;
-  cursor: pointer;
 `;
 
 const MapContainer = styled.div`
@@ -68,23 +69,21 @@ const LocationPicker = () => {
   const mapRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const location = useLocation();
+  const { formValues, hashtags, currentLocation } = location.state || {};
+
   const [selectedLocation, setSelectedLocation] = useState<LocationInfo | null>(
-    location.state?.currentLocation || null,
+    currentLocation || null,
   );
   const markerRef = useRef<any>(null);
 
   useEffect(() => {
     const APP_KEY = (import.meta.env.VITE_KAKAO_MAP_KEY as string) || apikey?.kakaoMapKey;
-    const script = document.createElement('script');
-    script.async = true;
-    script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${APP_KEY}&libraries=services&autoload=false`;
-    document.head.appendChild(script);
 
-    script.onload = () => {
+    const loadMap = () => {
       window.kakao.maps.load(() => {
         if (!mapRef.current) return;
 
-        const initialLocation = location.state?.currentLocation;
+        const initialLocation = currentLocation;
         const center = initialLocation
           ? new window.kakao.maps.LatLng(initialLocation.lat, initialLocation.lng)
           : new window.kakao.maps.LatLng(35.179554, 129.075642);
@@ -92,15 +91,14 @@ const LocationPicker = () => {
         const options = {
           center: center,
           level: 3,
-          cursor: 'crosshair',
         };
         const map = new window.kakao.maps.Map(mapRef.current, options);
         const geocoder = new window.kakao.maps.services.Geocoder();
 
         if (initialLocation) {
-          const newMarker = new window.kakao.maps.Marker({ position: center });
-          newMarker.setMap(map);
-          markerRef.current = newMarker;
+          const initialMarker = new window.kakao.maps.Marker({ position: center });
+          initialMarker.setMap(map);
+          markerRef.current = initialMarker;
         }
 
         window.kakao.maps.event.addListener(map, 'click', (mouseEvent: any) => {
@@ -128,31 +126,66 @@ const LocationPicker = () => {
         });
       });
     };
-  }, []);
+
+    if (window.kakao && window.kakao.maps) {
+      loadMap();
+    } else {
+      const scriptId = 'kakao-map-script';
+      const existingScript = document.getElementById(scriptId) as HTMLScriptElement | null;
+
+      if (!existingScript) {
+        const script = document.createElement('script');
+        script.id = scriptId;
+        script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${APP_KEY}&libraries=services&autoload=false`;
+        script.async = true;
+        document.head.appendChild(script);
+
+        script.onload = () => {
+          loadMap();
+        };
+      } else {
+        existingScript.onload = () => {
+          loadMap();
+        };
+      }
+    }
+  }, [currentLocation]);
 
   const handleConfirm = () => {
     if (selectedLocation) {
       navigate('/create-room', {
-        state: { selectedLocation: selectedLocation },
+        state: {
+          formValues: formValues,
+          hashtags: hashtags,
+          selectedLocation: selectedLocation,
+        },
+        replace: true,
       });
     }
   };
-
   const handleBack = () => {
-    navigate(-1);
+    navigate('/create-room', {
+      state: {
+        formValues: formValues,
+        hashtags: hashtags,
+        selectedLocation: currentLocation,
+      },
+      replace: true,
+    });
   };
 
   return (
-    <PageContainer>
-      <Header>
-        <BackButton onClick={handleBack}>{'<'}</BackButton>
-        <span>지도에서 위치 선택</span>
-      </Header>
-      <MapContainer ref={mapRef} />
-      <ConfirmButton onClick={handleConfirm} disabled={!selectedLocation}>
-        {selectedLocation ? `'${selectedLocation.name}' 확정` : '지도를 클릭하여 위치 선택'}
-      </ConfirmButton>
-    </PageContainer>
+    <>
+      <GlobalStyle />
+      <KakaoMapCssFix />
+      <PageContainer>
+        <CommonHeader title="지도에서 위치 선택" onBackButtonClick={handleBack} />
+        <MapContainer ref={mapRef} />
+        <ConfirmButton onClick={handleConfirm} disabled={!selectedLocation}>
+          {selectedLocation ? `'${selectedLocation.name}' 확정` : '지도를 클릭하여 위치 선택'}
+        </ConfirmButton>
+      </PageContainer>
+    </>
   );
 };
 

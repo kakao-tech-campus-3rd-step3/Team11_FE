@@ -20,7 +20,6 @@ export const LoginMain = styled.main`
 `;
 
 export const Logo = styled.img`
-
   width: 80%;
   max-width: 320px;
   color: rgb(42, 48, 56);
@@ -60,8 +59,8 @@ export const LoginButton = styled.button<{ notVaild?: boolean }>`
   background-color: ${colors.primary};
   border-radius: 3px;
   border: none;
-  cursor: ${({notVaild}) => (notVaild?  'not-allowed' :'pointer' ) };
-  opacity: ${({notVaild}) => (notVaild?  '0.5' :'1' ) };
+  cursor: ${({ notVaild }) => (notVaild ? 'not-allowed' : 'pointer')};
+  opacity: ${({ notVaild }) => (notVaild ? '0.5' : '1')};
   transition: background-color 200ms;
 `;
 
@@ -72,14 +71,13 @@ export const KaKaoLoginBTn = styled.button<{ notVaild?: boolean }>`
   font-weight: 400;
   line-height: 1.1875rem;
   color: #000000;
-  background-color: #FEE500;
+  background-color: #fee500;
   border-radius: 3px;
   border: none;
-  cursor: ${({notVaild}) => (notVaild?  'not-allowed' :'pointer' ) };
-  opacity: ${({notVaild}) => (notVaild?  '0.5' :'1' ) };
+  cursor: ${({ notVaild }) => (notVaild ? 'not-allowed' : 'pointer')};
+  opacity: ${({ notVaild }) => (notVaild ? '0.5' : '1')};
   transition: background-color 200ms;
 `;
-
 
 export const RegisterButton = styled.button<{ notVaild?: boolean }>`
   width: 100%;
@@ -102,14 +100,11 @@ export const ErrorMessage = styled.div`
   margin-top: 4px;
 `;
 
-
 export const LinkText = styled.span`
   color: rgb(42, 48, 56);
   font-size: 14px;
   font-weight: 400;
 `;
-
-
 
 export const Spacer = styled.div<{ h?: number; w?: number }>`
   height: ${({ h }) => (h ? `${h}px` : '0')};

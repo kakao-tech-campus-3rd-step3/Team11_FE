@@ -1,3 +1,3 @@
 # Momeet
 
-> 배포 링크: https://d1xw9usx5fpolc.cloudfront.net
+> 배포 링크: [https://www.momeet.click](https://www.momeet.click)

@@ -1,4 +1,5 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
+import ReactDOM from 'react-dom/client';
 import { useNavigate } from 'react-router-dom';
 import styled, { createGlobalStyle } from 'styled-components';
 import GlobalStyle from '@/style/GlobalStyle';
@@ -7,9 +8,14 @@ import apikey from '@/config/apikey';
 import { SearchButton } from '@/components/home_page/SearchButton';
 import { useKakaoMap } from '@/hooks/useKakaoMap';
 import { Overlay, OVERLAY_ANIMATION_DURATION } from '@/components/common/Overlay';
-import { RoomCreateButton } from '@/components/home_page/RoomCreateButton';
 import BottomNav from '@/components/common/BottomNav';
 import { Container } from '@/style/CommonStyle';
+import type { Meeting } from '@/types/meeting';
+import { MeetingDetailModal } from '@/components/home_page/MeetingDetailModal';
+import { getMeetings } from '@/api/main_meetings';
+import MeetingIcon, { type MeetingCategory } from '@/components/home_page/MeetingIcon';
+import { ERROR_MESSAGES, INFO_MESSAGES } from '@/constants/messages';
+
 declare global {
   interface Window {
     kakao: any;
@@ -21,12 +27,32 @@ const KakaoMapCssFix = createGlobalStyle`
 `;
 
 const MarkerStyles = createGlobalStyle`
-  .custom-div-icon { position: relative; width: 30px; height: 42px; }
-  .marker-pin { width: 30px; height: 30px; border-radius: 50% 50% 50% 0;
-    background: ${colors.primary400}; position: absolute; transform: rotate(-45deg);
-    left: 50%; top: 50%; margin: -15px 0 0 -15px; }
-  .marker-pin::after { content: ''; width: 24px; height: 24px; margin: 3px 0 0 3px;
-    background: #fff; position: absolute; border-radius: 50%; }
+  .custom-div-icon { 
+    position: relative; 
+    width: 30px; 
+    height: 42px; 
+  }
+  .marker-pin { 
+    width: 30px; 
+    height: 30px; 
+    border-radius: 50% 50% 50% 0;
+    background: #fff;
+    border: 3px solid ${colors.primary400};
+    position: absolute; 
+    transform: rotate(-45deg);
+    left: 50%; 
+    top: 50%;
+    margin: -15px 0 0 -15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .marker-icon {
+    width: 16px;
+    height: 16px;
+    transform: rotate(45deg);
+    fill: ${colors.primary400};
+  }
 `;
 
 const HomePageContainer = styled(Container)`
@@ -45,11 +71,91 @@ const MapContainer = styled.div.attrs({ id: 'kakaoMap' })`
   height: 100%;
 `;
 
+const MessageOverlay = styled.div`
+  position: absolute;
+  top: 70px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 10px 20px;
+  border-radius: 20px;
+  z-index: 10;
+  font-size: 14px;
+  text-align: center;
+`;
+
 const Home = () => {
   const mapRef = useRef<HTMLDivElement>(null);
-  const overlayRef = useRef<any>(null);
+  const [meetings, setMeetings] = useState<Meeting[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [selectedMeeting, setSelectedMeeting] = useState<Meeting | null>(null);
   const navigate = useNavigate();
+
+  const APP_KEY = (import.meta.env.VITE_KAKAO_MAP_KEY as string) || (apikey?.kakaoMapKey as string);
+  const map = useKakaoMap({ mapRef, appKey: APP_KEY });
+
+  useEffect(() => {
+    if (!map) return;
+
+    const fetchMeetings = async () => {
+      setIsLoading(true);
+      setError(null);
+      try {
+        const center = map.getCenter();
+        const params = {
+          latitude: center.getLat(),
+          longitude: center.getLng(),
+          radius: 2000,
+        };
+        const meetingData = await getMeetings(params);
+        setMeetings(meetingData);
+      } catch (err: any) {
+        console.error('모임 정보를 불러오는 데 실패했습니다.', err);
+        if (err.response?.status === 401) {
+          setError(ERROR_MESSAGES.LOGIN_REQUIRED);
+        } else {
+          setError(ERROR_MESSAGES.MEETING_FETCH_FAILED);
+        }
+        setMeetings([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchMeetings();
+  }, [map]);
+
+  useEffect(() => {
+    if (!map || !window.kakao || meetings.length === 0) return;
+
+    meetings.forEach((meeting) => {
+      const position = new window.kakao.maps.LatLng(meeting.latitude, meeting.longitude);
+
+      const markerContainer = document.createElement('div');
+      markerContainer.className = 'custom-div-icon';
+      markerContainer.onclick = () => handleMarkerClick(meeting);
+      markerContainer.style.cursor = 'pointer';
+
+      const pinElement = document.createElement('div');
+      pinElement.className = 'marker-pin';
+      markerContainer.appendChild(pinElement);
+
+      ReactDOM.createRoot(pinElement).render(
+        <MeetingIcon category={meeting.category as MeetingCategory} className="marker-icon" />,
+      );
+
+      const customOverlay = new window.kakao.maps.CustomOverlay({
+        position: position,
+        content: markerContainer,
+        yAnchor: 1,
+      });
+
+      customOverlay.setMap(map);
+    });
+  }, [map, meetings]);
 
   const handleSearchClick = () => {
     setIsSearchOpen(true);
@@ -58,8 +164,21 @@ const Home = () => {
     }, OVERLAY_ANIMATION_DURATION);
   };
 
-  const APP_KEY = (import.meta.env.VITE_KAKAO_MAP_KEY as string) || (apikey?.kakaoMapKey as string);
-  useKakaoMap({ mapRef, overlayRef, appKey: APP_KEY });
+  const handleMarkerClick = (meeting: Meeting) => {
+    setSelectedMeeting(meeting);
+  };
+
+  const handleCloseModal = () => {
+    setSelectedMeeting(null);
+  };
+
+  const renderMessage = () => {
+    if (isLoading) return <MessageOverlay>{INFO_MESSAGES.LOADING_MEETINGS}</MessageOverlay>;
+    if (error) return <MessageOverlay>{error}</MessageOverlay>;
+    if (meetings.length === 0)
+      return <MessageOverlay>{INFO_MESSAGES.NO_MEETINGS_FOUND}</MessageOverlay>;
+    return null;
+  };
 
   return (
     <>
@@ -68,10 +187,13 @@ const Home = () => {
       <MarkerStyles />
       <HomePageContainer>
         <MapArea>
+          {renderMessage()}
           <SearchButton onClick={handleSearchClick} />
           <MapContainer ref={mapRef} />
-          <RoomCreateButton to="/create-room" />
           {isSearchOpen && <Overlay />}
+          {selectedMeeting && (
+            <MeetingDetailModal meeting={selectedMeeting} onClose={handleCloseModal} />
+          )}
         </MapArea>
         <BottomNav />
       </HomePageContainer>

@@ -25,7 +25,7 @@ const NavContainer = styled.nav`
   z-index: 1000;
 `;
 
-const NavButton = styled.button<{ isActive: boolean }>`
+const NavButton = styled.button<{ $isActive: boolean }>`
   background: none;
   border: none;
   cursor: pointer;
@@ -33,7 +33,7 @@ const NavButton = styled.button<{ isActive: boolean }>`
   flex-direction: column;
   align-items: center;
   font-size: 26px;
-  color: ${(props) => (props.isActive ? colors.primary400 : '#8e8e8e')};
+  color: ${(props) => (props.$isActive ? colors.primary400 : '#8e8e8e')};
   transition: color 0.2s ease-in-out;
 
   &:hover {
@@ -47,7 +47,7 @@ const BottomNav = () => {
   {
     /*추후 로직 수정 예정 - 속한 모임 있는지 없는지 여부 */
   }
-  const userIsInGroup = true;
+  const userIsInGroup = false;
 
   const handleChatClick = () => {
     if (userIsInGroup) {
@@ -67,16 +67,16 @@ const BottomNav = () => {
 
   return (
     <NavContainer>
-      <NavButton isActive={location.pathname === '/home'} onClick={() => navigate('/home')}>
+      <NavButton $isActive={location.pathname === '/home'} onClick={() => navigate('/home')}>
         <IoLocationOutline />
       </NavButton>
-      <NavButton isActive={location.pathname === '/meeting-room'} onClick={handleChatClick}>
+      <NavButton $isActive={location.pathname === '/meeting-room'} onClick={handleChatClick}>
         <IoMailOutline />
       </NavButton>
-      <NavButton isActive={location.pathname === '/create-room'} onClick={handleCreateRoomClick}>
+      <NavButton $isActive={location.pathname === '/create-room'} onClick={handleCreateRoomClick}>
         <IoAddCircleOutline />
       </NavButton>
-      <NavButton isActive={location.pathname === '/profile'} onClick={() => navigate('/profile')}>
+      <NavButton $isActive={location.pathname === '/my'} onClick={() => navigate('/my')}>
         <IoPersonOutline />
       </NavButton>
     </NavContainer>

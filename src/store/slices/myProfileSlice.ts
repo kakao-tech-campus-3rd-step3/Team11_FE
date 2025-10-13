@@ -6,7 +6,7 @@ export interface MyProfileState {
   age: number | null;
   gender: string | null;
   nickname: string | null;
-  imageUrl: string | null;
+  imageUrl: string | undefined;
   description: string | null;
   baseLocation: string | null;
   temperature: number | null;
@@ -19,7 +19,7 @@ const initialState: MyProfileState = {
   age: null,
   gender: null,
   nickname: null,
-  imageUrl: null,
+  imageUrl: undefined,
   description: null,
   baseLocation: null,
   temperature: null,
