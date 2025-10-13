@@ -79,7 +79,7 @@ export const UserBasicInfo = styled.div`
 export const UserName = styled.h2`
   font-size: 20px;
   font-weight: 600;
-  color: #2c3e50;
+  color: #2C3E50;
   margin: 0;
 `;
 
@@ -103,7 +103,7 @@ export const UserGender = styled.span`
 
 export const UserEmail = styled.p`
   font-size: 14px;
-  color: #7f8c8d;
+  color: #7F8C8D;
   margin: 0;
 `;
 
@@ -118,7 +118,7 @@ export const ProfileInfoItem = styled.div`
   align-items: center;
   padding: 16px 0;
   border-bottom: 1px solid #f0f0f0;
-
+  
   &:last-child {
     border-bottom: none;
   }
@@ -143,7 +143,7 @@ export const SelfIntroItem = styled.div`
   flex-direction: column;
   padding: 20px 0;
   border-bottom: 1px solid #f0f0f0;
-
+  
   &:last-child {
     border-bottom: none;
   }
@@ -157,6 +157,7 @@ export const SelfIntroContent = styled.div`
   border: 0.2px solid #e9ecef;
   transition: border-color 0.2s ease;
   margin-top: 12px;
+  
 `;
 
 export const SelfIntroText = styled.p`
@@ -193,7 +194,7 @@ export const SaveButton = styled.button`
   font-weight: 600;
   cursor: pointer;
   transition: background-color 0.2s ease;
-
+  
   &:hover {
     background: ${colors.primary400};
   }
@@ -283,7 +284,7 @@ export const FormInput = styled.input`
   border-radius: 8px;
   font-size: 16px;
   box-sizing: border-box;
-
+  
   &:focus {
     outline: none;
     border-color: ${colors.primary};
@@ -299,7 +300,7 @@ export const FormTextArea = styled.textarea`
   resize: vertical;
   min-height: 80px;
   box-sizing: border-box;
-
+  
   &:focus {
     outline: none;
     border-color: ${colors.primary};
@@ -322,7 +323,7 @@ export const CancelButton = styled.button`
   font-size: 16px;
   font-weight: 500;
   cursor: pointer;
-
+  
   &:hover {
     background: #e9ecef;
   }

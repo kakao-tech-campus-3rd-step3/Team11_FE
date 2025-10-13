@@ -9,7 +9,7 @@ import {
   FixedHeaderContainer,
   FixedFooterContainer,
   TopTitle,
-  TopSubtitle,
+  TopSubtitle
 } from './OnboardingStyles';
 import { Spacer } from '@/style/CommonStyle';
 
@@ -20,10 +20,10 @@ const OnboardingStep1 = ({ data, onNext }: OnboardingStepProps) => {
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
   const handleInputChange = (field: string, value: string) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
+    setFormData(prev => ({ ...prev, [field]: value }));
     // 에러 메시지 초기화
     if (errors[field]) {
-      setErrors((prev) => ({ ...prev, [field]: '' }));
+      setErrors(prev => ({ ...prev, [field]: '' }));
     }
   };
 
@@ -43,20 +43,22 @@ const OnboardingStep1 = ({ data, onNext }: OnboardingStepProps) => {
         <TopSubtitle>기본 정보를 입력해 주세요</TopSubtitle>
       </FixedHeaderContainer>
 
-      <FormSection>
-        <FormField>
-          <FormInput
-            type="text"
-            placeholder="닉네임"
-            value={formData.nickname}
-            onChange={(e) => handleInputChange('nickname', e.target.value)}
-          />
-          {errors.nickname && <ErrorMessage>{errors.nickname}</ErrorMessage>}
-        </FormField>
-      </FormSection>
+        <FormSection>
+          <FormField>
+            <FormInput
+              type="text"
+              placeholder="닉네임"
+              value={formData.nickname}
+              onChange={(e) => handleInputChange('nickname', e.target.value)}
+            />
+            {errors.nickname && <ErrorMessage>{errors.nickname}</ErrorMessage>}
+          </FormField>
+        </FormSection>
 
       <FixedFooterContainer>
-        <SignupButton onClick={handleNext}>다음</SignupButton>
+        <SignupButton onClick={handleNext}>
+          다음
+        </SignupButton>
       </FixedFooterContainer>
     </>
   );

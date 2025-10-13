@@ -15,7 +15,7 @@ import {
   ProfileImageContainer,
   ProfileImage,
   ProfileImagePlaceholder,
-  CameraIcon,
+  CameraIcon
 } from './OnboardingStyles';
 import backArrow from '@/assets/onoboarding_page/chevron-left.svg';
 import cameraIcon from '@/assets/onoboarding_page/camera.svg';
@@ -55,9 +55,7 @@ const OnboardingStep2 = ({ data, onNext, onPrev }: OnboardingStepProps) => {
 
       <FormSection>
         <FormField>
-          <ProfileImageContainer
-            onClick={() => document.getElementById('profile-image-upload')?.click()}
-          >
+          <ProfileImageContainer onClick={() => document.getElementById('profile-image-upload')?.click()}>
             {imageUrl ? (
               <ProfileImage src={imageUrl} alt="프로필 이미지" />
             ) : (
@@ -66,7 +64,7 @@ const OnboardingStep2 = ({ data, onNext, onPrev }: OnboardingStepProps) => {
               </ProfileImagePlaceholder>
             )}
           </ProfileImageContainer>
-
+          
           <input
             type="file"
             accept="image/*"
@@ -83,7 +81,9 @@ const OnboardingStep2 = ({ data, onNext, onPrev }: OnboardingStepProps) => {
           <StepDot $active={false} />
           <StepDot $active={false} />
         </StepIndicator>
-        <SignupButton onClick={handleNext}>다음</SignupButton>
+        <SignupButton onClick={handleNext}>
+          다음
+        </SignupButton>
       </FixedFooterContainer>
     </>
   );

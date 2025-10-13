@@ -6,3 +6,4 @@ export interface OnboardingStepProps {
   onPrev?: () => void;
   onComplete?: (data: Partial<MyProfileState>) => void;
 }
+
