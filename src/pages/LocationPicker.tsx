@@ -163,15 +163,9 @@ const LocationPicker = () => {
       });
     }
   };
+
   const handleBack = () => {
-    navigate('/create-room', {
-      state: {
-        formValues: formValues,
-        hashtags: hashtags,
-        selectedLocation: currentLocation,
-      },
-      replace: true,
-    });
+    navigate(-1);
   };
 
   return (

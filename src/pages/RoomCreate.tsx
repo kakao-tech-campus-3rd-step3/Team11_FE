@@ -6,6 +6,7 @@ import { useBoolean } from '@/hooks/useBoolean';
 import { CommonHeader } from '@/components/common/CommonHeader';
 import { HobbySelector } from '@/components/room_create_page.tsx/HobbySelector';
 import { HashtagInput } from '@/components/room_create_page.tsx/HashtagInput';
+import { TimePicker } from '@/components/room_create_page.tsx/TimePicker';
 import { StyledInput } from '@/components/room_create_page.tsx/StyledComponents';
 import { colors } from '@/style/themes';
 
@@ -60,10 +61,6 @@ const Grid = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 16px;
-
-  @media (max-width: 420px) {
-    grid-template-columns: 1fr;
-  }
 `;
 
 const LocationButton = styled(Link)`
@@ -82,7 +79,6 @@ const LocationButton = styled(Link)`
   box-sizing: border-box;
   text-decoration: none;
 `;
-
 const SubmitButton = styled.button`
   width: 100%;
   padding: 16px;
@@ -100,12 +96,6 @@ const SubmitButton = styled.button`
     background-color: ${colors.secondary300};
     cursor: not-allowed;
   }
-`;
-
-const ErrorMessage = styled.p`
-  font-size: 0.875rem;
-  color: #dc2626;
-  margin-top: 8px;
 `;
 
 const RoomCreate = () => {
@@ -162,23 +152,12 @@ const RoomCreate = () => {
 
         <InputGroup>
           <Label>시작 및 종료 시간</Label>
-          <Grid>
-            <StyledInput
-              name="startTime"
-              type="time"
-              value={formState.startTime}
-              onChange={handleChange}
-              aria-label="시작 시간"
-            />
-            <StyledInput
-              name="endTime"
-              type="time"
-              value={formState.endTime}
-              onChange={handleChange}
-              aria-label="종료 시간"
-            />
-          </Grid>
-          {timeError && <ErrorMessage>{timeError}</ErrorMessage>}
+          <TimePicker
+            startTime={formState.startTime}
+            endTime={formState.endTime}
+            onChange={handleChange}
+            error={timeError}
+          />
         </InputGroup>
 
         <InputGroup>
