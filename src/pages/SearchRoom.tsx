@@ -1,53 +1,34 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import styled, { keyframes } from 'styled-components';
 import { Container } from '@/style/CommonStyle';
 import { CommonHeader } from '@/components/common/CommonHeader';
-import { useNavigate } from 'react-router-dom';
 import { SearchInput } from '@/components/search_page/SearchInput';
 import { SearchFilters } from '@/components/search_page/SearchFilters';
 import { SearchResultList } from '@/components/search_page/SearchResultList';
+import { getMeetings, type GetMeetingsParams } from '@/api/meeting_list';
+import type { Meeting } from '@/types/meeting';
 
-const dummyData = [
-  {
-    id: 1,
-    title: '금정구에서 같이 공부할 분!',
-    location: '스타벅스 부산대역점',
-    category: '스터디',
-  },
-  { id: 2, title: '저녁에 농구하실 분 구합니다', location: '온천천 농구장', category: '운동' },
-  {
-    id: 3,
-    title: '주말에 보드게임 하실 분',
-    location: '히어로보드게임카페 부산대점',
-    category: '취미',
-  },
-  {
-    id: 4,
-    title: '금정구에서 같이 공부할 분!',
-    location: '스타벅스 부산대역점',
-    category: '스터디',
-  },
-  { id: 5, title: '저녁에 농구하실 분 구합니다', location: '온천천 농구장', category: '운동' },
-  {
-    id: 6,
-    title: '주말에 보드게임 하실 분',
-    location: '히어로보드게임카페 부산대점',
-    category: '취미',
-  },
-  {
-    id: 7,
-    title: '금정구에서 같이 공부할 분!',
-    location: '스타벅스 부산대역점',
-    category: '스터디',
-  },
-  { id: 8, title: '저녁에 농구하실 분 구합니다', location: '온천천 농구장', category: '운동' },
-  {
-    id: 9,
-    title: '주말에 보드게임 하실 분',
-    location: '히어로보드게임카페 부산대점',
-    category: '취미',
-  },
-];
+interface LocationData {
+  lat: number;
+  lng: number;
+}
+
+const useDebounce = (value: string, delay: number) => {
+  const [debouncedValue, setDebouncedValue] = useState(value);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedValue(value);
+    }, delay);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [value, delay]);
+
+  return debouncedValue;
+};
 
 const slideUp = keyframes`
   from { transform: translateY(100%); }
@@ -75,29 +56,93 @@ const SearchPageContainer = styled(Container)<{ $closing?: boolean }>`
   animation: ${({ $closing }) => ($closing ? slideDown : slideUp)} 0.4s ease-out forwards;
 `;
 
+const SearchStatusText = styled.p`
+  text-align: center;
+  margin-top: 2rem;
+  color: #6b7280;
+`;
+
+const BUSAN_UNIVERSITY_LOCATION: LocationData = {
+  lat: 35.2335,
+  lng: 129.081,
+};
+
 const SearchRoom = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [isClosing, setIsClosing] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [selectedRadius, setSelectedRadius] = useState<string | null>(null);
 
-  const filteredResults = useMemo(() => {
-    let results = dummyData;
+  const [results, setResults] = useState<Meeting[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [userLocation, setUserLocation] = useState<LocationData | null>(null);
 
-    if (searchQuery) {
-      results = results.filter((item) =>
-        item.title.toLowerCase().includes(searchQuery.toLowerCase()),
-      );
+  const debouncedSearchQuery = useDebounce(searchQuery, 500);
+
+  const searchCenter = useMemo<LocationData | null>(() => {
+    return location.state?.searchCenter || null;
+  }, [location.state]);
+
+  useEffect(() => {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setUserLocation({
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+        });
+      },
+      (err) => {
+        console.error('위치 정보를 가져오는데 실패했습니다:', err);
+        setUserLocation(BUSAN_UNIVERSITY_LOCATION);
+      },
+    );
+  }, []);
+
+  const fetchMeetings = useCallback(async () => {
+    if (searchCenter && !selectedRadius) {
+      setResults([]);
+      return;
     }
 
-    if (selectedCategories.length > 0) {
-      results = results.filter((item) => selectedCategories.includes(item.category));
-    }
+    setIsLoading(true);
+    setError(null);
 
-    return results;
-  }, [searchQuery, selectedCategories]);
+    try {
+      const params: GetMeetingsParams = {};
+      const locationForApi = searchCenter || userLocation;
+
+      if (debouncedSearchQuery) {
+        params.name = debouncedSearchQuery;
+      }
+      if (selectedCategories.length > 0) {
+        params.hobby = selectedCategories.join(',');
+      }
+      if (locationForApi) {
+        params.latitude = locationForApi.lat;
+        params.longitude = locationForApi.lng;
+        if (selectedRadius) {
+          params.radius = parseInt(selectedRadius, 10);
+        }
+      }
+
+      const data = await getMeetings(params);
+      setResults(data);
+    } catch (err: any) {
+      setError(err.message || '모임을 불러오는 데 실패했습니다.');
+    } finally {
+      setIsLoading(false);
+    }
+  }, [debouncedSearchQuery, selectedCategories, selectedRadius, searchCenter, userLocation]);
+
+  useEffect(() => {
+    if (userLocation || searchCenter) {
+      fetchMeetings();
+    }
+  }, [fetchMeetings, userLocation, searchCenter]);
 
   const handleBackButtonClick = () => {
     setIsClosing(true);
@@ -132,7 +177,16 @@ const SearchRoom = () => {
         onCategoryClick={handleCategoryClick}
         onRadiusClick={handleRadiusClick}
       />
-      <SearchResultList results={filteredResults} />
+      {isLoading && <SearchStatusText>검색 중...</SearchStatusText>}
+      {error && <SearchStatusText style={{ color: 'red' }}>{error}</SearchStatusText>}
+      {!isLoading && !error && (
+        <SearchResultList
+          results={results.map((meeting) => ({
+            ...meeting,
+            location: (meeting as any).location ?? '위치 정보 없음',
+          }))}
+        />
+      )}
     </SearchPageContainer>
   );
 };
