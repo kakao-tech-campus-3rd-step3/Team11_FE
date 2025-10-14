@@ -16,17 +16,14 @@ interface LocationData {
 
 const useDebounce = (value: string, delay: number) => {
   const [debouncedValue, setDebouncedValue] = useState(value);
-
   useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedValue(value);
     }, delay);
-
     return () => {
       clearTimeout(handler);
     };
   }, [value, delay]);
-
   return debouncedValue;
 };
 
@@ -72,15 +69,12 @@ const SearchRoom = () => {
   const [isClosing, setIsClosing] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
-
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [selectedRadius, setSelectedRadius] = useState<string | null>(null);
-
   const [results, setResults] = useState<Meeting[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [userLocation, setUserLocation] = useState<LocationData | null>(null);
-
   const debouncedSearchQuery = useDebounce(searchQuery, 500);
 
   const searchCenter = useMemo<LocationData | null>(() => {
@@ -125,7 +119,7 @@ const SearchRoom = () => {
         params.latitude = locationForApi.lat;
         params.longitude = locationForApi.lng;
         if (selectedRadius) {
-          params.radius = parseInt(selectedRadius, 10);
+          params.radius = parseInt(selectedRadius.replace('km', ''), 10);
         }
       }
 
@@ -183,7 +177,7 @@ const SearchRoom = () => {
         <SearchResultList
           results={results.map((meeting) => ({
             ...meeting,
-            location: (meeting as any).location ?? '위치 정보 없음',
+            location: meeting.address,
           }))}
         />
       )}
