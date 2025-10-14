@@ -96,18 +96,29 @@ const LocationPicker = () => {
       });
     };
 
-    if (!window.kakao || !window.kakao.maps) {
-      const existingScript = document.getElementById(scriptId) as HTMLScriptElement | null;
-      if (!existingScript) {
-        const script = document.createElement('script');
-        script.id = scriptId;
-        script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${APP_KEY}&libraries=services&autoload=false`;
-        script.async = true;
-        document.head.appendChild(script);
-        script.onload = initializeMap;
-      }
-    } else {
+    let script = document.getElementById(scriptId) as HTMLScriptElement | null;
+
+    if (!script) {
+      script = document.createElement('script');
+      script.id = scriptId;
+      script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${APP_KEY}&libraries=services&autoload=false`;
+      script.async = true;
+      document.head.appendChild(script);
+
+      script.onload = () => {
+        script!.dataset.loaded = 'true';
+        initializeMap();
+      };
+    } else if (script.dataset.loaded) {
+      // 스크립트는 있지만, 로딩이 완료된 경우
       initializeMap();
+    } else {
+      // 스크립트는 있지만, 아직 로딩 중인 경우
+      const handleLoad = () => initializeMap();
+      script.addEventListener('load', handleLoad);
+      return () => {
+        script?.removeEventListener('load', handleLoad);
+      };
     }
   }, []);
 
@@ -152,7 +163,9 @@ const LocationPicker = () => {
     window.kakao.maps.event.addListener(map, 'click', handleClick);
 
     return () => {
-      window.kakao.maps.event.removeListener(map, 'click', handleClick);
+      if (window.kakao && window.kakao.maps && window.kakao.maps.event && map) {
+        window.kakao.maps.event.removeListener(map, 'click', handleClick);
+      }
     };
   }, [map, geocoder, currentLocation]);
 
@@ -185,7 +198,10 @@ const LocationPicker = () => {
       <GlobalStyle />
       <KakaoMapCssFix />
       <PageContainer>
-        <CommonHeader title="지도에서 위치 선택" onBackButtonClick={handleBack} />
+        <CommonHeader
+          title="지도에서 위치 선택(위치선택이 되지 않을 시 새로고침)"
+          onBackButtonClick={handleBack}
+        />
         <MapContainer ref={mapRef} />
         <ConfirmButton onClick={handleConfirm} disabled={!selectedLocation}>
           {selectedLocation ? `'${selectedLocation.name}' 확정` : '지도를 클릭하여 위치 선택'}
