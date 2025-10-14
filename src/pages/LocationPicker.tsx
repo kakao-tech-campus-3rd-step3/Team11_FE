@@ -67,89 +67,94 @@ const ConfirmButton = styled.button`
 
 const LocationPicker = () => {
   const mapRef = useRef<HTMLDivElement>(null);
+  const markerRef = useRef<any>(null);
   const navigate = useNavigate();
   const location = useLocation();
   const { formValues, hashtags, currentLocation } = location.state || {};
 
+  const [map, setMap] = useState<any>(null);
+  const [geocoder, setGeocoder] = useState<any>(null);
   const [selectedLocation, setSelectedLocation] = useState<LocationInfo | null>(
     currentLocation || null,
   );
-  const markerRef = useRef<any>(null);
 
   useEffect(() => {
     const APP_KEY = (import.meta.env.VITE_KAKAO_MAP_KEY as string) || apikey?.kakaoMapKey;
+    const scriptId = 'kakao-map-script';
 
-    const loadMap = () => {
+    const initializeMap = () => {
       window.kakao.maps.load(() => {
         if (!mapRef.current) return;
 
-        const initialLocation = currentLocation;
-        const center = initialLocation
-          ? new window.kakao.maps.LatLng(initialLocation.lat, initialLocation.lng)
-          : new window.kakao.maps.LatLng(35.179554, 129.075642);
+        const center = new window.kakao.maps.LatLng(35.179554, 129.075642);
+        const options = { center, level: 3 };
+        const mapInstance = new window.kakao.maps.Map(mapRef.current, options);
+        const geocoderInstance = new window.kakao.maps.services.Geocoder();
 
-        const options = {
-          center: center,
-          level: 3,
-        };
-        const map = new window.kakao.maps.Map(mapRef.current, options);
-        const geocoder = new window.kakao.maps.services.Geocoder();
-
-        if (initialLocation) {
-          const initialMarker = new window.kakao.maps.Marker({ position: center });
-          initialMarker.setMap(map);
-          markerRef.current = initialMarker;
-        }
-
-        window.kakao.maps.event.addListener(map, 'click', (mouseEvent: any) => {
-          const latlng = mouseEvent.latLng;
-
-          if (markerRef.current) {
-            markerRef.current.setPosition(latlng);
-          } else {
-            const newMarker = new window.kakao.maps.Marker({ position: latlng });
-            newMarker.setMap(map);
-            markerRef.current = newMarker;
-          }
-
-          geocoder.coord2Address(latlng.getLng(), latlng.getLat(), (result: any, status: any) => {
-            if (status === window.kakao.maps.services.Status.OK) {
-              const roadAddress =
-                result[0]?.road_address?.address_name || result[0]?.address?.address_name;
-              setSelectedLocation({
-                name: roadAddress,
-                lat: latlng.getLat(),
-                lng: latlng.getLng(),
-              });
-            }
-          });
-        });
+        setMap(mapInstance);
+        setGeocoder(geocoderInstance);
       });
     };
 
-    if (window.kakao && window.kakao.maps) {
-      loadMap();
-    } else {
-      const scriptId = 'kakao-map-script';
+    if (!window.kakao || !window.kakao.maps) {
       const existingScript = document.getElementById(scriptId) as HTMLScriptElement | null;
-
       if (!existingScript) {
         const script = document.createElement('script');
         script.id = scriptId;
         script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${APP_KEY}&libraries=services&autoload=false`;
         script.async = true;
         document.head.appendChild(script);
-
-        script.onload = () => {
-          loadMap();
-        };
-      } else {
-        existingScript.onload = () => {
-          loadMap();
-        };
+        script.onload = initializeMap;
       }
+    } else {
+      initializeMap();
     }
-  }, [currentLocation]);
+  }, []);
+
+  useEffect(() => {
+    if (!map || !geocoder) return;
+
+    if (currentLocation && !selectedLocation) {
+      const initialPosition = new window.kakao.maps.LatLng(
+        currentLocation.lat,
+        currentLocation.lng,
+      );
+      map.setCenter(initialPosition);
+      const marker = new window.kakao.maps.Marker({ position: initialPosition });
+      marker.setMap(map);
+      markerRef.current = marker;
+    }
+
+    const handleClick = (mouseEvent: any) => {
+      const latlng = mouseEvent.latLng;
+
+      if (markerRef.current) {
+        markerRef.current.setPosition(latlng);
+      } else {
+        const newMarker = new window.kakao.maps.Marker({ position: latlng });
+        newMarker.setMap(map);
+        markerRef.current = newMarker;
+      }
+
+      geocoder.coord2Address(latlng.getLng(), latlng.getLat(), (result: any, status: any) => {
+        if (status === window.kakao.maps.services.Status.OK) {
+          const roadAddress =
+            result[0]?.road_address?.address_name || result[0]?.address?.address_name;
+          setSelectedLocation({
+            name: roadAddress,
+            lat: latlng.getLat(),
+            lng: latlng.getLng(),
+          });
+        }
+      });
+    };
+
+    window.kakao.maps.event.addListener(map, 'click', handleClick);
+
+    return () => {
+      window.kakao.maps.event.removeListener(map, 'click', handleClick);
+    };
+  }, [map, geocoder, currentLocation]);
 
   const handleConfirm = () => {
     if (selectedLocation) {
@@ -163,6 +168,7 @@ const LocationPicker = () => {
       });
     }
   };
+
   const handleBack = () => {
     navigate('/create-room', {
       state: {
