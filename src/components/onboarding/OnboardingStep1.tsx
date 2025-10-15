@@ -19,20 +19,43 @@ const OnboardingStep1 = ({ data, onNext }: OnboardingStepProps) => {
   });
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
+  const validateNickname = (nickname: string) => {
+    const trimmed = nickname.trim();
+    
+    if (!trimmed) {
+      return '닉네임을 입력해주세요';
+    }
+    
+    if (trimmed.length < 2) {
+      return '닉네임은 2자 이상이어야 합니다';
+    }
+    
+    if (trimmed.length > 20) {
+      return '닉네임은 20자 이하여야 합니다';
+    }
+    
+    return null; // 유효함
+  };
+
   const handleInputChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
-    // 에러 메시지 초기화
-    if (errors[field]) {
-      setErrors((prev) => ({ ...prev, [field]: '' }));
+    
+    // 실시간 유효성 검사 (닉네임일 때만)
+    if (field === 'nickname') {
+      const error = validateNickname(value);
+      setErrors((prev) => ({ ...prev, [field]: error || '' }));
     }
   };
 
   const handleNext = () => {
-    if (!formData.nickname.trim()) {
-      setErrors({ nickname: '닉네임을 입력해주세요' });
+    const nicknameError = validateNickname(formData.nickname);
+    
+    if (nicknameError) {
+      setErrors({ nickname: nicknameError });
       return;
     }
-    onNext({ nickname: formData.nickname });
+    
+    onNext({ nickname: formData.nickname.trim() });
   };
 
   return (
@@ -47,11 +70,22 @@ const OnboardingStep1 = ({ data, onNext }: OnboardingStepProps) => {
         <FormField>
           <FormInput
             type="text"
-            placeholder="닉네임"
+            placeholder="닉네임 (2~20자)"
             value={formData.nickname}
             onChange={(e) => handleInputChange('nickname', e.target.value)}
+            maxLength={20}
           />
           {errors.nickname && <ErrorMessage>{errors.nickname}</ErrorMessage>}
+          {!errors.nickname && formData.nickname && (
+            <div style={{ 
+              fontSize: '0.75rem', 
+              color: '#666', 
+              marginTop: '4px',
+              textAlign: 'right'
+            }}>
+              {formData.nickname.trim().length}/20자
+            </div>
+          )}
         </FormField>
       </FormSection>
 
