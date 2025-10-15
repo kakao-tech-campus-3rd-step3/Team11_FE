@@ -1,4 +1,3 @@
-import React from 'react';
 import StudyIcon from '@/assets/meeting_icons/study.svg?react';
 import SportsIcon from '@/assets/meeting_icons/sport.svg?react';
 import GameIcon from '@/assets/meeting_icons/game.svg?react';

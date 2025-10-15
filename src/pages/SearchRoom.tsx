@@ -138,7 +138,7 @@ const SearchPageContainer = styled(Container)<{ $closing?: boolean }>`
   bottom: 0;
   margin: 0 auto;
   z-index: 100;
-  animation: ${({ $closing, theme }) => ($closing ? slideDown : slideUp)} 0.4s ease-out forwards;
+  animation: ${({ $closing }) => ($closing ? slideDown : slideUp)} 0.4s ease-out forwards;
 `;
 
 const SearchStatusText = styled.p`
