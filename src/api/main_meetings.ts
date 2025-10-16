@@ -2,8 +2,7 @@ import api from './axiosInstance';
 import type { Meeting } from '@/types/meeting';
 
 interface GetMeetingsParams {
-  name?: string;
-  hobby?: string;
+  category?: string;
   latitude: number;
   longitude: number;
   radius: number;
