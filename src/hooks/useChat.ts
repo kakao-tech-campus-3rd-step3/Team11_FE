@@ -1,30 +1,37 @@
-import { useRef, useCallback } from 'react';
+import { useRef, useCallback, useState } from 'react';
 import SockJS from 'sockjs-client';
 import { Client } from '@stomp/stompjs';
 import type { IMessage } from '@stomp/stompjs';
-import { getAccessToken, getRefreshToken } from '@/utils/tokenStorage';
+import { getAccessToken } from '@/utils/tokenStorage';
+import { getUgradeToken } from '@/api/services/auth.service';
+import { body } from '@/api/services/mockBodyData';
 
+type MessageType = 'TEXT' | 'IMAGE' | 'SYSTEM';
 interface ChatMessage {
-  type: 'TEXT' | 'IMAGE' | 'SYSTEM';
+  type: MessageType;
   content: string;
 }
 
-export function useChat(meetupId: string) {
+export function useChat(meetupId: string | null) {
+  const [connected, setConnected] = useState(false);
   const clientRef = useRef<Client | null>(null);
+  const accessToken = getAccessToken();
+
   // 연결
-  const connect = useCallback(() => {
-    const accessToken = getAccessToken();
-    const refreshToken = getRefreshToken();
-
-    console.log(`Connecting with token: ${accessToken}`);
-    console.log(`Refresh token: ${refreshToken}`);
-
-    if (clientRef.current?.connected) {
-      console.log('이미 연결됨');
+  const connect = useCallback(async () => {
+    if (!meetupId) {
+      console.warn('[useChat] Cannot connect: meetupId is null or undefined.');
       return;
     }
 
-    const socketUrl = `${import.meta.env.VITE_API_BASE_URL}/ws/chat`;
+    const upgradeToken = await getUgradeToken(body);
+
+    if (clientRef.current?.connected) {
+      console.log('Already connected');
+      return;
+    }
+
+    const socketUrl = `${import.meta.env.VITE_API_BASE_URL}/ws/chat?token=${upgradeToken}`;
 
     const client = new Client({
       webSocketFactory: () => new SockJS(socketUrl),
@@ -34,22 +41,35 @@ export function useChat(meetupId: string) {
     });
 
     client.onConnect = () => {
-      console.log('Connected');
-
       // 메시지 구독
-      client.subscribe(`/topic/meetups/${meetupId}/messages`, (msg: IMessage) => {
-        console.log('Message:', JSON.parse(msg.body));
-      });
+      client.subscribe(
+        `/topic/meetups/${meetupId}/messages`,
+        (msg: IMessage) => {
+          console.log('Message:', JSON.parse(msg.body));
+        },
+        {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      );
 
       // 액션 구독
-      client.subscribe(`/topic/meetups/${meetupId}/actions`, (msg: IMessage) => {
-        console.log('Action:', JSON.parse(msg.body));
-      });
+      client.subscribe(
+        `/topic/meetups/${meetupId}/actions`,
+        (msg: IMessage) => {
+          console.log('Action:', JSON.parse(msg.body));
+        },
+        {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      );
 
       // 에러 구독
       client.subscribe(`/user/queue/errors`, (msg: IMessage) => {
         console.error('Error:', msg.body);
       });
+
+      setConnected(true);
+      console.log('Connected');
     };
 
     client.onStompError = (frame) => {
@@ -71,8 +91,8 @@ export function useChat(meetupId: string) {
 
   // 메시지 보내기
   const sendMessage = useCallback(
-    (type: ChatMessage['type'], content: string) => {
-      if (!clientRef.current || !clientRef.current.connected) {
+    (type: MessageType, content: string) => {
+      if (!connected) {
         console.warn('Not connected');
         return;
       }
@@ -81,13 +101,14 @@ export function useChat(meetupId: string) {
 
       const destination = `/app/meetups/${meetupId}/messages`;
       const payload: ChatMessage = { type, content };
-      clientRef.current.publish({
+      clientRef.current?.publish({
         destination: destination,
+        headers: { Authorization: `Bearer ${accessToken}` },
         body: JSON.stringify(payload),
       });
       console.log('Sent:', payload);
     },
-    [meetupId],
+    [meetupId, connected],
   );
 
   return { connect, disconnect, sendMessage };

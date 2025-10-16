@@ -1,7 +1,7 @@
 // src/utils/tokenStorage.ts
-const ACCESS_KEY = "accessToken";
-const REFRESH_KEY = "refreshToken";
-const PROFILE_KEY = "myProfile";
+const ACCESS_KEY = 'accessToken';
+const REFRESH_KEY = 'refreshToken';
+const PROFILE_KEY = 'myProfile';
 
 export const saveTokens = (accessToken: string, refreshToken: string) => {
   localStorage.setItem(ACCESS_KEY, accessToken);
