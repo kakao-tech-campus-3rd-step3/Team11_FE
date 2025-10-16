@@ -27,6 +27,10 @@ const validateTime = (startTime: string, endTime: string): string | null => {
   const end = new Date(endTime);
   const in24Hours = new Date(now.getTime() + ONE_DAY_IN_MILLISECONDS);
 
+  if (start.getMinutes() % 30 !== 0 || end.getMinutes() % 30 !== 0) {
+    return '시간은 30분 단위로 설정해야 합니다.';
+  }
+
   if (start <= now) return '시작 시간은 현재 시간 이후여야 합니다.';
   if (start > in24Hours) return '모임은 24시간 이내에 시작해야 합니다.';
   if (end <= start) return '종료 시간은 시작 시간 이후여야 합니다.';
@@ -68,7 +72,9 @@ export const useCreateForm = () => {
   );
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
+    e:
+      | React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
+      | { target: { name: string; value: string } },
   ) => {
     const { name, value } = e.target;
     setFormState((prevState) => ({

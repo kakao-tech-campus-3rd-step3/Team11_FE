@@ -7,6 +7,7 @@ import { CommonHeader } from '@/components/common/CommonHeader';
 import { HobbySelector } from '@/components/room_create_page.tsx/HobbySelector';
 import { HashtagInput } from '@/components/room_create_page.tsx/HashtagInput';
 import { StyledInput } from '@/components/room_create_page.tsx/StyledComponents';
+import { TimePicker } from '@/components/room_create_page.tsx/TimePicker';
 import { colors } from '@/style/themes';
 
 const slideUp = keyframes`
@@ -102,12 +103,6 @@ const SubmitButton = styled.button`
   }
 `;
 
-const ErrorMessage = styled.p`
-  font-size: 0.875rem;
-  color: #dc2626;
-  margin-top: 8px;
-`;
-
 const RoomCreate = () => {
   const { formState, hashtags, setHashtags, handleChange, timeError, isFormValid } =
     useCreateForm();
@@ -123,14 +118,12 @@ const RoomCreate = () => {
     e.preventDefault();
     if (!isFormValid) return;
 
-    // API 명세에 맞게 데이터 객체 수정
     const finalFormState = {
       name: formState.name,
       category: formState.category,
       hashTags: hashtags,
       capacity: Number(formState.capacity),
       scoreLimit: Number(formState.scoreLimit),
-      // durationHours 대신 startTime과 endTime을 직접 전송
       startTime: formState.startTime,
       endTime: formState.endTime,
       location: {
@@ -175,24 +168,12 @@ const RoomCreate = () => {
         </InputGroup>
 
         <InputGroup>
-          <Label>시작 및 종료 시간</Label>
-          <Grid>
-            <StyledInput
-              name="startTime"
-              type="datetime-local"
-              value={formState.startTime}
-              onChange={handleChange}
-              aria-label="시작 시간"
-            />
-            <StyledInput
-              name="endTime"
-              type="datetime-local"
-              value={formState.endTime}
-              onChange={handleChange}
-              aria-label="종료 시간"
-            />
-          </Grid>
-          {timeError && <ErrorMessage>{timeError}</ErrorMessage>}
+          <TimePicker
+            startTime={formState.startTime}
+            endTime={formState.endTime}
+            onChange={handleChange}
+            error={timeError}
+          />
         </InputGroup>
 
         <InputGroup>
