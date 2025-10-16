@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState, useEffect, useCallback } from 'react';
 import ReactDOM from 'react-dom/client';
 import { useNavigate } from 'react-router-dom';
 import styled, { createGlobalStyle } from 'styled-components';
@@ -15,12 +15,24 @@ import { MeetingDetailModal } from '@/components/home_page/MeetingDetailModal';
 import { getMeetings } from '@/api/main_meetings';
 import MeetingIcon, { type MeetingCategory } from '@/components/home_page/MeetingIcon';
 import { ERROR_MESSAGES, INFO_MESSAGES } from '@/constants/messages';
+import { MapFilters } from '@/components/home_page/MapFilters';
+import { RadiusFilter } from '@/components/home_page/RadiusFilter';
 
 declare global {
   interface Window {
     kakao: any;
   }
 }
+
+interface LocationData {
+  lat: number;
+  lng: number;
+}
+
+const BUSAN_UNIVERSITY_LOCATION: LocationData = {
+  lat: 35.2335,
+  lng: 129.081,
+};
 
 const KakaoMapCssFix = createGlobalStyle`
   #kakaoMap img { max-width: none !important; }
@@ -64,6 +76,7 @@ const MapArea = styled.div`
   position: relative;
   overflow: hidden;
   width: 100%;
+  background-color: #f0f0f0;
 `;
 
 const MapContainer = styled.div.attrs({ id: 'kakaoMap' })`
@@ -73,71 +86,113 @@ const MapContainer = styled.div.attrs({ id: 'kakaoMap' })`
 
 const MessageOverlay = styled.div`
   position: absolute;
-  top: 70px;
+  top: 130px;
   left: 50%;
   transform: translateX(-50%);
-  background-color: rgba(0, 0, 0, 0.7);
+  background-color: rgba(0, 0, 0, 0.75);
   color: white;
   padding: 10px 20px;
   border-radius: 20px;
-  z-index: 10;
+  z-index: 5;
   font-size: 14px;
   text-align: center;
+  max-width: calc(100% - 40px);
 `;
 
 const Home = () => {
   const mapRef = useRef<HTMLDivElement>(null);
+  const markersRef = useRef<any[]>([]);
   const [meetings, setMeetings] = useState<Meeting[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [selectedMeeting, setSelectedMeeting] = useState<Meeting | null>(null);
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [selectedRadius, setSelectedRadius] = useState<string | null>(null);
+  const [userLocation, setUserLocation] = useState<LocationData | null>(null);
   const navigate = useNavigate();
 
   const APP_KEY = (import.meta.env.VITE_KAKAO_MAP_KEY as string) || (apikey?.kakaoMapKey as string);
   const map = useKakaoMap({ mapRef, appKey: APP_KEY });
 
   useEffect(() => {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setUserLocation({
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+        });
+      },
+      (err) => {
+        console.error('위치 정보를 가져오는 데 실패했습니다:', err);
+        setUserLocation(BUSAN_UNIVERSITY_LOCATION);
+      },
+    );
+  }, []);
+
+  const fetchMeetings = useCallback(async () => {
     if (!map) return;
-
-    const fetchMeetings = async () => {
-      setIsLoading(true);
-      setError(null);
-      try {
-        const center = map.getCenter();
-        const params = {
-          latitude: center.getLat(),
-          longitude: center.getLng(),
-          radius: 2000,
-        };
-        const meetingData = await getMeetings(params);
-        setMeetings(meetingData);
-      } catch (err: any) {
-        console.error('모임 정보를 불러오는 데 실패했습니다.', err);
-        if (err.response?.status === 401) {
-          setError(ERROR_MESSAGES.LOGIN_REQUIRED);
-        } else {
-          setError(ERROR_MESSAGES.MEETING_FETCH_FAILED);
-        }
-        setMeetings([]);
-      } finally {
-        setIsLoading(false);
+    setIsLoading(true);
+    setError(null);
+    try {
+      const center = map.getCenter();
+      const params: any = {
+        latitude: center.getLat(),
+        longitude: center.getLng(),
+      };
+      if (selectedCategories.length > 0) {
+        params.hobby = selectedCategories.join(',');
       }
-    };
-
-    fetchMeetings();
-  }, [map]);
+      if (selectedRadius) {
+        params.radius = parseInt(selectedRadius.replace('km', ''), 10) * 1000;
+      }
+      const meetingData = await getMeetings(params);
+      setMeetings(meetingData);
+    } catch (err: any) {
+      console.error('모임 정보를 불러오는 데 실패했습니다.', err);
+      setError(
+        err.response?.status === 401
+          ? ERROR_MESSAGES.LOGIN_REQUIRED
+          : ERROR_MESSAGES.MEETING_FETCH_FAILED,
+      );
+      setMeetings([]);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [map, selectedCategories, selectedRadius]);
 
   useEffect(() => {
+    if (map && userLocation) {
+      const userLatLng = new window.kakao.maps.LatLng(userLocation.lat, userLocation.lng);
+      map.setCenter(userLatLng);
+    }
+  }, [map, userLocation]);
+
+  useEffect(() => {
+    if (map) {
+      const listener = window.kakao.maps.event.addListener(map, 'idle', fetchMeetings);
+      return () => {
+        window.kakao.maps.event.removeListener(map, 'idle', listener);
+      };
+    }
+  }, [map, fetchMeetings]);
+
+  useEffect(() => {
+    fetchMeetings();
+  }, [selectedCategories, selectedRadius, fetchMeetings]);
+
+  useEffect(() => {
+    markersRef.current.forEach((marker) => marker.setMap(null));
+    markersRef.current = [];
+
     if (!map || !window.kakao || meetings.length === 0) return;
 
-    meetings.forEach((meeting) => {
+    const newMarkers = meetings.map((meeting) => {
       const position = new window.kakao.maps.LatLng(meeting.latitude, meeting.longitude);
-
       const markerContainer = document.createElement('div');
       markerContainer.className = 'custom-div-icon';
-      markerContainer.onclick = () => handleMarkerClick(meeting);
       markerContainer.style.cursor = 'pointer';
+      markerContainer.onclick = () => handleMarkerClick(meeting);
 
       const pinElement = document.createElement('div');
       pinElement.className = 'marker-pin';
@@ -152,15 +207,22 @@ const Home = () => {
         content: markerContainer,
         yAnchor: 1,
       });
-
       customOverlay.setMap(map);
+      return customOverlay;
     });
+
+    markersRef.current = newMarkers;
   }, [map, meetings]);
 
   const handleSearchClick = () => {
     setIsSearchOpen(true);
     setTimeout(() => {
-      navigate('/search-room');
+      const center = map?.getCenter();
+      navigate('/search-room', {
+        state: {
+          searchCenter: center ? { lat: center.getLat(), lng: center.getLng() } : userLocation,
+        },
+      });
     }, OVERLAY_ANIMATION_DURATION);
   };
 
@@ -172,7 +234,17 @@ const Home = () => {
     setSelectedMeeting(null);
   };
 
-  const renderMessage = () => {
+  const handleCategoryClick = (category: string) => {
+    setSelectedCategories((prev) =>
+      prev.includes(category) ? prev.filter((c) => c !== category) : [...prev, category],
+    );
+  };
+
+  const handleRadiusClick = (radius: string) => {
+    setSelectedRadius((prev) => (prev === radius ? null : radius));
+  };
+
+  const renderMeetingMessage = () => {
     if (isLoading) return <MessageOverlay>{INFO_MESSAGES.LOADING_MEETINGS}</MessageOverlay>;
     if (error) return <MessageOverlay>{error}</MessageOverlay>;
     if (meetings.length === 0)
@@ -187,9 +259,21 @@ const Home = () => {
       <MarkerStyles />
       <HomePageContainer>
         <MapArea>
-          {renderMessage()}
-          <SearchButton onClick={handleSearchClick} />
           <MapContainer ref={mapRef} />
+          {map ? (
+            <>
+              <SearchButton onClick={handleSearchClick} />
+              <RadiusFilter selectedRadius={selectedRadius} onRadiusClick={handleRadiusClick} />
+              <MapFilters
+                selectedCategories={selectedCategories}
+                onCategoryClick={handleCategoryClick}
+              />
+              {renderMeetingMessage()}
+            </>
+          ) : (
+            <MessageOverlay>지도를 불러오는 중...</MessageOverlay>
+          )}
+
           {isSearchOpen && <Overlay />}
           {selectedMeeting && (
             <MeetingDetailModal meeting={selectedMeeting} onClose={handleCloseModal} />
