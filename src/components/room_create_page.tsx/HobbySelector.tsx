@@ -10,7 +10,7 @@ interface HobbySelectorProps {
 
 export const HobbySelector = ({ value, onChange }: HobbySelectorProps) => {
   return (
-    <StyledSelect name="hobby" value={value} onChange={onChange}>
+    <StyledSelect name="category" value={value} onChange={onChange}>
       <option value="" disabled>
         취미를 선택해주세요
       </option>

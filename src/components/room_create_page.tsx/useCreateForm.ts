@@ -9,11 +9,11 @@ export interface LocationData {
 
 export interface FormState {
   name: string;
-  hobby: string;
+  category: string;
   startTime: string;
   endTime: string;
   capacity: string;
-  minTemp: string;
+  scoreLimit: string;
   location: LocationData | null;
 }
 
@@ -43,11 +43,11 @@ export const useCreateForm = () => {
   const [formState, setFormState] = useState<FormState>(() => {
     const initialState = location.state?.formValues || {
       name: '',
-      hobby: '풋살',
+      category: '',
       startTime: '',
       endTime: '',
       capacity: '',
-      minTemp: '',
+      scoreLimit: '',
       location: null,
     };
 
@@ -67,7 +67,9 @@ export const useCreateForm = () => {
     [formState.startTime, formState.endTime],
   );
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
+  ) => {
     const { name, value } = e.target;
     setFormState((prevState) => ({
       ...prevState,
@@ -78,8 +80,9 @@ export const useCreateForm = () => {
   const isFormValid = useMemo(() => {
     return (
       formState.name.trim() !== '' &&
+      formState.category.trim() !== '' &&
       formState.capacity.trim() !== '' &&
-      formState.minTemp.trim() !== '' &&
+      formState.scoreLimit.trim() !== '' &&
       formState.startTime !== '' &&
       formState.endTime !== '' &&
       !timeError &&

@@ -122,10 +122,24 @@ const RoomCreate = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!isFormValid) return;
+
+    // API 명세에 맞게 데이터 객체 수정
     const finalFormState = {
-      ...formState,
-      hashtags,
+      name: formState.name,
+      category: formState.category,
+      hashTags: hashtags,
+      capacity: Number(formState.capacity),
+      scoreLimit: Number(formState.scoreLimit),
+      // durationHours 대신 startTime과 endTime을 직접 전송
+      startTime: formState.startTime,
+      endTime: formState.endTime,
+      location: {
+        latitude: formState.location?.lat,
+        longitude: formState.location?.lng,
+        address: formState.location?.name,
+      },
     };
+
     console.log('Final Form Data:', finalFormState);
     alert('방 만들기 요청!');
   };
@@ -156,8 +170,8 @@ const RoomCreate = () => {
         </InputGroup>
 
         <InputGroup>
-          <Label htmlFor="hobby">취미</Label>
-          <HobbySelector value={formState.hobby} onChange={handleChange} />
+          <Label htmlFor="category">카테고리</Label>
+          <HobbySelector value={formState.category} onChange={handleChange} />
         </InputGroup>
 
         <InputGroup>
@@ -165,14 +179,14 @@ const RoomCreate = () => {
           <Grid>
             <StyledInput
               name="startTime"
-              type="time"
+              type="datetime-local"
               value={formState.startTime}
               onChange={handleChange}
               aria-label="시작 시간"
             />
             <StyledInput
               name="endTime"
-              type="time"
+              type="datetime-local"
               value={formState.endTime}
               onChange={handleChange}
               aria-label="종료 시간"
@@ -199,12 +213,12 @@ const RoomCreate = () => {
             />
           </InputGroup>
           <InputGroup>
-            <Label htmlFor="minTemp">입장 최저 온도</Label>
+            <Label htmlFor="scoreLimit">입장 최소 매너 점수</Label>
             <StyledInput
-              id="minTemp"
-              name="minTemp"
+              id="scoreLimit"
+              name="scoreLimit"
               type="number"
-              value={formState.minTemp}
+              value={formState.scoreLimit}
               onChange={handleChange}
               placeholder="숫자만 입력"
             />
