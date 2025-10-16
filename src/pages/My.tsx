@@ -4,8 +4,10 @@ import { Container, ContentContanier } from '@/style/CommonStyle';
 import type { RootState } from '@/store';
 import { setMyProfile } from '@/store/slices/myProfileSlice';
 import { getMyProfile, updateProfile } from '@/api/auth';
+import { getMyBadges } from '@/api/badge';
 import { useLogin } from '@/hooks/useLogin';
 import { getProfile } from '@/utils/tokenStorage';
+import type { Badge } from '@/types/badge';
 import {
   HeaderTitle,
   ProfileImageContainer,
@@ -41,6 +43,12 @@ import {
   ButtonGroup,
   CancelButton,
   HeaderSection,
+  BadgeSection,
+  BadgeContainer,
+  BadgeItem,
+  BadgeIcon,
+  BadgeName,
+  EmptyBadgeMessage,
 } from './My.styled';
 import BottomNav from '@/components/common/BottomNav';
 
@@ -50,6 +58,7 @@ const My = () => {
   const { handleLogout } = useLogin();
   const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [badges, setBadges] = useState<Badge[]>([]);
   const [editData, setEditData] = useState({
     nickname: myProfile.nickname || '',
     age: myProfile.age || '',
@@ -85,6 +94,21 @@ const My = () => {
 
     fetchProfile();
   }, [dispatch]);
+
+  // 뱃지 조회
+  useEffect(() => {
+    const fetchBadges = async () => {
+      try {
+        const data = await getMyBadges();
+        setBadges(data.content);
+        console.log('뱃지 조회 성공:', data);
+      } catch (error) {
+        console.error('뱃지 조회 실패:', error);
+      }
+    };
+
+    fetchBadges();
+  }, []);
 
   const handleCancel = () => {
     setIsEditing(false);
@@ -239,6 +263,27 @@ const My = () => {
                   </SelfIntroContent>
                 </SelfIntroItem>
               </ProfileInfoSection>
+
+              {/* 뱃지 섹션 */}
+              <BadgeSection>
+                <InfoLabel style={{ marginBottom: '12px', display: 'block' }}>
+                  획득한 뱃지 ({badges.length}개)
+                </InfoLabel>
+                <BadgeContainer>
+                  {badges.length > 0 ? (
+                    badges.map((badge) => (
+                      <BadgeItem key={badge.badgeId}>
+                        <BadgeIcon src={badge.iconUrl} alt={badge.name} />
+                        <BadgeName>{badge.name}</BadgeName>
+                      </BadgeItem>
+                    ))
+                  ) : (
+                    <EmptyBadgeMessage>
+                      아직 획득한 뱃지가 없습니다
+                    </EmptyBadgeMessage>
+                  )}
+                </BadgeContainer>
+              </BadgeSection>
 
               <ActionButtons>
                 <SaveButton onClick={handleEdit}>편집</SaveButton>
