@@ -7,6 +7,7 @@ import { CommonHeader } from '@/components/common/CommonHeader';
 import { HobbySelector } from '@/components/room_create_page.tsx/HobbySelector';
 import { HashtagInput } from '@/components/room_create_page.tsx/HashtagInput';
 import { StyledInput } from '@/components/room_create_page.tsx/StyledComponents';
+import { TimePicker } from '@/components/room_create_page.tsx/TimePicker';
 import { colors } from '@/style/themes';
 
 const slideUp = keyframes`
@@ -102,12 +103,6 @@ const SubmitButton = styled.button`
   }
 `;
 
-const ErrorMessage = styled.p`
-  font-size: 0.875rem;
-  color: #dc2626;
-  margin-top: 8px;
-`;
-
 const RoomCreate = () => {
   const { formState, hashtags, setHashtags, handleChange, timeError, isFormValid } =
     useCreateForm();
@@ -122,10 +117,22 @@ const RoomCreate = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!isFormValid) return;
+
     const finalFormState = {
-      ...formState,
-      hashtags,
+      name: formState.name,
+      category: formState.category,
+      hashTags: hashtags,
+      capacity: Number(formState.capacity),
+      scoreLimit: Number(formState.scoreLimit),
+      startTime: formState.startTime,
+      endTime: formState.endTime,
+      location: {
+        latitude: formState.location?.lat,
+        longitude: formState.location?.lng,
+        address: formState.location?.name,
+      },
     };
+
     console.log('Final Form Data:', finalFormState);
     alert('방 만들기 요청!');
   };
@@ -156,29 +163,17 @@ const RoomCreate = () => {
         </InputGroup>
 
         <InputGroup>
-          <Label htmlFor="hobby">취미</Label>
-          <HobbySelector value={formState.hobby} onChange={handleChange} />
+          <Label htmlFor="category">카테고리</Label>
+          <HobbySelector value={formState.category} onChange={handleChange} />
         </InputGroup>
 
         <InputGroup>
-          <Label>시작 및 종료 시간</Label>
-          <Grid>
-            <StyledInput
-              name="startTime"
-              type="time"
-              value={formState.startTime}
-              onChange={handleChange}
-              aria-label="시작 시간"
-            />
-            <StyledInput
-              name="endTime"
-              type="time"
-              value={formState.endTime}
-              onChange={handleChange}
-              aria-label="종료 시간"
-            />
-          </Grid>
-          {timeError && <ErrorMessage>{timeError}</ErrorMessage>}
+          <TimePicker
+            startTime={formState.startTime}
+            endTime={formState.endTime}
+            onChange={handleChange}
+            error={timeError}
+          />
         </InputGroup>
 
         <InputGroup>
@@ -199,12 +194,12 @@ const RoomCreate = () => {
             />
           </InputGroup>
           <InputGroup>
-            <Label htmlFor="minTemp">입장 최저 온도</Label>
+            <Label htmlFor="scoreLimit">입장 최소 매너 점수</Label>
             <StyledInput
-              id="minTemp"
-              name="minTemp"
+              id="scoreLimit"
+              name="scoreLimit"
               type="number"
-              value={formState.minTemp}
+              value={formState.scoreLimit}
               onChange={handleChange}
               placeholder="숫자만 입력"
             />

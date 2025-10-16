@@ -9,11 +9,11 @@ export interface LocationData {
 
 export interface FormState {
   name: string;
-  hobby: string;
+  category: string;
   startTime: string;
   endTime: string;
   capacity: string;
-  minTemp: string;
+  scoreLimit: string;
   location: LocationData | null;
 }
 
@@ -26,6 +26,10 @@ const validateTime = (startTime: string, endTime: string): string | null => {
   const start = new Date(startTime);
   const end = new Date(endTime);
   const in24Hours = new Date(now.getTime() + ONE_DAY_IN_MILLISECONDS);
+
+  if (start.getMinutes() % 30 !== 0 || end.getMinutes() % 30 !== 0) {
+    return '시간은 30분 단위로 설정해야 합니다.';
+  }
 
   if (start <= now) return '시작 시간은 현재 시간 이후여야 합니다.';
   if (start > in24Hours) return '모임은 24시간 이내에 시작해야 합니다.';
@@ -43,11 +47,11 @@ export const useCreateForm = () => {
   const [formState, setFormState] = useState<FormState>(() => {
     const initialState = location.state?.formValues || {
       name: '',
-      hobby: '풋살',
+      category: '',
       startTime: '',
       endTime: '',
       capacity: '',
-      minTemp: '',
+      scoreLimit: '',
       location: null,
     };
 
@@ -67,7 +71,11 @@ export const useCreateForm = () => {
     [formState.startTime, formState.endTime],
   );
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e:
+      | React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
+      | { target: { name: string; value: string } },
+  ) => {
     const { name, value } = e.target;
     setFormState((prevState) => ({
       ...prevState,
@@ -78,8 +86,9 @@ export const useCreateForm = () => {
   const isFormValid = useMemo(() => {
     return (
       formState.name.trim() !== '' &&
+      formState.category.trim() !== '' &&
       formState.capacity.trim() !== '' &&
-      formState.minTemp.trim() !== '' &&
+      formState.scoreLimit.trim() !== '' &&
       formState.startTime !== '' &&
       formState.endTime !== '' &&
       !timeError &&
