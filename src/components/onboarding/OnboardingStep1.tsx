@@ -26,21 +26,17 @@ const OnboardingStep1 = ({ data, onNext }: OnboardingStepProps) => {
       return '닉네임을 입력해주세요';
     }
     
-    if (trimmed.length < 2) {
-      return '닉네임은 2자 이상이어야 합니다';
+    if (trimmed.length < 2 && trimmed.length > 20) {
+      return '닉네임은 2자 이상 20자 이하여야 합니다';
     }
     
-    if (trimmed.length > 20) {
-      return '닉네임은 20자 이하여야 합니다';
-    }
-    
-    return null; // 유효함
+
+    return null; 
   };
 
   const handleInputChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
     
-    // 실시간 유효성 검사 (닉네임일 때만)
     if (field === 'nickname') {
       const error = validateNickname(value);
       setErrors((prev) => ({ ...prev, [field]: error || '' }));

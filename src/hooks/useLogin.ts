@@ -1,9 +1,9 @@
 import { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { login, kakaoLogin, signup, getMyProfile } from '@/api/auth';
-import { setMyProfile } from '@/store/slices/myProfileSlice';
-import { saveTokens } from '@/utils/tokenStorage';
+import { login, kakaoLogin, signup, getMyProfile, logout } from '@/api/auth';
+import { setMyProfile, clearMyProfile } from '@/store/slices/myProfileSlice';
+import { clearProfile, clearTokens, saveTokens, saveProfile } from '@/utils/tokenStorage';
 
 export const useLogin = () => {
   const navigate = useNavigate();
@@ -13,23 +13,22 @@ export const useLogin = () => {
   const handleLoginSuccess = useCallback(
     async (result: any, loginType: 'email' | 'kakao' = 'email') => {
       try {
-        // 토큰 저장
         saveTokens(result.accessToken, result.refreshToken);
         console.log(result.accessToken, result.refreshToken);
 
-        // 프로필 조회 및 Redux 업데이트
         try {
           const profileData = await getMyProfile();
           dispatch(setMyProfile(profileData));
+          saveProfile(profileData);
         } catch (profileError) {
           console.error('프로필 조회 실패:', profileError);
           // 프로필 조회 실패 시 기본 데이터로 설정
           const userData = result.user || {};
-          dispatch(
-            setMyProfile({
-              name: userData.name || userData.nickname || result.email,
-            }),
-          );
+          const defaultProfile = {
+            name: userData.name || userData.nickname || result.email,
+          };
+          dispatch(setMyProfile(defaultProfile));
+          saveProfile(defaultProfile); // 기본 프로필도 저장
         }
 
         alert(`${loginType === 'kakao' ? '카카오' : ''}로그인 성공!`);
@@ -101,9 +100,29 @@ export const useLogin = () => {
     [navigate, handleLoginError],
   );
 
+  // 로그아웃
+  const handleLogout = useCallback(async () => {
+    if (!confirm('로그아웃하시겠습니까?')) {
+      return;
+    }
+
+    try {
+      await logout();
+      clearTokens();
+      clearProfile();
+      dispatch(clearMyProfile());
+      alert('로그아웃되었습니다.');
+      navigate('/login');
+    } catch (error: any) {
+      console.error('로그아웃 실패:', error);
+      alert(`로그아웃 실패: ${error.message}`);
+    }
+  }, [dispatch, navigate]);
+
   return {
     handleEmailLogin,
     handleKakaoLogin,
     handleSignup,
+    handleLogout,
   };
 };

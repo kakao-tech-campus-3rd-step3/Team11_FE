@@ -4,6 +4,8 @@ import { Container, ContentContanier } from '@/style/CommonStyle';
 import type { RootState } from '@/store';
 import { setMyProfile } from '@/store/slices/myProfileSlice';
 import { getMyProfile, updateProfile } from '@/api/auth';
+import { useLogin } from '@/hooks/useLogin';
+import { getProfile } from '@/utils/tokenStorage';
 import {
   HeaderTitle,
   ProfileImageContainer,
@@ -15,7 +17,6 @@ import {
   UserName,
   UserAge,
   UserGender,
-  UserEmail,
   ProfileInfoSection,
   ProfileInfoItem,
   InfoLabel,
@@ -46,16 +47,20 @@ import BottomNav from '@/components/common/BottomNav';
 const My = () => {
   const dispatch = useDispatch();
   const myProfile = useSelector((state: RootState) => state.myProfile);
+  const { handleLogout } = useLogin();
   const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [editData, setEditData] = useState({
-    name: myProfile.name || '',
+    nickname: myProfile.nickname || '',
     age: myProfile.age || '',
     gender: myProfile.gender || '',
     description: myProfile.description || '',
     temperature: myProfile.temperature || '',
-    baseLocation: myProfile.baseLocation || '',
+    imageUrl: myProfile.imageUrl || '',
   });
+
+  const [sido, setSido] = useState('');
+  const [sigungu, setSigungu] = useState('');
 
   // 페이지 로드 시 프로필 조회
   useEffect(() => {
@@ -64,20 +69,14 @@ const My = () => {
       try {
         const profileData = await getMyProfile();
         dispatch(setMyProfile(profileData));
-
-        localStorage.setItem('myProfile', JSON.stringify(profileData));
-        console.log('프로필 조회 성공 및 로컬 스토리지 저장:', profileData);
+        console.log('프로필 조회 성공:', profileData);
       } catch (error) {
         console.error('프로필 조회 실패:', error);
 
-        const savedProfile = localStorage.getItem('myProfile');
+        const savedProfile = getProfile();
         if (savedProfile) {
-          try {
-            const parsedProfile = JSON.parse(savedProfile);
-            dispatch(setMyProfile(parsedProfile));
-          } catch (parseError) {
-            console.error('로컬 스토리지 프로필 파싱 실패:', parseError);
-          }
+          dispatch(setMyProfile(savedProfile));
+          console.log('로컬 스토리지에서 프로필 로드:', savedProfile);
         }
       } finally {
         setIsLoading(false);
@@ -90,17 +89,44 @@ const My = () => {
   const handleCancel = () => {
     setIsEditing(false);
     setEditData({
-      name: myProfile.name || '',
+      nickname: myProfile.nickname || '',
       age: myProfile.age || '',
       gender: myProfile.gender || '',
       description: myProfile.description || '',
       temperature: myProfile.temperature || '',
-      baseLocation: myProfile.baseLocation || '',
+      imageUrl: myProfile.imageUrl || '',
     });
+    setSido('');
+    setSigungu('');
   };
 
   const handleEdit = () => {
     setIsEditing(true);
+    
+    // 기존 프로필 데이터로 editData 채우기
+    setEditData({
+      nickname: myProfile.nickname || '',
+      age: myProfile.age || '',
+      gender: myProfile.gender || '',
+      description: myProfile.description || '',
+      temperature: myProfile.temperature || '',
+      imageUrl: myProfile.imageUrl || '',
+    });
+    
+    // 기존 위치 데이터에서 시/도, 시/군/구 분리
+    if (myProfile.baseLocation) {
+      if (typeof myProfile.baseLocation === 'string') {
+        const parts = myProfile.baseLocation.split(' ');
+        if (parts.length >= 2) {
+          setSido(parts[0]);
+          setSigungu(parts[1]);
+        }
+      } else if (typeof myProfile.baseLocation === 'object' && myProfile.baseLocation !== null) {
+        const location = myProfile.baseLocation as { sidoName?: string; sigunguName?: string };
+        setSido(location.sidoName || '');
+        setSigungu(location.sigunguName || '');
+      }
+    }
   };
 
   const handleSave = async () => {
@@ -112,12 +138,14 @@ const My = () => {
         typeof editData.temperature === 'string'
           ? parseFloat(editData.temperature) || null
           : editData.temperature,
+      baseLocation: sido && sigungu ? `${sido} ${sigungu}` : null
     };
+
+    console.log('저장할 프로필 데이터:', profileData);
 
     try {
       await updateProfile(profileData);
       dispatch(setMyProfile(profileData));
-      localStorage.setItem('myProfile', JSON.stringify(profileData));
       console.log('프로필 수정 성공:', profileData);
 
       alert('프로필이 성공적으로 수정되었습니다!');
@@ -130,6 +158,18 @@ const My = () => {
 
   const handleInputChange = (field: string, value: string | number) => {
     setEditData((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const result = e.target?.result as string;
+        setEditData((prev) => ({ ...prev, imageUrl: result }));
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   return (
@@ -163,11 +203,10 @@ const My = () => {
               </ProfileImageContainer>
               <UserInfo>
                 <UserBasicInfo>
-                  <UserName>{myProfile.name || '이름 없음'}</UserName>
+                  <UserName>{myProfile.nickname || '닉네임 없음'}</UserName>
                   <UserAge>{myProfile.age ? `${myProfile.age}세` : '-'}</UserAge>
                   <UserGender>{myProfile.gender || '-'}</UserGender>
                 </UserBasicInfo>
-                <UserEmail>email: {myProfile.name ? '1234567' : '1234567'}</UserEmail>
               </UserInfo>
 
               <ProfileInfoSection>
@@ -180,7 +219,13 @@ const My = () => {
 
                 <ProfileInfoItem>
                   <InfoLabel>위치</InfoLabel>
-                  <InfoValue>{myProfile.baseLocation || '-'}</InfoValue>
+                  <InfoValue>
+                    {myProfile.baseLocation ? 
+                      (typeof myProfile.baseLocation === 'string' 
+                        ? myProfile.baseLocation 
+                        : `${(myProfile.baseLocation as { sidoName: string; sigunguName: string }).sidoName} ${(myProfile.baseLocation as { sidoName: string; sigunguName: string }).sigunguName}`) 
+                      : '-'}
+                  </InfoValue>
                 </ProfileInfoItem>
 
                 <SelfIntroItem>
@@ -198,6 +243,11 @@ const My = () => {
               <ActionButtons>
                 <SaveButton onClick={handleEdit}>편집</SaveButton>
               </ActionButtons>
+              
+              <ActionButtons style={{ marginTop: '16px' }}>
+                <CancelButton onClick={handleLogout}>로그아웃</CancelButton>
+              </ActionButtons>
+              
               <BottomNav />
             </MainContentCard>
 
@@ -211,12 +261,67 @@ const My = () => {
                   </ModalHeader>
                   <ModalBody>
                     <FormField>
-                      <FormLabel>이름</FormLabel>
+                      <FormLabel>프로필 이미지</FormLabel>
+                      <div
+                        onClick={() => document.getElementById('edit-profile-image-upload')?.click()}
+                        style={{
+                          width: '120px',
+                          height: '120px',
+                          margin: '0 auto 20px',
+                          cursor: 'pointer',
+                          borderRadius: '50%',
+                          overflow: 'hidden',
+                          border: '2px solid #e5e7eb',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          backgroundColor: '#f9fafb',
+                        }}
+                      >
+                        {editData.imageUrl ? (
+                          <img
+                            src={editData.imageUrl}
+                            alt="프로필 미리보기"
+                            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                          />
+                        ) : (
+                          <svg width="40" height="40" viewBox="0 0 24 24" fill="none">
+                            <path
+                              d="M23 19C23 19.5304 22.7893 20.0391 22.4142 20.4142C22.0391 20.7893 21.5304 21 21 21H3C2.46957 21 1.96086 20.7893 1.58579 20.4142C1.21071 20.0391 1 19.5304 1 19V8C1 7.46957 1.21071 6.96086 1.58579 6.58579C1.96086 6.21071 2.46957 6 3 6H7L9 3H15L17 6H21C21.5304 6 22.0391 6.21071 22.4142 6.58579C22.7893 6.96086 23 7.46957 23 8V19Z"
+                              stroke="#9ca3af"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                            <circle
+                              cx="12"
+                              cy="13"
+                              r="4"
+                              stroke="#9ca3af"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                          </svg>
+                        )}
+                      </div>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleImageUpload}
+                        style={{ display: 'none' }}
+                        id="edit-profile-image-upload"
+                      />
+                    </FormField>
+
+                    <FormField>
+                      <FormLabel>닉네임</FormLabel>
                       <FormInput
                         type="text"
-                        value={editData.name}
-                        onChange={(e) => handleInputChange('name', e.target.value)}
-                        placeholder="이름을 입력하세요"
+                        value={editData.nickname}
+                        onChange={(e) => handleInputChange('nickname', e.target.value)}
+                        placeholder="닉네임을 입력하세요"
+                        maxLength={20}
                       />
                     </FormField>
 
@@ -251,12 +356,20 @@ const My = () => {
 
                     <FormField>
                       <FormLabel>기본 위치</FormLabel>
-                      <FormInput
-                        type="text"
-                        value={editData.baseLocation}
-                        onChange={(e) => handleInputChange('baseLocation', e.target.value)}
-                        placeholder="기본 위치를 입력하세요"
-                      />
+                      <div style={{ display: 'flex', gap: '8px', flexDirection: 'column' }}>
+                        <FormInput
+                          type="text"
+                          value={sido}
+                          onChange={(e) => setSido(e.target.value)}
+                          placeholder="시/도 (예: 부산광역시)"
+                        />
+                        <FormInput
+                          type="text"
+                          value={sigungu}
+                          onChange={(e) => setSigungu(e.target.value)}
+                          placeholder="시/군/구 (예: 금정구)"
+                        />
+                      </div>
                     </FormField>
 
                     <ButtonGroup>
