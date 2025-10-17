@@ -6,7 +6,7 @@ import OnboardingStep2 from '@/components/onboarding/OnboardingStep2';
 import OnboardingStep3 from '@/components/onboarding/OnboardingStep3';
 import OnboardingStep4 from '@/components/onboarding/OnboardingStep4';
 import type { MyProfileState } from '@/store/slices/myProfileSlice';
-import { saveOnboardingProfile } from '@/api/auth';
+import { saveOnboardingProfile } from '@/api/profile';
 import { useFunnel } from '@/hooks/useFunnel';
 
 const Onboarding = () => {

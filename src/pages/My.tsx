@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Container, ContentContanier } from '@/style/CommonStyle';
 import type { RootState } from '@/store';
 import { setMyProfile } from '@/store/slices/myProfileSlice';
-import { getMyProfile, updateProfile } from '@/api/auth';
+import { getMyProfile, updateProfile } from '@/api/profile';
 import { getMyBadges } from '@/api/badge';
 import { useLogin } from '@/hooks/useLogin';
 import { getProfile } from '@/utils/tokenStorage';
@@ -49,6 +49,8 @@ import {
   BadgeIcon,
   BadgeName,
   EmptyBadgeMessage,
+  GenderButtonGroup,
+  GenderButton,
 } from './My.styled';
 import BottomNav from '@/components/common/BottomNav';
 
@@ -382,12 +384,22 @@ const My = () => {
 
                     <FormField>
                       <FormLabel>성별</FormLabel>
-                      <FormInput
-                        type="text"
-                        value={editData.gender}
-                        onChange={(e) => handleInputChange('gender', e.target.value)}
-                        placeholder="성별을 입력하세요"
-                      />
+                      <GenderButtonGroup>
+                        <GenderButton
+                          type="button"
+                          selected={editData.gender === 'MALE'}
+                          onClick={() => handleInputChange('gender', 'MALE')}
+                        >
+                          남
+                        </GenderButton>
+                        <GenderButton
+                          type="button"
+                          selected={editData.gender === 'FEMALE'}
+                          onClick={() => handleInputChange('gender', 'FEMALE')}
+                        >
+                          여
+                        </GenderButton>
+                      </GenderButtonGroup>
                     </FormField>
 
                     <FormField>

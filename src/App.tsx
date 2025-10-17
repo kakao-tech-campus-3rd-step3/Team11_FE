@@ -13,6 +13,7 @@ import SearchRoom from '@/pages/SearchRoom';
 import LocationPicker from '@/pages/LocationPicker';
 import ParticipantEvaluation from './pages/ParticipantEvaluation';
 import My from './pages/My';
+import ProtectedRoute from '@/components/common/ProtectedRoute';
 
 function App() {
   return (
@@ -22,15 +23,19 @@ function App() {
         <Route path="/" element={<Landing />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
-        <Route path="/onboarding" element={<Onboarding />} />
-        <Route path="/home" element={<Home />} />
-        <Route path="/my" element={<My/>} />
-        <Route path="/create-room" element={<RoomCreate />} />
-        <Route path="/search-room" element={<SearchRoom />} />
-        <Route path="/meeting-room" element={<MeetingRoom />} />
-        <Route path="/participant-evaluation" element={<ParticipantEvaluation />} />
         <Route path="/kakaoLogin" element={<KakaoLogin />} />
-        <Route path="/create-room/location" element={<LocationPicker />} />
+        <Route path="/onboarding" element={<Onboarding />} />
+
+        {/* 로그인 필요*/}
+        <Route element={<ProtectedRoute />}>
+          <Route path="/home" element={<Home />} />
+          <Route path="/my" element={<My />} />
+          <Route path="/create-room" element={<RoomCreate />} />
+          <Route path="/create-room/location" element={<LocationPicker />} />
+          <Route path="/search-room" element={<SearchRoom />} />
+          <Route path="/meeting-room" element={<MeetingRoom />} />
+          <Route path="/participant-evaluation" element={<ParticipantEvaluation />} />
+        </Route>
       </Routes>
     </BrowserRouter>
   );
