@@ -1,30 +1,42 @@
-import { useRef, useCallback } from 'react';
+import { useRef, useCallback, useState } from 'react';
 import SockJS from 'sockjs-client';
 import { Client } from '@stomp/stompjs';
 import type { IMessage } from '@stomp/stompjs';
-import { getAccessToken, getRefreshToken } from '@/utils/tokenStorage';
+import { getAccessToken } from '@/utils/tokenStorage';
+import { getUgradeToken } from '@/api/services/auth.service';
+import { body } from '@/api/services/mockBodyData';
+import type { ChatMessage } from '@/types/meeting_room_page/chatMessage';
 
-interface ChatMessage {
-  type: 'TEXT' | 'IMAGE' | 'SYSTEM';
+type MessageType = 'TEXT' | 'IMAGE' | 'SYSTEM';
+type Payload = {
+  type: MessageType;
   content: string;
-}
+};
 
-export function useChat(meetupId: string) {
+export function useChat(meetupId: string | null) {
+  const isFirstConnectRef = useRef(true);
+  const [connected, setConnected] = useState(false);
+  const [myId, setMyId] = useState<string | null>(null);
+  const [actorId, setActorId] = useState<string | null>(null);
+  const [newChatMessage, setNewChatMessage] = useState<ChatMessage | null>(null);
   const clientRef = useRef<Client | null>(null);
+  const accessToken = getAccessToken();
+
   // 연결
-  const connect = useCallback(() => {
-    const accessToken = getAccessToken();
-    const refreshToken = getRefreshToken();
-
-    console.log(`Connecting with token: ${accessToken}`);
-    console.log(`Refresh token: ${refreshToken}`);
-
-    if (clientRef.current?.connected) {
-      console.log('이미 연결됨');
+  const connect = useCallback(async () => {
+    if (!meetupId) {
+      console.warn('[useChat] Cannot connect: meetupId is null or undefined.');
       return;
     }
 
-    const socketUrl = `${import.meta.env.VITE_API_BASE_URL}/ws/chat`;
+    const upgradeToken = await getUgradeToken(body);
+
+    if (clientRef.current?.connected) {
+      console.log('Already connected');
+      return;
+    }
+
+    const socketUrl = `${import.meta.env.VITE_API_BASE_URL}/ws/chat?token=${upgradeToken}`;
 
     const client = new Client({
       webSocketFactory: () => new SockJS(socketUrl),
@@ -34,22 +46,50 @@ export function useChat(meetupId: string) {
     });
 
     client.onConnect = () => {
-      console.log('Connected');
+      // 액션 구독
+      client.subscribe(
+        `/topic/meetups/${meetupId}/actions`,
+        (msg: IMessage) => {
+          console.log('Action:', JSON.parse(msg.body));
+          const response = JSON.parse(msg.body);
+          if (isFirstConnectRef.current) {
+            setMyId(response.participantId.toString());
+            isFirstConnectRef.current = false;
+          } else {
+            setActorId(response.participantId.toString());
+          }
+        },
+        {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      );
 
       // 메시지 구독
-      client.subscribe(`/topic/meetups/${meetupId}/messages`, (msg: IMessage) => {
-        console.log('Message:', JSON.parse(msg.body));
-      });
-
-      // 액션 구독
-      client.subscribe(`/topic/meetups/${meetupId}/actions`, (msg: IMessage) => {
-        console.log('Action:', JSON.parse(msg.body));
-      });
+      client.subscribe(
+        `/topic/meetups/${meetupId}/messages`,
+        (msg: IMessage) => {
+          console.log('Message:', JSON.parse(msg.body));
+          const response = JSON.parse(msg.body);
+          const chatMessage: ChatMessage = {
+            id: Math.random().toString(36).substring(2, 10),
+            senderType: 'other',
+            content: response.content,
+            time: response.sentAt,
+          };
+          setNewChatMessage(chatMessage);
+        },
+        {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      );
 
       // 에러 구독
       client.subscribe(`/user/queue/errors`, (msg: IMessage) => {
         console.error('Error:', msg.body);
       });
+
+      setConnected(true);
+      console.log('Connected');
     };
 
     client.onStompError = (frame) => {
@@ -71,8 +111,8 @@ export function useChat(meetupId: string) {
 
   // 메시지 보내기
   const sendMessage = useCallback(
-    (type: ChatMessage['type'], content: string) => {
-      if (!clientRef.current || !clientRef.current.connected) {
+    (type: MessageType, content: string) => {
+      if (!connected) {
         console.warn('Not connected');
         return;
       }
@@ -80,15 +120,16 @@ export function useChat(meetupId: string) {
       // !clientRef.current.connected: clientRef.current 객체는 있는데, 실제 연결은 아직 안 된 경우를 차단
 
       const destination = `/app/meetups/${meetupId}/messages`;
-      const payload: ChatMessage = { type, content };
-      clientRef.current.publish({
+      const payload: Payload = { type, content };
+      clientRef.current?.publish({
         destination: destination,
+        headers: { Authorization: `Bearer ${accessToken}` },
         body: JSON.stringify(payload),
       });
       console.log('Sent:', payload);
     },
-    [meetupId],
+    [meetupId, connected],
   );
 
-  return { connect, disconnect, sendMessage };
+  return { connect, disconnect, myId, actorId, sendMessage, newChatMessage };
 }
