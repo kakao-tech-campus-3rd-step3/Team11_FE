@@ -8,7 +8,7 @@ export interface MyProfileState {
   nickname: string | null;
   imageUrl: string | undefined;
   description: string | null;
-  baseLocation: string | null;
+  baseLocation: string | { sidoName: string; sigunguName: string } | null;
   temperature: number | null;
   likes: number | null;
   dislikes: number | null;

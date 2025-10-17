@@ -20,9 +20,25 @@ const createProfileFormData = async (profileData: MyProfileState): Promise<FormD
     }
   }
 
-  // baseLocation 처리(임시방편임!! 추후 수정 필요)
+  // baseLocation 처리
   if (profileData.baseLocation) {
-    formData.append('baseLocation.baseLocationId', '26410');
+    // baseLocation이 문자열인 경우 (예: "부산광역시 금정구")
+    if (typeof profileData.baseLocation === 'string') {
+      const locationParts = profileData.baseLocation.split(' ');
+      if (locationParts.length >= 2) {
+        formData.append('baseLocation.sidoName', locationParts[0]);
+        formData.append('baseLocation.sigunguName', locationParts[1]);
+      }
+    }
+    // baseLocation이 객체인 경우
+    else if (typeof profileData.baseLocation === 'object') {
+      if (profileData.baseLocation.sidoName) {
+        formData.append('baseLocation.sidoName', profileData.baseLocation.sidoName);
+      }
+      if (profileData.baseLocation.sigunguName) {
+        formData.append('baseLocation.sigunguName', profileData.baseLocation.sigunguName);
+      }
+    }
   }
 
   // 이미지 필드 처리
@@ -110,7 +126,7 @@ export const updateProfile = async (profileData: MyProfileState) => {
     }
     console.log('원본 데이터:', profileData);
 
-    const response = await api.put('/api/profiles/me', formData, {
+    const response = await api.patch('/api/profiles/me', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
@@ -155,6 +171,18 @@ export const signup = async (email: string, password1: string, password2: string
     return res.data;
   } catch (error: any) {
     console.error('회원가입 실패:', error);
+    throw error;
+  }
+};
+
+// 로그아웃 API
+export const logout = async () => {
+  try {
+    const res = await api.post('/api/auth/logout');
+    console.log('로그아웃 성공:', res.data);
+    return res.data;
+  } catch (error: any) {
+    console.error('로그아웃 실패:', error);
     throw error;
   }
 };
