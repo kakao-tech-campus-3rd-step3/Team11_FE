@@ -1,4 +1,4 @@
-import { getMyJoinedMeetup } from '@/api/services/meeting_room.service';
+import { getMyJoinedMeetup, joinMeetUp } from '@/api/services/meeting_room.service';
 import { ChatBox } from '@/components/meeting_room_page/ChatBox';
 import { ChatInput } from '@/components/meeting_room_page/ChatInput';
 import { Header } from '@/components/meeting_room_page/Header';
@@ -9,24 +9,44 @@ import { Container } from '@/style/CommonStyle';
 import type { ChatMessage } from '@/types/meeting_room_page/chatMessage';
 import { useEffect, useState } from 'react';
 
+const TEST_MEETUP_ID = 'db6acd92-a2ef-4383-9a57-94a48f4c6ea2';
+
 const MeetingRoom = () => {
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>(mockMessages);
-  const [meetingRoomId, setMeetingRoomId] = useState<string | null>(null);
-  const { connect, sendMessage } = useChat(meetingRoomId);
+  const [meetUpId, setmeetUpId] = useState<string | null>(null);
+  const { connect, myId, actorId, sendMessage, newChatMessage } = useChat(meetUpId);
 
+  useEffect(() => {
+    console.log('myId:', myId, 'actorId:', actorId, 'newChatMessage:', newChatMessage);
+  }, [myId, actorId]);
+
+  useEffect(() => {
+    if (newChatMessage && myId !== actorId) {
+      setChatMessages((prevMessages) => [...prevMessages, newChatMessage]);
+    }
+  }, [newChatMessage]);
+
+  // 테스트용 모임 참가 로직
   useEffect(() => {
     const init = async () => {
       try {
         const response = await getMyJoinedMeetup();
-        setMeetingRoomId(response.id);
+        setmeetUpId(response.id);
         console.log('모임 조회 성공:', response);
       } catch (error) {
-        console.error('모임 조회 실패:', error);
+        console.error(error);
+        try {
+          const response = await joinMeetUp(TEST_MEETUP_ID);
+          setmeetUpId(TEST_MEETUP_ID);
+          console.log('모임 참가 성공:', response);
+        } catch (error) {
+          console.error(error);
+        }
       }
     };
-    if (!meetingRoomId) init();
-    connect();
-  }, [meetingRoomId]);
+    if (!meetUpId) init();
+    else connect();
+  }, [meetUpId]);
 
   return (
     <Container>

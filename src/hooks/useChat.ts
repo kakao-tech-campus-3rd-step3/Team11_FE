@@ -5,15 +5,20 @@ import type { IMessage } from '@stomp/stompjs';
 import { getAccessToken } from '@/utils/tokenStorage';
 import { getUgradeToken } from '@/api/services/auth.service';
 import { body } from '@/api/services/mockBodyData';
+import type { ChatMessage } from '@/types/meeting_room_page/chatMessage';
 
 type MessageType = 'TEXT' | 'IMAGE' | 'SYSTEM';
-interface ChatMessage {
+type Payload = {
   type: MessageType;
   content: string;
-}
+};
 
 export function useChat(meetupId: string | null) {
+  const isFirstConnectRef = useRef(true);
   const [connected, setConnected] = useState(false);
+  const [myId, setMyId] = useState<string | null>(null);
+  const [actorId, setActorId] = useState<string | null>(null);
+  const [newChatMessage, setNewChatMessage] = useState<ChatMessage | null>(null);
   const clientRef = useRef<Client | null>(null);
   const accessToken = getAccessToken();
 
@@ -41,22 +46,37 @@ export function useChat(meetupId: string | null) {
     });
 
     client.onConnect = () => {
-      // 메시지 구독
+      // 액션 구독
       client.subscribe(
-        `/topic/meetups/${meetupId}/messages`,
+        `/topic/meetups/${meetupId}/actions`,
         (msg: IMessage) => {
-          console.log('Message:', JSON.parse(msg.body));
+          console.log('Action:', JSON.parse(msg.body));
+          const response = JSON.parse(msg.body);
+          if (isFirstConnectRef.current) {
+            setMyId(response.participantId.toString());
+            isFirstConnectRef.current = false;
+          } else {
+            setActorId(response.participantId.toString());
+          }
         },
         {
           Authorization: `Bearer ${accessToken}`,
         },
       );
 
-      // 액션 구독
+      // 메시지 구독
       client.subscribe(
-        `/topic/meetups/${meetupId}/actions`,
+        `/topic/meetups/${meetupId}/messages`,
         (msg: IMessage) => {
-          console.log('Action:', JSON.parse(msg.body));
+          console.log('Message:', JSON.parse(msg.body));
+          const response = JSON.parse(msg.body);
+          const chatMessage: ChatMessage = {
+            id: Math.random().toString(36).substring(2, 10),
+            senderType: 'other',
+            content: response.content,
+            time: response.sentAt,
+          };
+          setNewChatMessage(chatMessage);
         },
         {
           Authorization: `Bearer ${accessToken}`,
@@ -100,7 +120,7 @@ export function useChat(meetupId: string | null) {
       // !clientRef.current.connected: clientRef.current 객체는 있는데, 실제 연결은 아직 안 된 경우를 차단
 
       const destination = `/app/meetups/${meetupId}/messages`;
-      const payload: ChatMessage = { type, content };
+      const payload: Payload = { type, content };
       clientRef.current?.publish({
         destination: destination,
         headers: { Authorization: `Bearer ${accessToken}` },
@@ -111,5 +131,5 @@ export function useChat(meetupId: string | null) {
     [meetupId, connected],
   );
 
-  return { connect, disconnect, sendMessage };
+  return { connect, disconnect, myId, actorId, sendMessage, newChatMessage };
 }
