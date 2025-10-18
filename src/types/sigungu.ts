@@ -13,3 +13,8 @@ export interface SigunguResponse {
   updatedAt: string;
 }
 
+// 시군구 리스트 응답
+export interface SigunguListResponse {
+  content: SigunguResponse[];
+}
+
