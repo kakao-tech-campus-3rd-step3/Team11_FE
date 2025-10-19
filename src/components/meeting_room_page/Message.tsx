@@ -10,7 +10,6 @@ const Container = styled.div<{ isMine: boolean }>`
   flex-direction: row;
   width: 100%;
   height: auto;
-  min-height: ${({ isMine }) => (isMine ? '3rem' : '4rem')};
   justify-content: flex-start;
   align-items: flex-start;
   margin-bottom: 0.4rem;
@@ -42,7 +41,7 @@ const Content = styled.div<{ isMine: boolean }>`
   display: flex;
   width: auto;
   min-width: 3rem;
-  max-width: 15rem;
+  max-width: 60%;
   height: auto;
   min-height: 1.5rem;
   line-height: 1.25rem;

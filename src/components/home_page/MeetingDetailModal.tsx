@@ -19,7 +19,7 @@ import {
 interface MeetingDetailModalProps {
   meeting: Meeting;
   onClose: () => void;
-  isOpen: boolean;
+  isOpen?: boolean;
 }
 
 export const MeetingDetailModal = ({ meeting, onClose, isOpen }: MeetingDetailModalProps) => {

@@ -7,10 +7,12 @@ import OnboardingStep3 from '@/components/onboarding/OnboardingStep3';
 import OnboardingStep4 from '@/components/onboarding/OnboardingStep4';
 import type { MyProfileState } from '@/store/slices/myProfileSlice';
 import { saveOnboardingProfile } from '@/api/auth';
+import { useFunnel } from '@/hooks/useFunnel';
 
 const Onboarding = () => {
   const navigate = useNavigate();
-  const [currentStep, setCurrentStep] = useState(1);
+  const [Funnel, Step, setStep] = useFunnel(['기본정보', '프로필사진', '추가정보', '완료']);
+
   const [onboardingData, setOnboardingData] = useState<MyProfileState>({
     name: null,
     age: null,
@@ -26,17 +28,11 @@ const Onboarding = () => {
 
   const handleNext = (stepData: Partial<MyProfileState>) => {
     setOnboardingData((prev) => ({ ...prev, ...stepData }));
-    setCurrentStep((prev) => prev + 1);
-  };
-
-  const handlePrev = () => {
-    setCurrentStep((prev) => prev - 1);
   };
 
   const handleComplete = async (finalData: Partial<MyProfileState>) => {
     const completeData = { ...onboardingData, ...finalData };
 
-    // 디버깅을 위한 로그
     console.log('온보딩 완료 데이터:', completeData);
 
     try {
@@ -49,31 +45,52 @@ const Onboarding = () => {
     }
   };
 
-  const renderCurrentStep = () => {
-    switch (currentStep) {
-      case 1:
-        return <OnboardingStep1 data={onboardingData} onNext={handleNext} />;
-      case 2:
-        return <OnboardingStep2 data={onboardingData} onNext={handleNext} onPrev={handlePrev} />;
-      case 3:
-        return <OnboardingStep3 data={onboardingData} onNext={handleNext} onPrev={handlePrev} />;
-      case 4:
-        return (
-          <OnboardingStep4
-            data={onboardingData}
-            onComplete={handleComplete}
-            onPrev={handlePrev}
-            onNext={() => {}}
-          />
-        );
-      default:
-        return <OnboardingStep1 data={onboardingData} onNext={handleNext} />;
-    }
-  };
-
   return (
     <Container>
-      <ContentContanier>{renderCurrentStep()}</ContentContanier>
+      <ContentContanier>
+        <Funnel>
+          <Step name="기본정보">
+            <OnboardingStep1
+              data={onboardingData}
+              onNext={(data) => {
+                handleNext(data);
+                setStep('프로필사진');
+              }}
+            />
+          </Step>
+
+          <Step name="프로필사진">
+            <OnboardingStep2
+              data={onboardingData}
+              onNext={(data) => {
+                handleNext(data);
+                setStep('추가정보');
+              }}
+              onPrev={() => setStep('기본정보')}
+            />
+          </Step>
+
+          <Step name="추가정보">
+            <OnboardingStep3
+              data={onboardingData}
+              onNext={(data) => {
+                handleNext(data);
+                setStep('완료');
+              }}
+              onPrev={() => setStep('프로필사진')}
+            />
+          </Step>
+
+          <Step name="완료">
+            <OnboardingStep4
+              data={onboardingData}
+              onComplete={handleComplete}
+              onPrev={() => setStep('추가정보')}
+              onNext={() => {}}
+            />
+          </Step>
+        </Funnel>
+      </ContentContanier>
     </Container>
   );
 };

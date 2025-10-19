@@ -4,9 +4,12 @@ import React from 'react';
 import type { ChatMessage } from '@/types/meeting_room_page/chatMessage';
 import type { SetState } from '@/types/meeting_room_page/chatMessage';
 
+type MessageType = 'TEXT' | 'IMAGE' | 'SYSTEM';
+
 interface ChatInputProps {
   chatMessages: ChatMessage[];
   setChatMessages: SetState<ChatMessage[]>;
+  sendMessage: (type: MessageType, message: string) => void;
 }
 
 const Container = styled.div`
@@ -56,10 +59,10 @@ const HelperText = styled.div`
   margin-top: 0.3rem;
 `;
 
-export const ChatInput = ({ chatMessages, setChatMessages }: ChatInputProps) => {
+export const ChatInput = ({ chatMessages, setChatMessages, sendMessage }: ChatInputProps) => {
   const [text, setText] = React.useState('');
 
-  const sendMessage = () => {
+  const handleClick = () => {
     const trimmedText = text.trim();
 
     if (!trimmedText) {
@@ -74,6 +77,7 @@ export const ChatInput = ({ chatMessages, setChatMessages }: ChatInputProps) => 
       time: new Date(),
     };
 
+    sendMessage('TEXT', trimmedText);
     setChatMessages([...chatMessages, newMessage]);
     setText('');
   };
@@ -87,11 +91,11 @@ export const ChatInput = ({ chatMessages, setChatMessages }: ChatInputProps) => 
         onKeyDown={(e) => {
           if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault();
-            sendMessage();
+            handleClick();
           }
         }}
       />
-      <Button onClick={sendMessage}>
+      <Button onClick={handleClick}>
         <Send style={{ position: 'absolute', top: '0.75rem', right: '3rem' }} />
       </Button>
       <HelperText>Enter: 전송, Shift + Enter: 줄바꿈</HelperText>

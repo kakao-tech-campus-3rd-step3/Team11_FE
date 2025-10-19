@@ -15,6 +15,60 @@ export const HeaderSection = styled.div`
   clip-path: ellipse(130% 100% at 50% 0%);
 `;
 
+// 뱃지 섹션
+export const BadgeSection = styled.div`
+  margin-top: 24px;
+  padding: 0 20px;
+`;
+
+export const BadgeContainer = styled.div`
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  min-height: 60px;
+`;
+
+export const BadgeItem = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 8px;
+  border-radius: 8px;
+  background-color: #f9fafb;
+  border: 1px solid #e5e7eb;
+  min-width: 80px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background-color: #f3f4f6;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+`;
+
+export const BadgeIcon = styled.img`
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+`;
+
+export const BadgeName = styled.span`
+  font-size: 0.75rem;
+  color: #374151;
+  text-align: center;
+  font-weight: 500;
+`;
+
+export const EmptyBadgeMessage = styled.div`
+  width: 100%;
+  text-align: center;
+  color: #9ca3af;
+  font-size: 0.875rem;
+  padding: 20px 0;
+`;
+
 export const HeaderTitle = styled.h1`
   font-size: 24px;
   font-weight: 600;
@@ -101,11 +155,6 @@ export const UserGender = styled.span`
   font-weight: 500;
 `;
 
-export const UserEmail = styled.p`
-  font-size: 14px;
-  color: #7f8c8d;
-  margin: 0;
-`;
 
 export const ProfileInfoSection = styled.div`
   margin: 20px 0;
