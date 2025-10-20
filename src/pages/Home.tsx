@@ -89,19 +89,26 @@ const MessageOverlay = styled.div`
   max-width: calc(100% - 40px);
 `;
 
+interface MapFiltersState {
+  categories: string[];
+  radius: string | null;
+}
+
 const Home = () => {
   const mapRef = useRef<HTMLDivElement>(null);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [selectedMeeting, setSelectedMeeting] = useState<Meeting | null>(null);
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-  const [selectedRadius, setSelectedRadius] = useState<string | null>(null);
+  const [filters, setFilters] = useState<MapFiltersState>({
+    categories: [],
+    radius: null,
+  });
   const navigate = useNavigate();
 
   const APP_KEY = (import.meta.env.VITE_KAKAO_MAP_KEY as string) || (apikey?.kakaoMapKey as string);
   const map = useKakaoMap({ mapRef, appKey: APP_KEY });
   const userLocation = useUserLocation();
 
-  const { meetings, isLoading, error } = useMeetings(map, selectedCategories, selectedRadius);
+  const { meetings, isLoading, error } = useMeetings(map, filters.categories, filters.radius);
 
   const handleMarkerClick = (meeting: Meeting) => {
     setSelectedMeeting(meeting);
@@ -133,13 +140,19 @@ const Home = () => {
   };
 
   const handleCategoryClick = (category: string) => {
-    setSelectedCategories((prev) =>
-      prev.includes(category) ? prev.filter((c) => c !== category) : [...prev, category],
-    );
+    setFilters((prev) => ({
+      ...prev,
+      categories: prev.categories.includes(category)
+        ? prev.categories.filter((c) => c !== category)
+        : [...prev.categories, category],
+    }));
   };
 
   const handleRadiusClick = (radius: string) => {
-    setSelectedRadius((prev) => (prev === radius ? null : radius));
+    setFilters((prev) => ({
+      ...prev,
+      radius: prev.radius === radius ? null : radius,
+    }));
   };
 
   const renderMeetingMessage = () => {
@@ -161,9 +174,9 @@ const Home = () => {
           {map ? (
             <>
               <SearchButton onClick={handleSearchClick} />
-              <RadiusFilter selectedRadius={selectedRadius} onRadiusClick={handleRadiusClick} />
+              <RadiusFilter selectedRadius={filters.radius} onRadiusClick={handleRadiusClick} />
               <MapFilters
-                selectedCategories={selectedCategories}
+                selectedCategories={filters.categories}
                 onCategoryClick={handleCategoryClick}
               />
               {renderMeetingMessage()}
