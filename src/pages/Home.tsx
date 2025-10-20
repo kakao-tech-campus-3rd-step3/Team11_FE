@@ -1,5 +1,4 @@
-import { useRef, useState, useEffect, useCallback } from 'react';
-import ReactDOM from 'react-dom/client';
+import { useRef, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled, { createGlobalStyle } from 'styled-components';
 import GlobalStyle from '@/style/GlobalStyle';
@@ -12,27 +11,18 @@ import BottomNav from '@/components/common/BottomNav';
 import { Container } from '@/style/CommonStyle';
 import type { Meeting } from '@/types/meeting';
 import { MeetingDetailModal } from '@/components/home_page/MeetingDetailModal';
-import { getMeetings } from '@/api/main_meetings';
-import MeetingIcon, { type MeetingCategory } from '@/components/home_page/MeetingIcon';
-import { ERROR_MESSAGES, INFO_MESSAGES } from '@/constants/messages';
+import { INFO_MESSAGES } from '@/constants/messages';
 import { MapFilters } from '@/components/home_page/MapFilters';
 import { RadiusFilter } from '@/components/home_page/RadiusFilter';
+import { useUserLocation } from '@/hooks/useUserLocation';
+import { useMeetings } from '@/hooks/useMeetings';
+import { useMeetingMarkers } from '@/hooks/useMeetingMarkers';
 
 declare global {
   interface Window {
     kakao: any;
   }
 }
-
-interface LocationData {
-  lat: number;
-  lng: number;
-}
-
-const BUSAN_UNIVERSITY_LOCATION: LocationData = {
-  lat: 35.2335,
-  lng: 129.081,
-};
 
 const KakaoMapCssFix = createGlobalStyle`
   #kakaoMap img { max-width: none !important; }
@@ -101,65 +91,23 @@ const MessageOverlay = styled.div`
 
 const Home = () => {
   const mapRef = useRef<HTMLDivElement>(null);
-  const markersRef = useRef<any[]>([]);
-  const [meetings, setMeetings] = useState<Meeting[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [selectedMeeting, setSelectedMeeting] = useState<Meeting | null>(null);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [selectedRadius, setSelectedRadius] = useState<string | null>(null);
-  const [userLocation, setUserLocation] = useState<LocationData | null>(null);
   const navigate = useNavigate();
 
   const APP_KEY = (import.meta.env.VITE_KAKAO_MAP_KEY as string) || (apikey?.kakaoMapKey as string);
   const map = useKakaoMap({ mapRef, appKey: APP_KEY });
+  const userLocation = useUserLocation();
 
-  useEffect(() => {
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        setUserLocation({
-          lat: position.coords.latitude,
-          lng: position.coords.longitude,
-        });
-      },
-      (err) => {
-        console.error('위치 정보를 가져오는 데 실패했습니다:', err);
-        setUserLocation(BUSAN_UNIVERSITY_LOCATION);
-      },
-    );
-  }, []);
+  const { meetings, isLoading, error } = useMeetings(map, selectedCategories, selectedRadius);
 
-  const fetchMeetings = useCallback(async () => {
-    if (!map) return;
-    setIsLoading(true);
-    setError(null);
-    try {
-      const center = map.getCenter();
-      const params: any = {
-        latitude: center.getLat(),
-        longitude: center.getLng(),
-      };
-      if (selectedCategories.length > 0) {
-        params.hobby = selectedCategories.join(',');
-      }
-      if (selectedRadius) {
-        params.radius = parseInt(selectedRadius.replace('km', ''), 10) * 1000;
-      }
-      const meetingData = await getMeetings(params);
-      setMeetings(meetingData);
-    } catch (err: any) {
-      console.error('모임 정보를 불러오는 데 실패했습니다.', err);
-      setError(
-        err.response?.status === 401
-          ? ERROR_MESSAGES.LOGIN_REQUIRED
-          : ERROR_MESSAGES.MEETING_FETCH_FAILED,
-      );
-      setMeetings([]);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [map, selectedCategories, selectedRadius]);
+  const handleMarkerClick = (meeting: Meeting) => {
+    setSelectedMeeting(meeting);
+  };
+
+  useMeetingMarkers(map, meetings, handleMarkerClick);
 
   useEffect(() => {
     if (map && userLocation) {
@@ -167,52 +115,6 @@ const Home = () => {
       map.setCenter(userLatLng);
     }
   }, [map, userLocation]);
-
-  useEffect(() => {
-    if (map) {
-      const listener = window.kakao.maps.event.addListener(map, 'idle', fetchMeetings);
-      return () => {
-        window.kakao.maps.event.removeListener(map, 'idle', listener);
-      };
-    }
-  }, [map, fetchMeetings]);
-
-  useEffect(() => {
-    fetchMeetings();
-  }, [selectedCategories, selectedRadius, fetchMeetings]);
-
-  useEffect(() => {
-    markersRef.current.forEach((marker) => marker.setMap(null));
-    markersRef.current = [];
-
-    if (!map || !window.kakao || meetings.length === 0) return;
-
-    const newMarkers = meetings.map((meeting) => {
-      const position = new window.kakao.maps.LatLng(meeting.latitude, meeting.longitude);
-      const markerContainer = document.createElement('div');
-      markerContainer.className = 'custom-div-icon';
-      markerContainer.style.cursor = 'pointer';
-      markerContainer.onclick = () => handleMarkerClick(meeting);
-
-      const pinElement = document.createElement('div');
-      pinElement.className = 'marker-pin';
-      markerContainer.appendChild(pinElement);
-
-      ReactDOM.createRoot(pinElement).render(
-        <MeetingIcon category={meeting.category as MeetingCategory} className="marker-icon" />,
-      );
-
-      const customOverlay = new window.kakao.maps.CustomOverlay({
-        position: position,
-        content: markerContainer,
-        yAnchor: 1,
-      });
-      customOverlay.setMap(map);
-      return customOverlay;
-    });
-
-    markersRef.current = newMarkers;
-  }, [map, meetings]);
 
   const handleSearchClick = () => {
     setIsSearchOpen(true);
@@ -224,10 +126,6 @@ const Home = () => {
         },
       });
     }, OVERLAY_ANIMATION_DURATION);
-  };
-
-  const handleMarkerClick = (meeting: Meeting) => {
-    setSelectedMeeting(meeting);
   };
 
   const handleCloseModal = () => {
