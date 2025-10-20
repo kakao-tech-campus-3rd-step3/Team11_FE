@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import { colors } from '@/style/themes';
+import { CATEGORIES, RADII } from '@/constants/filters';
 
 const FiltersContainer = styled.div`
   width: 90%;
@@ -45,9 +46,6 @@ const FilterButton = styled.button`
   }
 `;
 
-const categories = ['게임', '영화', '맛집탐방', '운동', '스터디', '기타'];
-const radii = ['1km', '3km', '5km'];
-
 interface SearchFiltersProps {
   selectedCategories: string[];
   selectedRadius: string | null;
@@ -66,7 +64,7 @@ export const SearchFilters = ({
       <FilterSection>
         <FilterTitle>카테고리</FilterTitle>
         <FilterOptions>
-          {categories.map((category) => (
+          {CATEGORIES.map((category) => (
             <FilterButton
               key={category}
               className={selectedCategories.includes(category) ? 'selected' : ''}
@@ -81,7 +79,7 @@ export const SearchFilters = ({
       <FilterSection>
         <FilterTitle>반경</FilterTitle>
         <FilterOptions>
-          {radii.map((radius) => (
+          {RADII.map((radius) => (
             <FilterButton
               key={radius}
               className={selectedRadius === radius ? 'selected' : ''}
