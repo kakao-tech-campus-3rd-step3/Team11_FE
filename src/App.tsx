@@ -13,6 +13,7 @@ import SearchRoom from '@/pages/SearchRoom';
 import LocationPicker from '@/pages/LocationPicker';
 import ParticipantEvaluation from './pages/ParticipantEvaluation';
 import My from './pages/My';
+import UserProfile from './pages/UserProfile';
 import ProtectedRoute from '@/components/common/ProtectedRoute';
 
 function App() {
@@ -30,6 +31,7 @@ function App() {
         <Route element={<ProtectedRoute />}>
           <Route path="/home" element={<Home />} />
           <Route path="/my" element={<My />} />
+          <Route path="/user/:userId" element={<UserProfile />} />
           <Route path="/create-room" element={<RoomCreate />} />
           <Route path="/create-room/location" element={<LocationPicker />} />
           <Route path="/search-room" element={<SearchRoom />} />
