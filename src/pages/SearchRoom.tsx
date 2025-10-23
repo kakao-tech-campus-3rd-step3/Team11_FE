@@ -7,7 +7,6 @@ import { SearchInput } from '@/components/search_page/SearchInput';
 import { SearchFilters } from '@/components/search_page/SearchFilters';
 import { SearchResultList } from '@/components/search_page/SearchResultList';
 import { useMeetingsSearch } from '@/hooks/useMeetingsSearch';
-import type { Meeting } from '@/types/meeting';
 
 interface LocationData {
   lat: number;

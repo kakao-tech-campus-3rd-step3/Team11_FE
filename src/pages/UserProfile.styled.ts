@@ -15,6 +15,27 @@ export const HeaderSection = styled.div`
   clip-path: ellipse(130% 100% at 50% 0%);
 `;
 
+export const BackButton = styled.button`
+  position: absolute;
+  left: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+`;
+
 // 뱃지 섹션
 export const BadgeSection = styled.div`
   margin-top: 24px;
@@ -76,6 +97,7 @@ export const HeaderTitle = styled.h1`
   margin: 0;
   position: relative;
   z-index: 1;
+  text-align: center;
 `;
 
 export const ProfileImageContainer = styled.div`
@@ -155,7 +177,6 @@ export const UserGender = styled.span`
   font-weight: 500;
 `;
 
-
 export const ProfileInfoSection = styled.div`
   margin: 20px 0;
   padding: 0 20px;
@@ -221,182 +242,4 @@ export const SelfIntroPlaceholder = styled.p`
   color: #999;
   margin: 0;
   font-style: italic;
-`;
-
-export const ActionButtons = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 16px;
-  margin-top: 30px;
-`;
-
-export const SaveButton = styled.button`
-  flex: 1;
-  padding: 16px;
-  background: ${colors.primary};
-  color: white;
-  border: none;
-  border-radius: 12px;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-
-  &:hover {
-    background: ${colors.primary400};
-  }
-`;
-
-export const Modal = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 1000;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-
-export const ModalOverlay = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-`;
-
-export const ModalContent = styled.div`
-  background: white;
-  border-radius: 16px;
-  width: 90%;
-  max-width: 400px;
-  max-height: 80vh;
-  overflow-y: auto;
-  position: relative;
-  z-index: 1001;
-`;
-
-export const ModalHeader = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px;
-  border-bottom: 1px solid #f0f0f0;
-`;
-
-export const ModalTitle = styled.h2`
-  font-size: 18px;
-  font-weight: 600;
-  color: #333;
-  margin: 0;
-`;
-
-export const CloseButton = styled.button`
-  background: none;
-  border: none;
-  font-size: 24px;
-  color: #666;
-  cursor: pointer;
-  padding: 0;
-  width: 24px;
-  height: 24px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-
-export const ModalBody = styled.div`
-  padding: 20px;
-`;
-
-export const FormField = styled.div`
-  margin-bottom: 20px;
-`;
-
-export const FormLabel = styled.label`
-  display: block;
-  font-size: 14px;
-  font-weight: 500;
-  color: #333;
-  margin-bottom: 8px;
-`;
-
-export const FormInput = styled.input`
-  width: 100%;
-  padding: 12px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  font-size: 16px;
-  box-sizing: border-box;
-
-  &:focus {
-    outline: none;
-    border-color: ${colors.primary};
-  }
-`;
-
-export const FormTextArea = styled.textarea`
-  width: 100%;
-  padding: 12px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  font-size: 16px;
-  resize: vertical;
-  min-height: 80px;
-  box-sizing: border-box;
-
-  &:focus {
-    outline: none;
-    border-color: ${colors.primary};
-  }
-`;
-
-export const ButtonGroup = styled.div`
-  display: flex;
-  gap: 12px;
-  margin-top: 20px;
-`;
-
-export const CancelButton = styled.button`
-  flex: 1;
-  padding: 12px;
-  background: #f8f9fa;
-  color: #666;
-  border: none;
-  border-radius: 8px;
-  font-size: 16px;
-  font-weight: 500;
-  cursor: pointer;
-
-  &:hover {
-    background: #e9ecef;
-  }
-`;
-
-export const GenderButtonGroup = styled.div`
-  display: flex;
-  gap: 12px;
-  width: 100%;
-`;
-
-export const GenderButton = styled.button<{ selected: boolean }>`
-  flex: 1;
-  padding: 12px;
-  border: 2px solid ${(props) => (props.selected ? colors.primary : '#ddd')};
-  background: ${(props) => (props.selected ? colors.primary : 'white')};
-  color: ${(props) => (props.selected ? 'white' : '#666')};
-  border-radius: 8px;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-
-  &:hover {
-    border-color: ${colors.primary};
-    background: ${(props) => (props.selected ? colors.primary400 : '#f8f9fa')};
-  }
 `;
