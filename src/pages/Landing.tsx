@@ -19,8 +19,11 @@ const Landing = () => {
       <WhiteBackground />
       
       {/* 랜딩 페이지  */}
-      <Container onClick={() => navigate('/login')}>
-        <Logo alt="모밋 로고" src={LogoImg} onClick={() => navigate('/home')}></Logo>
+      <Container>
+        <Logo alt="모밋 로고" src={LogoImg} onClick={(e) => {
+          e.stopPropagation();
+          navigate('/home');
+        }}></Logo>
         <Text>MOMEET</Text>
       </Container>
       

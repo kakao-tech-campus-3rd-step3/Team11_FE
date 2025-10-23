@@ -83,6 +83,6 @@ export const Text = styled.div`
   font-weight: 400;
   color:rgb(82, 82, 82);
   margin-bottom: 2rem;
-  animation: ${textFadeIn} 2s ease-out 5s forwards;
+  animation: ${textFadeIn} 1.5s ease-out 4.1s forwards;
   opacity: 0;
 `;

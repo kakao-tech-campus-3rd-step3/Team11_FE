@@ -48,7 +48,7 @@ const Onboarding = () => {
   return (
     <Container>
       <ContentContanier>
-        <Funnel>
+        <Funnel duration={400}>
           <Step name="기본정보">
             <OnboardingStep1
               data={onboardingData}
