@@ -74,8 +74,8 @@ export const updateProfile = async (profileData: MyProfileState) => {
 };
 
 // 다른 사용자 프로필 조회
-export const getUserProfile = async (userId: number): Promise<MyProfileState> => {
-  const response = await api.get<MyProfileState>(`/api/profiles/${userId}`);
+export const getUserProfile = async (profileId: number): Promise<MyProfileState> => {
+  const response = await api.get<MyProfileState>(`/api/profiles/${profileId}`);
   return response.data;
 };
 
