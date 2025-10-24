@@ -142,6 +142,8 @@ const RoomCreate = () => {
     try {
       const response = await createMeetUp(finalFormState);
       console.log('방 생성 성공:', response);
+      alert('모임 방이 성공적으로 생성되었습니다!');
+      navigate('/meeting-room');
     } catch (error) {
       console.error('방 생성 실패:', error);
     }

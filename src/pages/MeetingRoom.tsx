@@ -9,7 +9,7 @@ import { Container } from '@/style/CommonStyle';
 import type { ChatMessage } from '@/types/meeting_room_page/chatMessage';
 import { useEffect, useState } from 'react';
 
-const TEST_MEETUP_ID = 'db6acd92-a2ef-4383-9a57-94a48f4c6ea2';
+const TEST_MEETUP_ID = '3b24f193-4e28-4c8d-9640-129fe87d7b0b';
 
 const MeetingRoom = () => {
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>(mockMessages);
