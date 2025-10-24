@@ -89,6 +89,8 @@ export const ChatInput = ({ chatMessages, setChatMessages, sendMessage }: ChatIn
         onChange={(e) => setText(e.target.value)}
         placeholder="대화를 시작해 보세요!"
         onKeyDown={(e) => {
+          if (e.nativeEvent.isComposing) return;
+
           if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault();
             handleClick();
