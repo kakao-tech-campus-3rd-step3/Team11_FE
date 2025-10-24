@@ -31,20 +31,20 @@ export interface BaseLocation {
 }
 
 export interface Location {
-  longitude: number;
-  latitude: number;
-  address: string;
+  longitude: number | undefined;
+  latitude: number | undefined;
+  address: string | undefined;
 }
 
 export interface MeetupRequestDTO {
   name: string;
   category: string;
-  subCategory: string;
   description: string;
   hashTags: string[];
   capacity: number;
   scoreLimit: number;
-  durationHours: number;
+  startAt: string;
+  endAt: string;
   location: Location;
 }
 
