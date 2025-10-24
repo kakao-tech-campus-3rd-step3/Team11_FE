@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { useNavigate, Link } from 'react-router-dom';
-import { useCreateForm } from '@/components/room_create_page.tsx/useCreateForm';
+import { useCreateForm } from '@/hooks/useCreateForm';
 import { useBoolean } from '@/hooks/useBoolean';
 import { CommonHeader } from '@/components/common/CommonHeader';
 import { HobbySelector } from '@/components/room_create_page.tsx/HobbySelector';
@@ -9,6 +9,9 @@ import { HashtagInput } from '@/components/room_create_page.tsx/HashtagInput';
 import { StyledInput } from '@/components/room_create_page.tsx/StyledComponents';
 import { TimePicker } from '@/components/room_create_page.tsx/TimePicker';
 import { colors } from '@/style/themes';
+import { createMeetUp } from '@/api/services/meeting_room.service';
+import { categoryMapper } from '@/utils/categoryMapper';
+import { hashtagParser } from '@/utils/hashtagParser';
 
 const slideUp = keyframes`
   from { transform: translateY(100%); }
@@ -114,18 +117,19 @@ const RoomCreate = () => {
     startClosing();
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!isFormValid) return;
 
     const finalFormState = {
       name: formState.name,
-      category: formState.category,
-      hashTags: hashtags,
+      category: categoryMapper(formState.category),
+      description: '',
+      hashTags: hashtagParser(hashtags),
       capacity: Number(formState.capacity),
       scoreLimit: Number(formState.scoreLimit),
-      startTime: formState.startTime,
-      endTime: formState.endTime,
+      startAt: formState.startTime,
+      endAt: formState.endTime,
       location: {
         latitude: formState.location?.lat,
         longitude: formState.location?.lng,
@@ -133,8 +137,14 @@ const RoomCreate = () => {
       },
     };
 
-    console.log('Final Form Data:', finalFormState);
-    alert('방 만들기 요청!');
+    console.log('최종 폼 데이터:', finalFormState);
+
+    try {
+      const response = await createMeetUp(finalFormState);
+      console.log('방 생성 성공:', response);
+    } catch (error) {
+      console.error('방 생성 실패:', error);
+    }
   };
 
   useEffect(() => {
