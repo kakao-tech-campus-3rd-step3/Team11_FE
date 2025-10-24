@@ -8,6 +8,7 @@ import { body } from '@/api/services/mockBodyData';
 import type { ChatMessage } from '@/types/meeting_room_page/chatMessage';
 
 type MessageType = 'TEXT' | 'IMAGE' | 'SYSTEM';
+
 type Payload = {
   type: MessageType;
   content: string;
@@ -15,9 +16,8 @@ type Payload = {
 
 export function useChat(meetupId: string | null) {
   const isFirstConnectRef = useRef(true);
+  const myIdRef = useRef<string | null>(null);
   const [connected, setConnected] = useState(false);
-  const [myId, setMyId] = useState<string | null>(null);
-  const [actorId, setActorId] = useState<string | null>(null);
   const [newChatMessage, setNewChatMessage] = useState<ChatMessage | null>(null);
   const clientRef = useRef<Client | null>(null);
   const accessToken = getAccessToken();
@@ -52,11 +52,9 @@ export function useChat(meetupId: string | null) {
         (msg: IMessage) => {
           console.log('Action:', JSON.parse(msg.body));
           const response = JSON.parse(msg.body);
-          if (isFirstConnectRef.current) {
-            setMyId(response.participantId.toString());
+          if (isFirstConnectRef.current && response.action === 'ENTER') {
+            myIdRef.current = response.participantId.toString();
             isFirstConnectRef.current = false;
-          } else {
-            setActorId(response.participantId.toString());
           }
         },
         {
@@ -70,6 +68,9 @@ export function useChat(meetupId: string | null) {
         (msg: IMessage) => {
           console.log('Message:', JSON.parse(msg.body));
           const response = JSON.parse(msg.body);
+
+          if (!myIdRef.current || myIdRef.current === response.senderId.toString()) return;
+
           const chatMessage: ChatMessage = {
             id: Math.random().toString(36).substring(2, 10),
             senderType: 'other',
@@ -131,5 +132,5 @@ export function useChat(meetupId: string | null) {
     [meetupId, connected],
   );
 
-  return { connect, disconnect, myId, actorId, sendMessage, newChatMessage };
+  return { connect, disconnect, sendMessage, newChatMessage };
 }

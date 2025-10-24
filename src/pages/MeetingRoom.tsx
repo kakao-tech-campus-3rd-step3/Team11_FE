@@ -9,21 +9,17 @@ import { Container } from '@/style/CommonStyle';
 import type { ChatMessage } from '@/types/meeting_room_page/chatMessage';
 import { useEffect, useState } from 'react';
 
-const TEST_MEETUP_ID = '3b24f193-4e28-4c8d-9640-129fe87d7b0b';
+const TEST_MEETUP_ID = 'f1559050-8238-4616-aa48-34d4c3526f23';
 
 const MeetingRoom = () => {
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>(mockMessages);
   const [meetUpId, setmeetUpId] = useState<string | null>(null);
-  const { connect, myId, actorId, sendMessage, newChatMessage } = useChat(meetUpId);
+  const { connect, sendMessage, newChatMessage } = useChat(meetUpId);
 
   useEffect(() => {
-    console.log('myId:', myId, 'actorId:', actorId, 'newChatMessage:', newChatMessage);
-  }, [myId, actorId]);
-
-  useEffect(() => {
-    if (newChatMessage && myId !== actorId) {
-      setChatMessages((prevMessages) => [...prevMessages, newChatMessage]);
-    }
+    if (!newChatMessage) return;
+    console.log('newChatMessage:', newChatMessage);
+    setChatMessages((prevMessages) => [...prevMessages, newChatMessage]);
   }, [newChatMessage]);
 
   // 테스트용 모임 참가 로직
