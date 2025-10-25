@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
-import { getMeetings, type GetMeetingsParams } from '@/api/meeting_list';
+
 import type { Meeting } from '@/types/meeting';
+import { getMeetings, type GetMeetingsParams } from '@/api/services/meetup.service';
 
 const USE_MOCK_DATA = true;
 

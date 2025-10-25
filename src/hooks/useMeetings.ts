@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
-import { getMeetings } from '@/api/main_meetings';
 import type { Meeting } from '@/types/meeting';
 import { ERROR_MESSAGES } from '@/constants/messages';
+import { getMeetings } from '@/api/services/meetup.service';
 
 export const useMeetings = (
   map: any,

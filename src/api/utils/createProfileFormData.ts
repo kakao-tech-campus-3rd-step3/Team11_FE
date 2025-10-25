@@ -1,8 +1,7 @@
-import api from './axiosInstance';
 import type { MyProfileState } from '@/store/slices/myProfileSlice';
 
 // 프로필 데이터를 FormData로 변환하는 함수
-const createProfileFormData = (profileData: MyProfileState): FormData => {
+export const createProfileFormData = (profileData: MyProfileState): FormData => {
   const formData = new FormData();
 
   // 텍스트 필드들을 FormData에 추가
@@ -42,41 +41,3 @@ const createProfileFormData = (profileData: MyProfileState): FormData => {
 
   return formData;
 };
-
-// 프로필 조회
-export const getMyProfile = async (): Promise<MyProfileState> => {
-  const response = await api.get<MyProfileState>('/api/profiles/me');
-  return response.data;
-};
-
-// 온보딩용 프로필 저장
-export const saveOnboardingProfile = async (profileData: MyProfileState) => {
-  const formData = createProfileFormData(profileData);
-
-  const response = await api.post('/api/profiles', formData, {
-    headers: {
-      'Content-Type': 'multipart/form-data',
-    },
-  });
-  return response.data;
-};
-
-// 프로필 수정
-export const updateProfile = async (profileData: MyProfileState) => {
-  const formData = createProfileFormData(profileData);
-
-  const response = await api.patch('/api/profiles/me', formData, {
-    headers: {
-      'Content-Type': 'multipart/form-data',
-    },
-  });
-  return response.data;
-};
-
-// 다른 사용자 프로필 조회
-export const getUserProfile = async (profileId: number): Promise<MyProfileState> => {
-  const response = await api.get<MyProfileState>(`/api/profiles/${profileId}`);
-
-  return response.data;
-};
-

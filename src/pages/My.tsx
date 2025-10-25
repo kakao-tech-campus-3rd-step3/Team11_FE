@@ -3,8 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Container, ContentContanier } from '@/style/CommonStyle';
 import type { RootState } from '@/store';
 import { setMyProfile } from '@/store/slices/myProfileSlice';
-import { getMyProfile, updateProfile } from '@/api/profile';
-import { getMyBadges } from '@/api/badge';
+import { getMyBadges, getMyProfile, updateProfile } from '@/api/services/profile.service';
 import { useLogin } from '@/hooks/useLogin';
 import { getProfile } from '@/utils/tokenStorage';
 import type { Badge } from '@/types/badge';
@@ -128,7 +127,7 @@ const My = () => {
 
   const handleEdit = () => {
     setIsEditing(true);
-    
+
     // 기존 프로필 데이터로 editData 채우기
     setEditData({
       nickname: myProfile.nickname || '',
@@ -138,7 +137,7 @@ const My = () => {
       temperature: myProfile.temperature || '',
       imageUrl: myProfile.imageUrl || '',
     });
-    
+
     // 기존 위치 데이터에서 시/도, 시/군/구 분리
     if (myProfile.baseLocation) {
       if (typeof myProfile.baseLocation === 'string') {
@@ -164,7 +163,7 @@ const My = () => {
         typeof editData.temperature === 'string'
           ? parseFloat(editData.temperature) || null
           : editData.temperature,
-      baseLocation: sido && sigungu ? `${sido} ${sigungu}` : null
+      baseLocation: sido && sigungu ? `${sido} ${sigungu}` : null,
     };
 
     console.log('저장할 프로필 데이터:', profileData);
@@ -246,10 +245,10 @@ const My = () => {
                 <ProfileInfoItem>
                   <InfoLabel>위치</InfoLabel>
                   <InfoValue>
-                    {myProfile.baseLocation ? 
-                      (typeof myProfile.baseLocation === 'string' 
-                        ? myProfile.baseLocation 
-                        : `${(myProfile.baseLocation as { sidoName: string; sigunguName: string }).sidoName} ${(myProfile.baseLocation as { sidoName: string; sigunguName: string }).sigunguName}`) 
+                    {myProfile.baseLocation
+                      ? typeof myProfile.baseLocation === 'string'
+                        ? myProfile.baseLocation
+                        : `${(myProfile.baseLocation as { sidoName: string; sigunguName: string }).sidoName} ${(myProfile.baseLocation as { sidoName: string; sigunguName: string }).sigunguName}`
                       : '-'}
                   </InfoValue>
                 </ProfileInfoItem>
@@ -280,9 +279,7 @@ const My = () => {
                       </BadgeItem>
                     ))
                   ) : (
-                    <EmptyBadgeMessage>
-                      아직 획득한 뱃지가 없습니다
-                    </EmptyBadgeMessage>
+                    <EmptyBadgeMessage>아직 획득한 뱃지가 없습니다</EmptyBadgeMessage>
                   )}
                 </BadgeContainer>
               </BadgeSection>
@@ -290,11 +287,11 @@ const My = () => {
               <ActionButtons>
                 <SaveButton onClick={handleEdit}>편집</SaveButton>
               </ActionButtons>
-              
+
               <ActionButtons style={{ marginTop: '16px' }}>
                 <CancelButton onClick={handleLogout}>로그아웃</CancelButton>
               </ActionButtons>
-              
+
               <BottomNav />
             </MainContentCard>
 
@@ -310,7 +307,9 @@ const My = () => {
                     <FormField>
                       <FormLabel>프로필 이미지</FormLabel>
                       <div
-                        onClick={() => document.getElementById('edit-profile-image-upload')?.click()}
+                        onClick={() =>
+                          document.getElementById('edit-profile-image-upload')?.click()
+                        }
                         style={{
                           width: '120px',
                           height: '120px',

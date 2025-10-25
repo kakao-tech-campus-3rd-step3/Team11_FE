@@ -4,7 +4,7 @@ import { Client } from '@stomp/stompjs';
 import type { IMessage } from '@stomp/stompjs';
 import { getAccessToken } from '@/utils/tokenStorage';
 import { getUgradeToken } from '@/api/services/auth.service';
-import { body } from '@/api/services/mockBodyData';
+import { body } from '@/data/mockApiBodyData';
 import type { ChatMessage } from '@/types/meeting_room_page/chatMessage';
 
 type MessageType = 'TEXT' | 'IMAGE' | 'SYSTEM';

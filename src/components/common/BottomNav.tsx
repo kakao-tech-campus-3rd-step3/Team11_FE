@@ -8,7 +8,7 @@ import {
 } from 'react-icons/io5';
 import { colors } from '@/style/themes';
 import { useEffect, useState } from 'react';
-import { getMyJoinedMeetup } from '@/api/services/meeting_room.service';
+import { getMyJoinedMeetup } from '@/api/services/meetup_room.service';
 
 const NavContainer = styled.nav`
   position: fixed;

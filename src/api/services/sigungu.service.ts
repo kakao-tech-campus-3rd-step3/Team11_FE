@@ -1,4 +1,4 @@
-import api from './axiosInstance';
+import api from '../clients/axiosInstance';
 import type { SigunguResponse, SigunguListResponse } from '@/types/sigungu';
 
 // 위도/경도 기반 시군구 영역조회
@@ -34,4 +34,3 @@ export const getSigunguListByLocation = async (
   const sidoCode = sigungu.sidoCode;
   return await getSigunguListBySido(sidoCode);
 };
-

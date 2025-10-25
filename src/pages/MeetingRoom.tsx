@@ -1,4 +1,4 @@
-import { getMyJoinedMeetup, joinMeetUp } from '@/api/services/meeting_room.service';
+import { getMyJoinedMeetup, joinMeetUp } from '@/api/services/meetup_room.service';
 import { ChatBox } from '@/components/meeting_room_page/ChatBox';
 import { ChatInput } from '@/components/meeting_room_page/ChatInput';
 import { Header } from '@/components/meeting_room_page/Header';
