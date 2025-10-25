@@ -6,23 +6,23 @@ export const getSigunguByLocation = async (
   latitude: number,
   longitude: number,
 ): Promise<SigunguResponse> => {
-  const res = await api.get<SigunguResponse>('/api/sigungu/within', {
+  const response = await api.get<SigunguResponse>('/api/sigungu/within', {
     params: {
       latitude,
       longitude,
     },
   });
-  return res.data;
+  return response.data;
 };
 
 // 시도 코드로 시군구 리스트 조회
 export const getSigunguListBySido = async (sidoCode: number): Promise<SigunguListResponse> => {
-  const res = await api.get<SigunguListResponse>('/api/sigungu', {
+  const response = await api.get<SigunguListResponse>('/api/sigungu', {
     params: {
       sidoCode,
     },
   });
-  return res.data;
+  return response.data;
 };
 
 // 위도/경도로 해당 지역의 시도에 속한 모든 시군구 리스트 조회

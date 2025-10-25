@@ -40,7 +40,7 @@ export const getUserProfile = async (profileId: number): Promise<MyProfileState>
   return response.data;
 };
 
-// 내 뱃지 조회 API
+// 내 뱃지 조회
 export const getMyBadges = async (): Promise<BadgeListResponse> => {
   const response = await api.get<BadgeListResponse>('/api/profiles/me/badges');
   console.log('뱃지 조회 성공:', response.data);
