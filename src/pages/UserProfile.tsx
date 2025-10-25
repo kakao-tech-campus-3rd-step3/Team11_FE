@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Container, ContentContanier } from '@/style/CommonStyle';
-import { getUserProfile } from '@/api/profile';
-import { getMyBadges } from '@/api/badge';
+import { getMyBadges, getUserProfile } from '@/api/services/profile.service';
 import type { MyProfileState } from '@/store/slices/myProfileSlice';
 import type { Badge } from '@/types/badge';
 import {
@@ -46,7 +45,7 @@ const UserProfile = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       if (!userId) return;
-      
+
       setIsLoading(true);
       try {
         const profileData = await getUserProfile(parseInt(userId));
@@ -68,7 +67,7 @@ const UserProfile = () => {
   useEffect(() => {
     const fetchBadges = async () => {
       if (!userId) return;
-      
+
       try {
         const data = await getMyBadges();
         setBadges(data.content);
@@ -92,9 +91,7 @@ const UserProfile = () => {
           <HeaderTitle>프로필</HeaderTitle>
         </HeaderSection>
         <ContentContanier>
-          <div style={{ textAlign: 'center', padding: '20px' }}>
-            프로필 정보를 불러오는 중...
-          </div>
+          <div style={{ textAlign: 'center', padding: '20px' }}>프로필 정보를 불러오는 중...</div>
         </ContentContanier>
       </Container>
     );
@@ -107,9 +104,7 @@ const UserProfile = () => {
           <HeaderTitle>프로필</HeaderTitle>
         </HeaderSection>
         <ContentContanier>
-          <div style={{ textAlign: 'center', padding: '20px' }}>
-            프로필을 찾을 수 없습니다.
-          </div>
+          <div style={{ textAlign: 'center', padding: '20px' }}>프로필을 찾을 수 없습니다.</div>
         </ContentContanier>
       </Container>
     );
@@ -170,10 +165,10 @@ const UserProfile = () => {
             <ProfileInfoItem>
               <InfoLabel>위치</InfoLabel>
               <InfoValue>
-                {userProfile.baseLocation ? 
-                  (typeof userProfile.baseLocation === 'string' 
-                    ? userProfile.baseLocation 
-                    : `${(userProfile.baseLocation as { sidoName: string; sigunguName: string }).sidoName} ${(userProfile.baseLocation as { sidoName: string; sigunguName: string }).sigunguName}`) 
+                {userProfile.baseLocation
+                  ? typeof userProfile.baseLocation === 'string'
+                    ? userProfile.baseLocation
+                    : `${(userProfile.baseLocation as { sidoName: string; sigunguName: string }).sidoName} ${(userProfile.baseLocation as { sidoName: string; sigunguName: string }).sigunguName}`
                   : '-'}
               </InfoValue>
             </ProfileInfoItem>
@@ -204,13 +199,11 @@ const UserProfile = () => {
                   </BadgeItem>
                 ))
               ) : (
-                <EmptyBadgeMessage>
-                  아직 획득한 뱃지가 없습니다
-                </EmptyBadgeMessage>
+                <EmptyBadgeMessage>아직 획득한 뱃지가 없습니다</EmptyBadgeMessage>
               )}
             </BadgeContainer>
           </BadgeSection>
-          
+
           <BottomNav />
         </MainContentCard>
       </ContentContanier>

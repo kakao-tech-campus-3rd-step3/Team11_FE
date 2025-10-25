@@ -1,10 +1,11 @@
 import { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { login, kakaoLogin, signup, logout } from '@/api/auth';
-import { getMyProfile } from '@/api/profile';
+
+import { getMyProfile } from '@/api/services/profile.service';
 import { setMyProfile, clearMyProfile } from '@/store/slices/myProfileSlice';
 import { clearProfile, clearTokens, saveTokens, saveProfile } from '@/utils/tokenStorage';
+import { kakaoLogin, login, logout, signup } from '@/api/services/auth.service';
 
 export const useLogin = () => {
   const navigate = useNavigate();

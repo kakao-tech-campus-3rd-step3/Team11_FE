@@ -9,7 +9,7 @@ import { HashtagInput } from '@/components/room_create_page.tsx/HashtagInput';
 import { StyledInput } from '@/components/room_create_page.tsx/StyledComponents';
 import { TimePicker } from '@/components/room_create_page.tsx/TimePicker';
 import { colors } from '@/style/themes';
-import { createMeetUp } from '@/api/services/meeting_room.service';
+import { createMeetUp } from '@/api/services/meetup_room.service';
 import { categoryMapper } from '@/utils/categoryMapper';
 import { hashtagParser } from '@/utils/hashtagParser';
 
