@@ -5,11 +5,14 @@ import React, { useEffect, useRef, useState } from 'react';
 import { keyframes } from '@emotion/react';
 import { getChatList } from '@/api/services/meetup_room.service';
 import { messageParser } from '@/utils/messageParser';
+import type { ParticipantDTO } from '@/api/types/meeting_room.dto';
+import { findSender } from '@/utils/findSender';
 
 interface ChatBoxProps {
   chatMessages: ChatMessage[];
   meetUpId: string | null;
-  myId: string | null;
+  myId: number | null;
+  participants: ParticipantDTO[];
   isConnected: boolean;
   setChatMessages: React.Dispatch<React.SetStateAction<ChatMessage[]>>;
   bottomElementRef: React.RefObject<HTMLDivElement | null>;
@@ -62,6 +65,7 @@ export const ChatBox = ({
   meetUpId,
   myId,
   isConnected,
+  participants,
   setChatMessages,
   bottomElementRef,
 }: ChatBoxProps) => {
@@ -140,9 +144,18 @@ export const ChatBox = ({
       ) : (
         <>
           <div ref={bottomElementRef} />
-          {chatMessages.map((message) => (
-            <Message key={message.id} senderType={message.senderType} content={message.content} />
-          ))}
+          {chatMessages.map((message) => {
+            const sender = findSender(participants, message.senderId);
+
+            return (
+              <Message
+                key={message.id}
+                senderType={message.senderType}
+                content={message.content}
+                sender={sender}
+              />
+            );
+          })}
           <IntersectionTrigger ref={intersectionTriggerRef}>
             {!isFirstRender && isLoading && <Spinner />}
           </IntersectionTrigger>

@@ -6,6 +6,7 @@ import { getAccessToken } from '@/utils/tokenStorage';
 import { getUgradeToken } from '@/api/services/auth.service';
 import { body } from '@/data/mockApiBodyData';
 import type { ChatMessage } from '@/types/meeting_room_page/chatMessage';
+import type { ChatMessageDTO } from '@/api/types/meeting_room.dto';
 
 type MessageType = 'TEXT' | 'IMAGE' | 'SYSTEM';
 
@@ -16,7 +17,7 @@ type Payload = {
 
 export function useChat(meetupId: string | null) {
   const isFirstConnectRef = useRef(true);
-  const myIdRef = useRef<string | null>(null);
+  const myIdRef = useRef<number | null>(null);
   const [isConnected, setIsConnected] = useState(false);
   const [newChatMessage, setNewChatMessage] = useState<ChatMessage | null>(null);
   const clientRef = useRef<Client | null>(null);
@@ -53,7 +54,7 @@ export function useChat(meetupId: string | null) {
           console.log('Action:', JSON.parse(msg.body));
           const response = JSON.parse(msg.body);
           if (isFirstConnectRef.current && response.action === 'ENTER') {
-            myIdRef.current = response.participantId.toString();
+            myIdRef.current = response.participantId;
             isFirstConnectRef.current = false;
             setIsConnected(true);
           }
@@ -68,15 +69,16 @@ export function useChat(meetupId: string | null) {
         `/topic/meetups/${meetupId}/messages`,
         (msg: IMessage) => {
           console.log('Message:', JSON.parse(msg.body));
-          const response = JSON.parse(msg.body);
+          const response: ChatMessageDTO = JSON.parse(msg.body);
 
-          if (!myIdRef.current || myIdRef.current === response.senderId.toString()) return;
+          if (!myIdRef.current || myIdRef.current === response.senderId) return;
 
           const chatMessage: ChatMessage = {
-            id: Math.random().toString(36).substring(2, 10),
+            id: crypto.randomUUID(),
+            senderId: response.senderId,
             senderType: 'other',
             content: response.content,
-            time: response.sentAt,
+            time: new Date(response.sentAt),
           };
           setNewChatMessage(chatMessage);
         },

@@ -48,7 +48,7 @@ const UserProfile = () => {
 
       setIsLoading(true);
       try {
-        const profileData = await getUserProfile(parseInt(userId));
+        const profileData = await getUserProfile(userId);
         setUserProfile(profileData);
         console.log('사용자 프로필 조회 성공:', profileData);
       } catch (error) {

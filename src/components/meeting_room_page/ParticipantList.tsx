@@ -1,5 +1,10 @@
 import styled from '@emotion/styled';
 import { Participant } from './Participant';
+import type { ParticipantDTO } from '@/api/types/meeting_room.dto';
+
+interface ParticipantListProps {
+  participants: ParticipantDTO[];
+}
 
 const Container = styled.div`
   position: absolute;
@@ -27,23 +32,13 @@ const List = styled.div`
   border-bottom: 1px solid black;
 `;
 
-export const ParticipantList = () => {
+export const ParticipantList = ({ participants }: ParticipantListProps) => {
   return (
     <Container>
       <List>
-        <Participant />
-        <Participant />
-        <Participant />
-        <Participant />
-        <Participant />
-        <Participant />
-        <Participant />
-        <Participant />
-        <Participant />
-        <Participant />
-        <Participant />
-        <Participant />
-        <Participant />
+        {participants.map((participant) => (
+          <Participant key={crypto.randomUUID()} participant={participant} />
+        ))}
       </List>
     </Container>
   );

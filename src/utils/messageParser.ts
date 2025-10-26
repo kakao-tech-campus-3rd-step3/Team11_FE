@@ -9,11 +9,12 @@ type rawMessages = {
   sentAt: string;
 };
 
-export const messageParser = (rawMessages: rawMessages[], myId: string): ChatMessage[] => {
+export const messageParser = (rawMessages: rawMessages[], myId: number): ChatMessage[] => {
   const chatMessages = rawMessages.map((msg) => {
     const parsedMsg: ChatMessage = {
       id: crypto.randomUUID(),
-      senderType: myId === msg.senderId.toString() ? 'me' : 'other',
+      senderId: msg.senderId,
+      senderType: myId === msg.senderId ? 'me' : 'other',
       content: msg.content,
       time: new Date(msg.sentAt),
     };

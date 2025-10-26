@@ -5,6 +5,11 @@ import { Sidebar } from '@/components/meeting_room_page/Sidebar';
 import { useBoolean } from '@/hooks/useBoolean';
 import { useNavigate } from 'react-router-dom';
 
+interface HeaderProps {
+  roomTitle: string;
+  isHost: boolean;
+}
+
 const HeaderContainer = styled.div`
   position: absolute;
   top: 0;
@@ -60,7 +65,7 @@ const Overlay = styled.div`
 const BACKARROW_SVG_SIZE = '32';
 const MENU_SVG_SIZE = '25.6';
 
-export const Header = () => {
+export const Header = ({ roomTitle, isHost }: HeaderProps) => {
   const naviagate = useNavigate();
   const [isSidebarOpen, { on: openSidebar, off: closeSidebar }] = useBoolean(false);
 
@@ -74,7 +79,7 @@ export const Header = () => {
             style={{ position: 'absolute', left: 0 }}
           />
         </Button>
-        <RoomTitle>축구할 사람 구해요~</RoomTitle>
+        <RoomTitle>{roomTitle}</RoomTitle>
         <Button onClick={openSidebar}>
           <Menu
             width={MENU_SVG_SIZE}
@@ -84,7 +89,7 @@ export const Header = () => {
         </Button>
       </HeaderContent>
       {isSidebarOpen && <Overlay onClick={closeSidebar} />}
-      <Sidebar isOpen={isSidebarOpen} onClose={closeSidebar} />
+      <Sidebar isOpen={isSidebarOpen} onClose={closeSidebar} isHost={isHost} />
     </HeaderContainer>
   );
 };

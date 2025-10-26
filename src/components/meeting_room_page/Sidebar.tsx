@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 interface SidebarProps {
   isOpen: boolean;
   onClose: () => void;
+  isHost: boolean;
 }
 
 const Container = styled.div<{ isOpen: boolean }>`
@@ -64,7 +65,7 @@ const Option = styled.button`
 
 const UNDO_SVG_SIZE = '25.6';
 
-export const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
+export const Sidebar = ({ isOpen, onClose, isHost }: SidebarProps) => {
   const navigate = useNavigate();
 
   return (
@@ -79,10 +80,12 @@ export const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
           />
         </Button>
       </Header>
-      <Option onClick={() => navigate('/participant-evaluation')}>실제 모임 시작</Option>
+      {isHost && (
+        <Option onClick={() => navigate('/participant-evaluation')}>실제 모임 시작</Option>
+      )}
       <Option>방 나가기</Option>
-      <Option>방 수정하기</Option>
-      <Option>마감 기한 연장</Option>
+      {isHost && <Option>방 수정하기</Option>}
+      {isHost && <Option>마감 기한 연장</Option>}
     </Container>
   );
 };
