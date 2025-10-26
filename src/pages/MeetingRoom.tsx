@@ -14,7 +14,8 @@ const MeetingRoom = () => {
   const bottomElementRef = useRef<HTMLDivElement | null>(null);
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
   const [meetUpId, setmeetUpId] = useState<string | null>(null);
-  const { connect, isConnected, myIdRef, sendMessage, newChatMessage } = useChat(meetUpId);
+  const { connect, disconnect, isConnected, myIdRef, sendMessage, newChatMessage } =
+    useChat(meetUpId);
 
   console.log(
     'MeetingRoom 렌더링, meetUpId:',
@@ -45,6 +46,10 @@ const MeetingRoom = () => {
     };
     if (!meetUpId) init();
     else connect();
+
+    return () => {
+      disconnect();
+    };
   }, [meetUpId]);
 
   useEffect(() => {
