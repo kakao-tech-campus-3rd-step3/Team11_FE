@@ -17,7 +17,7 @@ type Payload = {
 export function useChat(meetupId: string | null) {
   const isFirstConnectRef = useRef(true);
   const myIdRef = useRef<string | null>(null);
-  const [connected, setConnected] = useState(false);
+  const [isConnected, setIsConnected] = useState(false);
   const [newChatMessage, setNewChatMessage] = useState<ChatMessage | null>(null);
   const clientRef = useRef<Client | null>(null);
   const accessToken = getAccessToken();
@@ -55,6 +55,7 @@ export function useChat(meetupId: string | null) {
           if (isFirstConnectRef.current && response.action === 'ENTER') {
             myIdRef.current = response.participantId.toString();
             isFirstConnectRef.current = false;
+            setIsConnected(true);
           }
         },
         {
@@ -89,7 +90,6 @@ export function useChat(meetupId: string | null) {
         console.error('Error:', msg.body);
       });
 
-      setConnected(true);
       console.log('Connected');
     };
 
@@ -113,7 +113,7 @@ export function useChat(meetupId: string | null) {
   // 메시지 보내기
   const sendMessage = useCallback(
     (type: MessageType, content: string) => {
-      if (!connected) {
+      if (!isConnected) {
         console.warn('Not connected');
         return;
       }
@@ -129,8 +129,8 @@ export function useChat(meetupId: string | null) {
       });
       console.log('Sent:', payload);
     },
-    [meetupId, connected],
+    [meetupId, isConnected],
   );
 
-  return { connect, disconnect, sendMessage, newChatMessage };
+  return { connect, disconnect, isConnected, myIdRef, sendMessage, newChatMessage };
 }

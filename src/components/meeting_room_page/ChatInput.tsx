@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import Send from '@/assets/meeting_room_page/send.svg?react';
-import React from 'react';
+import { useRef, useState } from 'react';
 import type { ChatMessage } from '@/types/meeting_room_page/chatMessage';
 import type { SetState } from '@/types/meeting_room_page/chatMessage';
 
@@ -60,7 +60,8 @@ const HelperText = styled.div`
 `;
 
 export const ChatInput = ({ chatMessages, setChatMessages, sendMessage }: ChatInputProps) => {
-  const [text, setText] = React.useState('');
+  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+  const [text, setText] = useState('');
 
   const handleClick = () => {
     const trimmedText = text.trim();
@@ -71,20 +72,25 @@ export const ChatInput = ({ chatMessages, setChatMessages, sendMessage }: ChatIn
     }
 
     const newMessage: ChatMessage = {
-      id: `${Date.now()}-${Math.random().toString(36).substring(2, 8)}`,
+      id: crypto.randomUUID(),
       senderType: 'me',
       content: trimmedText,
       time: new Date(),
     };
 
     sendMessage('TEXT', trimmedText);
-    setChatMessages([...chatMessages, newMessage]);
+    setChatMessages([newMessage, ...chatMessages]);
     setText('');
+
+    if (textareaRef.current) {
+      textareaRef.current.value = '';
+    }
   };
 
   return (
     <Container>
       <TextArea
+        ref={textareaRef}
         value={text}
         onChange={(e) => setText(e.target.value)}
         placeholder="대화를 시작해 보세요!"
