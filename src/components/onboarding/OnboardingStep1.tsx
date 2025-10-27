@@ -72,16 +72,7 @@ const OnboardingStep1 = ({ data, onNext }: OnboardingStepProps) => {
       </FormSection>
 
       <FixedFooterContainer>
-        <SignupButton 
-          onClick={handleNext}
-          disabled={!formData.nickname.trim() || !isNicknameValid(formData.nickname)}
-          style={{
-            opacity: (!formData.nickname.trim() || !isNicknameValid(formData.nickname)) ? 0.5 : 1,
-            cursor: (!formData.nickname.trim() || !isNicknameValid(formData.nickname)) ? 'not-allowed' : 'pointer'
-          }}
-        >
-          다음
-        </SignupButton>
+        <SignupButton onClick={handleNext}>다음</SignupButton>
       </FixedFooterContainer>
     </>
   );
