@@ -50,6 +50,8 @@ const MeetingRoom = () => {
         console.error(error);
         try {
           const response = await joinMeetUp(TEST_MEETUP_ID);
+          const response2 = await getMyJoinedMeetup();
+          setmeetUpInfo(response2);
           console.log('모임 참가 성공:', response);
         } catch (error) {
           console.error(error);
