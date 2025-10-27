@@ -91,6 +91,7 @@ const MeetingRoom = () => {
     if (!newAction) return;
     console.log('newAction', newAction);
     setIsStarted(handleSocketAction('STARTED', newAction, navigate)!);
+    handleSocketAction('FINISH', newAction, navigate);
     handleSocketAction('JOIN', newAction, navigate, setChatMessages);
     handleSocketAction('EXIT', newAction, navigate, setChatMessages);
   }, [newAction]);
