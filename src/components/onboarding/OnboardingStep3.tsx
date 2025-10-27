@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect } from 'react';
 import type { OnboardingStepProps } from '@/types/onboarding';
 import {
   FormSection,
@@ -22,43 +22,40 @@ import backArrow from '@/assets/onoboarding_page/chevron-left.svg';
 import searchIcon from '@/assets/onoboarding_page/search.svg';
 import { Spacer } from '@/style/CommonStyle';
 import { useUserSigungu } from '@/hooks/useUserSigungu';
+import { useLocationInput } from '@/hooks/useLocationInput';
+import { useToast } from '@/hooks/useToast';
+import { Toast } from '@/components/common/Toast';
 
 const OnboardingStep3 = ({ onNext, onPrev }: OnboardingStepProps) => {
-  const { sidoName, sigunguList, isLoading, error } = useUserSigungu();
-  const [sigungu, setSigungu] = useState('');
-  const [sigunguSuggestions, setSigunguSuggestions] = useState<string[]>([]);
-  const [showSigunguSuggestions, setShowSigunguSuggestions] = useState(false);
+  const { isLoading, error } = useUserSigungu();
+  const {
+    sido,
+    sigungu,
+    sigunguSuggestions,
+    showSigunguSuggestions,
+    setShowSigunguSuggestions,
+    handleSigunguChange,
+    handleSigunguFocus,
+    handleSigunguSelect,
+  } = useLocationInput();
+  const { showToast, hideToast, toast } = useToast();
 
-  const handleSigunguChange = (value: string) => {
-    setSigungu(value);
-
-    if (value.trim()) {
-      const filtered = sigunguList
-        .map((s) => s.sigunguName)
-        .filter((sigunguName) => sigunguName.toLowerCase().includes(value.toLowerCase()));
-      setSigunguSuggestions(filtered);
-      setShowSigunguSuggestions(true);
-    } else {
-      setSigunguSuggestions([]);
-      setShowSigunguSuggestions(false);
+  useEffect(() => {
+    if (error) {
+      showToast(error);
     }
-  };
-
-  const handleSigunguSelect = (selectedSigungu: string) => {
-    setSigungu(selectedSigungu);
-    setShowSigunguSuggestions(false);
-  };
+  }, [error, showToast]);
 
   const handleNext = () => {
-    if (sidoName.trim() && sigungu.trim()) {
+    if (sido.trim() && sigungu.trim()) {
       onNext({
         baseLocation: {
-          sidoName: sidoName,
+          sidoName: sido,
           sigunguName: sigungu,
         },
       });
     } else {
-      alert('시/도와 시/군/구를 모두 선택해주세요');
+      showToast('시/도와 시/군/구를 모두 선택해주세요');
     }
   };
 
@@ -82,7 +79,7 @@ const OnboardingStep3 = ({ onNext, onPrev }: OnboardingStepProps) => {
             <FormInput
               type="text"
               placeholder="시/도 선택 (예: 부산광역시)"
-              value={sidoName}
+              value={sido}
               readOnly
             />
             <SearchIcon src={searchIcon} alt="search" />
@@ -98,12 +95,12 @@ const OnboardingStep3 = ({ onNext, onPrev }: OnboardingStepProps) => {
               onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                 handleSigunguChange(e.target.value)
               }
-              onFocus={() => setShowSigunguSuggestions(true)}
+              onFocus={handleSigunguFocus}
               onBlur={() => setTimeout(() => setShowSigunguSuggestions(false), 100)}
-              disabled={!sidoName.trim() || isLoading}
+              disabled={!sido.trim() || isLoading}
             />
             <SearchIcon src={searchIcon} alt="search" />
-            {showSigunguSuggestions && sigunguSuggestions.length > 0 && (
+            {showSigunguSuggestions && sido.trim() && !isLoading && sigunguSuggestions.length > 0 && (
               <SuggestionList>
                 {sigunguSuggestions.map((suggestion, index) => (
                   <SuggestionItem key={index} onClick={() => handleSigunguSelect(suggestion)}>
@@ -124,6 +121,7 @@ const OnboardingStep3 = ({ onNext, onPrev }: OnboardingStepProps) => {
         </StepIndicator>
         <SignupButton onClick={handleNext}>다음</SignupButton>
       </FixedFooterContainer>
+      {toast.visible && <Toast message={toast.message} onClose={hideToast} />}
     </>
   );
 };
