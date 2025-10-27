@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useLogin } from '@/hooks/useLogin';
+import { useToast } from '@/hooks/useToast';
+import { Toast } from '@/components/common/Toast';
 
 import { Container, ContentContanier, Spacer } from '@/style/CommonStyle';
 import LogoImg from '@/assets/momeetLogo.svg';
@@ -17,6 +19,7 @@ import apikey from '@/config/apikey';
 
 const Login = () => {
   const { handleEmailLogin } = useLogin();
+  const { showToast, hideToast, toast } = useToast();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -25,13 +28,22 @@ const Login = () => {
   // 로그인 핸들러
   const handleLogin = async () => {
     setErrors({});
-    handleEmailLogin(email, password);
+    try {
+      await handleEmailLogin(email, password);
+    } catch (error: any) {
+      const errorMessage =
+        error.response?.data?.detail ||
+        error.response?.data?.message ||
+        error.message ||
+        '로그인에 실패했습니다. 네트워크 연결을 확인해주세요.';
+      showToast(errorMessage);
+    }
   };
 
   // 카카오 로그인 핸들러
   const handleKakaoLogin = () => {
     if (!apikey.kakaoRestApiKey) {
-      alert('카카오 API 키가 설정되지 않았습니다. 관리자에게 문의하세요.');
+      showToast('카카오 API 키가 설정되지 않았습니다. 관리자에게 문의하세요.');
       return;
     }
 
@@ -85,6 +97,7 @@ const Login = () => {
           </LoginSection>
         </LoginMain>
       </ContentContanier>
+      {toast.visible && <Toast message={toast.message} onClose={hideToast} />}
     </Container>
   );
 };

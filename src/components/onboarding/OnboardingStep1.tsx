@@ -12,27 +12,13 @@ import {
   TopSubtitle,
 } from './OnboardingStyles';
 import { Spacer } from '@/style/CommonStyle';
+import { validateNickname, isNicknameValid } from '@/utils/nicknameValidation';
 
 const OnboardingStep1 = ({ data, onNext }: OnboardingStepProps) => {
   const [formData, setFormData] = useState({
     nickname: data.nickname || '',
   });
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
-
-  const validateNickname = (nickname: string) => {
-    const trimmed = nickname.trim();
-    
-    if (!trimmed) {
-      return '닉네임을 입력해주세요';
-    }
-    
-    if (trimmed.length < 2 && trimmed.length > 20) {
-      return '닉네임은 2자 이상 20자 이하여야 합니다';
-    }
-    
-
-    return null; 
-  };
 
   const handleInputChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -86,7 +72,16 @@ const OnboardingStep1 = ({ data, onNext }: OnboardingStepProps) => {
       </FormSection>
 
       <FixedFooterContainer>
-        <SignupButton onClick={handleNext}>다음</SignupButton>
+        <SignupButton 
+          onClick={handleNext}
+          disabled={!formData.nickname.trim() || !isNicknameValid(formData.nickname)}
+          style={{
+            opacity: (!formData.nickname.trim() || !isNicknameValid(formData.nickname)) ? 0.5 : 1,
+            cursor: (!formData.nickname.trim() || !isNicknameValid(formData.nickname)) ? 'not-allowed' : 'pointer'
+          }}
+        >
+          다음
+        </SignupButton>
       </FixedFooterContainer>
     </>
   );

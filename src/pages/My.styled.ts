@@ -278,6 +278,14 @@ export const ModalContent = styled.div`
   overflow-y: auto;
   position: relative;
   z-index: 1001;
+
+  /* 스크롤바 숨기기 */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+
+  &::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+  }
 `;
 
 export const ModalHeader = styled.div`

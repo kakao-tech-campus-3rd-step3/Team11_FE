@@ -8,9 +8,12 @@ import OnboardingStep4 from '@/components/onboarding/OnboardingStep4';
 import type { MyProfileState } from '@/store/slices/myProfileSlice';
 import { saveOnboardingProfile } from '@/api/services/profile.service';
 import { useFunnel } from '@/hooks/useFunnel';
+import { useToast } from '@/hooks/useToast';
+import { Toast } from '@/components/common/Toast';
 
 const Onboarding = () => {
   const navigate = useNavigate();
+  const { showToast, hideToast, toast } = useToast();
   const [Funnel, Step, setStep] = useFunnel(['기본정보', '프로필사진', '추가정보', '완료']);
 
   const [onboardingData, setOnboardingData] = useState<MyProfileState>({
@@ -37,11 +40,13 @@ const Onboarding = () => {
 
     try {
       await saveOnboardingProfile(completeData as MyProfileState);
-      alert('프로필 설정이 완료되었습니다!');
-      navigate('/home');
+      showToast('프로필 설정이 완료되었습니다!');
+      setTimeout(() => {
+        navigate('/home');
+      }, 2000);
     } catch (error: any) {
       console.error('프로필 설정 실패:', error);
-      alert(`프로필 설정 실패: ${error.message}`);
+      showToast(`프로필 설정 실패: ${error.message}`);
     }
   };
 
@@ -91,6 +96,7 @@ const Onboarding = () => {
           </Step>
         </Funnel>
       </ContentContanier>
+      {toast.visible && <Toast message={toast.message} onClose={hideToast} />}
     </Container>
   );
 };
