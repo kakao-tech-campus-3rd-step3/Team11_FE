@@ -52,11 +52,29 @@ import {
   GenderButton,
 } from './My.styled';
 import BottomNav from '@/components/common/BottomNav';
+import { useToast } from '@/hooks/useToast';
+import { Toast } from '@/components/common/Toast';
+import { LocationInput } from '@/components/common/LocationInput';
+import { useLocationInput } from '@/hooks/useLocationInput';
+import { validateNickname, isNicknameValid } from '@/utils/nicknameValidation';
 
 const My = () => {
   const dispatch = useDispatch();
   const myProfile = useSelector((state: RootState) => state.myProfile);
   const { handleLogout } = useLogin();
+  const { showToast, hideToast, toast } = useToast();
+  const {
+    sido,
+    setSido,
+    sigungu,
+    setSigungu,
+    sigunguSuggestions,
+    showSigunguSuggestions,
+    setShowSigunguSuggestions,
+    handleSigunguChange,
+    handleSigunguFocus,
+    handleSigunguSelect,
+  } = useLocationInput();
   const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [badges, setBadges] = useState<Badge[]>([]);
@@ -69,8 +87,6 @@ const My = () => {
     imageUrl: myProfile.imageUrl || '',
   });
 
-  const [sido, setSido] = useState('');
-  const [sigungu, setSigungu] = useState('');
 
   // 페이지 로드 시 프로필 조회
   useEffect(() => {
@@ -154,7 +170,15 @@ const My = () => {
     }
   };
 
+
   const handleSave = async () => {
+    // 닉네임 검증
+    const nicknameError = validateNickname(editData.nickname);
+    if (nicknameError) {
+      showToast(nicknameError);
+      return;
+    }
+
     const profileData = {
       ...myProfile, // 기존 프로필 데이터 유지
       ...editData,
@@ -173,11 +197,13 @@ const My = () => {
       dispatch(setMyProfile(profileData));
       console.log('프로필 수정 성공:', profileData);
 
-      alert('프로필이 성공적으로 수정되었습니다!');
-      setIsEditing(false);
+      showToast('프로필이 성공적으로 수정되었습니다!');
+      setTimeout(() => {
+        setIsEditing(false);
+      }, 2000);
     } catch (error: any) {
       console.error('프로필 수정 실패:', error);
-      alert(`프로필 수정 실패: ${error.message}`);
+      showToast(`프로필 수정 실패: ${error.message}`);
     }
   };
 
@@ -412,25 +438,31 @@ const My = () => {
 
                     <FormField>
                       <FormLabel>기본 위치</FormLabel>
-                      <div style={{ display: 'flex', gap: '8px', flexDirection: 'column' }}>
-                        <FormInput
-                          type="text"
-                          value={sido}
-                          onChange={(e) => setSido(e.target.value)}
-                          placeholder="시/도 (예: 부산광역시)"
-                        />
-                        <FormInput
-                          type="text"
-                          value={sigungu}
-                          onChange={(e) => setSigungu(e.target.value)}
-                          placeholder="시/군/구 (예: 금정구)"
-                        />
-                      </div>
+                      <LocationInput
+                        sido={sido}
+                        setSido={setSido}
+                        sigungu={sigungu}
+                        onSigunguChange={handleSigunguChange}
+                        onSigunguFocus={handleSigunguFocus}
+                        onSigunguSelect={handleSigunguSelect}
+                        onSigunguBlur={() => setTimeout(() => setShowSigunguSuggestions(false), 100)}
+                        sigunguSuggestions={sigunguSuggestions}
+                        showSigunguSuggestions={showSigunguSuggestions}
+                      />
                     </FormField>
 
                     <ButtonGroup>
                       <CancelButton onClick={handleCancel}>취소</CancelButton>
-                      <SaveButton onClick={handleSave}>저장</SaveButton>
+                      <SaveButton 
+                        onClick={handleSave}
+                        disabled={!editData.nickname.trim() || !isNicknameValid(editData.nickname)}
+                        style={{
+                          opacity: (!editData.nickname.trim() || !isNicknameValid(editData.nickname)) ? 0.5 : 1,
+                          cursor: (!editData.nickname.trim() || !isNicknameValid(editData.nickname)) ? 'not-allowed' : 'pointer'
+                        }}
+                      >
+                        저장
+                      </SaveButton>
                     </ButtonGroup>
                   </ModalBody>
                 </ModalContent>
@@ -439,6 +471,7 @@ const My = () => {
           </>
         )}
       </ContentContanier>
+      {toast.visible && <Toast message={toast.message} onClose={hideToast} />}
     </Container>
   );
 };

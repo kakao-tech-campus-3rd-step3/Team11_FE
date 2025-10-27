@@ -13,7 +13,7 @@ export const useLogin = () => {
 
   // 로그인 성공
   const handleLoginSuccess = useCallback(
-    async (result: any, loginType: 'email' | 'kakao' = 'email') => {
+    async (result: any) => {
       try {
         saveTokens(result.accessToken, result.refreshToken);
         console.log(result.accessToken, result.refreshToken);
@@ -33,12 +33,10 @@ export const useLogin = () => {
           saveProfile(defaultProfile); // 기본 프로필도 저장
         }
 
-        alert(`${loginType === 'kakao' ? '카카오' : ''}로그인 성공!`);
         navigate('/home');
       } catch (error) {
         console.error('로그인 후 처리 실패:', error);
-        alert('로그인은 성공했지만 프로필을 불러오는데 실패했습니다.');
-        navigate('/home');
+        throw error;
       }
     },
     [dispatch, navigate],
@@ -59,27 +57,19 @@ export const useLogin = () => {
   // 이메일 로그인
   const handleEmailLogin = useCallback(
     async (email: string, password: string) => {
-      try {
-        const result = await login(email, password);
-        handleLoginSuccess(result, 'email');
-      } catch (error: any) {
-        handleLoginError(error, 'email');
-      }
+      const result = await login(email, password);
+      handleLoginSuccess(result);
     },
-    [handleLoginSuccess, handleLoginError],
+    [handleLoginSuccess],
   );
 
   // 카카오 로그인
   const handleKakaoLogin = useCallback(
     async (code: string) => {
-      try {
-        const result = await kakaoLogin(code);
-        handleLoginSuccess(result, 'kakao');
-      } catch (error: any) {
-        handleLoginError(error, 'kakao');
-      }
+      const result = await kakaoLogin(code);
+      handleLoginSuccess(result);
     },
-    [handleLoginSuccess, handleLoginError],
+    [handleLoginSuccess],
   );
 
   // 회원가입
