@@ -63,7 +63,6 @@ api.interceptors.response.use(
       const newAccessToken = await refreshAccessToken();
 
       if (newAccessToken) {
-        // 새 토큰으로 원래 요청 재시도
         originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
         return api(originalRequest);
       } else {
