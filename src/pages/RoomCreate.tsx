@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import styled, { keyframes } from 'styled-components';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useParams, useLocation } from 'react-router-dom';
 import { useCreateForm } from '@/hooks/useCreateForm';
 import { useBoolean } from '@/hooks/useBoolean';
 import { CommonHeader } from '@/components/common/CommonHeader';
@@ -9,9 +9,10 @@ import { HashtagInput } from '@/components/room_create_page.tsx/HashtagInput';
 import { StyledInput } from '@/components/room_create_page.tsx/StyledComponents';
 import { TimePicker } from '@/components/room_create_page.tsx/TimePicker';
 import { colors } from '@/style/themes';
-import { createMeetUp } from '@/api/services/meetup_room.service';
+import { createMeetUp, getMyJoinedMeetup, updateMeetUp } from '@/api/services/meetup_room.service';
 import { categoryMapper } from '@/utils/categoryMapper';
 import { hashtagParser } from '@/utils/hashtagParser';
+import { toast } from 'react-toastify';
 
 const slideUp = keyframes`
   from { transform: translateY(100%); }
@@ -107,7 +108,11 @@ const SubmitButton = styled.button`
 `;
 
 const RoomCreate = () => {
-  const { formState, hashtags, setHashtags, handleChange, timeError, isFormValid } =
+  const { update } = useParams<{ update?: string }>();
+  const location = useLocation();
+  const { selectedLocation } = location.state || {};
+  console.log(selectedLocation);
+  const { formState, setFormState, hashtags, setHashtags, handleChange, timeError, isFormValid } =
     useCreateForm();
 
   const [isClosing, { on: startClosing }] = useBoolean(false);
@@ -117,42 +122,76 @@ const RoomCreate = () => {
     startClosing();
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!isFormValid) return;
+  const handleSubmit = useCallback(
+    async (e: React.FormEvent) => {
+      e.preventDefault();
+      if (!isFormValid) return;
 
-    const finalFormState = {
-      name: formState.name,
-      category: categoryMapper(formState.category),
-      description: '',
-      hashTags: hashtagParser(hashtags),
-      capacity: Number(formState.capacity),
-      scoreLimit: Number(formState.scoreLimit),
-      startAt: formState.startTime,
-      endAt: formState.endTime,
-      location: {
-        latitude: formState.location?.lat,
-        longitude: formState.location?.lng,
-        address: formState.location?.name,
-      },
+      const finalFormState = {
+        name: formState.name,
+        category: categoryMapper(formState.category),
+        description: '',
+        hashTags: hashtagParser(hashtags),
+        capacity: Number(formState.capacity),
+        scoreLimit: Number(formState.scoreLimit),
+        startAt: formState.startTime,
+        endAt: formState.endTime,
+        location: {
+          latitude: selectedLocation?.lat || formState.location?.lat,
+          longitude: selectedLocation?.lng || formState.location?.lng,
+          address: selectedLocation?.name || formState.location?.name,
+        },
+      };
+
+      console.log('최종 폼 데이터:', finalFormState);
+
+      try {
+        if (!update) {
+          const response = await createMeetUp(finalFormState);
+          console.log('방 생성 성공:', response);
+          toast.success('모임 방이 성공적으로 생성되었습니다!');
+        } else {
+          const response = await updateMeetUp(finalFormState);
+          console.log('방 수정 성공:', response);
+          toast.success('모임 방이 성공적으로 수정되었습니다!');
+        }
+        navigate('/meeting-room');
+      } catch (error: any) {
+        console.error(error);
+        toast.error(error.message);
+      }
+    },
+    [update, formState, selectedLocation],
+  );
+
+  useEffect(() => {
+    if (!update) return;
+
+    const getPrevInfo = async () => {
+      const response = await getMyJoinedMeetup();
+
+      setFormState({
+        name: response.name,
+        category: response.category,
+        capacity: response.capacity.toString(),
+        scoreLimit: response.scoreLimit.toString(),
+        startTime: response.startAt,
+        endTime: response.endAt,
+        location: {
+          name: selectedLocation?.name || response.location.address!,
+          lat: selectedLocation?.lat || response.location.latitude!,
+          lng: selectedLocation?.lng || response.location.longitude!,
+        },
+      });
     };
 
-    console.log('최종 폼 데이터:', finalFormState);
-
-    try {
-      const response = await createMeetUp(finalFormState);
-      console.log('방 생성 성공:', response);
-      alert('모임 방이 성공적으로 생성되었습니다!');
-      navigate('/meeting-room');
-    } catch (error) {
-      console.error('방 생성 실패:', error);
-    }
-  };
+    getPrevInfo();
+  }, [update]);
 
   useEffect(() => {
     if (isClosing) {
       const timer = setTimeout(() => {
-        navigate('/home');
+        navigate(-1);
       }, 400);
       return () => clearTimeout(timer);
     }
@@ -223,6 +262,7 @@ const RoomCreate = () => {
           <LocationButton
             to="/create-room/location"
             state={{
+              prevPath: location.pathname,
               formValues: formState,
               hashtags: hashtags,
               currentLocation: formState.location,

@@ -7,7 +7,9 @@ import { useNavigate } from 'react-router-dom';
 
 interface HeaderProps {
   roomTitle: string;
+  meetUpId: string;
   isHost: boolean;
+  disconnect: () => void;
 }
 
 const HeaderContainer = styled.div`
@@ -65,7 +67,7 @@ const Overlay = styled.div`
 const BACKARROW_SVG_SIZE = '32';
 const MENU_SVG_SIZE = '25.6';
 
-export const Header = ({ roomTitle, isHost }: HeaderProps) => {
+export const Header = ({ roomTitle, meetUpId, isHost, disconnect }: HeaderProps) => {
   const naviagate = useNavigate();
   const [isSidebarOpen, { on: openSidebar, off: closeSidebar }] = useBoolean(false);
 
@@ -89,7 +91,13 @@ export const Header = ({ roomTitle, isHost }: HeaderProps) => {
         </Button>
       </HeaderContent>
       {isSidebarOpen && <Overlay onClick={closeSidebar} />}
-      <Sidebar isOpen={isSidebarOpen} onClose={closeSidebar} isHost={isHost} />
+      <Sidebar
+        isOpen={isSidebarOpen}
+        onClose={closeSidebar}
+        isHost={isHost}
+        disconnect={disconnect}
+        meetUpId={meetUpId}
+      />
     </HeaderContainer>
   );
 };

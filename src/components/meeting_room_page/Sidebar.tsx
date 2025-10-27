@@ -1,11 +1,15 @@
 import styled from '@emotion/styled';
 import Undo from '@/assets/meeting_room_page/undo.svg?react';
 import { useNavigate } from 'react-router-dom';
+import { handleMeetupAction } from '@/utils/handleMeetupSidebarAction';
+import { useState } from 'react';
 
 interface SidebarProps {
   isOpen: boolean;
   onClose: () => void;
   isHost: boolean;
+  disconnect: () => void;
+  meetUpId: string;
 }
 
 const Container = styled.div<{ isOpen: boolean }>`
@@ -65,8 +69,9 @@ const Option = styled.button`
 
 const UNDO_SVG_SIZE = '25.6';
 
-export const Sidebar = ({ isOpen, onClose, isHost }: SidebarProps) => {
+export const Sidebar = ({ isOpen, onClose, isHost, disconnect, meetUpId }: SidebarProps) => {
   const navigate = useNavigate();
+  const [isStarted, setIsStarted] = useState(false);
 
   return (
     <Container isOpen={isOpen}>
@@ -80,12 +85,37 @@ export const Sidebar = ({ isOpen, onClose, isHost }: SidebarProps) => {
           />
         </Button>
       </Header>
-      {isHost && (
-        <Option onClick={() => navigate('/participant-evaluation')}>실제 모임 시작</Option>
+      {isStarted ? (
+        <>
+          {isHost && (
+            <Option onClick={() => handleMeetupAction('end', navigate, meetUpId, disconnect)}>
+              모임 종료
+            </Option>
+          )}
+        </>
+      ) : (
+        <>
+          {isHost && (
+            <Option
+              onClick={() => {
+                handleMeetupAction('start', navigate);
+                setIsStarted(true);
+              }}
+            >
+              실제 모임 시작
+            </Option>
+          )}
+          {isHost && (
+            <Option onClick={() => handleMeetupAction('cancel', navigate)}>모집 취소</Option>
+          )}
+          {isHost && (
+            <Option onClick={() => handleMeetupAction('update', navigate)}>방 수정하기</Option>
+          )}
+          <Option onClick={() => handleMeetupAction('leave', navigate, meetUpId, disconnect)}>
+            방 나가기
+          </Option>
+        </>
       )}
-      <Option>방 나가기</Option>
-      {isHost && <Option>방 수정하기</Option>}
-      {isHost && <Option>마감 기한 연장</Option>}
     </Container>
   );
 };

@@ -88,7 +88,12 @@ const MeetingRoom = () => {
 
   return (
     <Container>
-      <Header roomTitle={meetUpInfo?.name || ''} isHost={isHost} />
+      <Header
+        roomTitle={meetUpInfo?.name || ''}
+        meetUpId={meetUpInfo?.id || ''}
+        isHost={isHost}
+        disconnect={disconnect}
+      />
       <ParticipantList participants={participants} />
       <ChatBox
         chatMessages={chatMessages}
