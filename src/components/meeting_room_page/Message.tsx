@@ -6,17 +6,17 @@ import { useNavigate } from 'react-router-dom';
 
 interface Message {
   sender: ParticipantDTO | undefined;
-  senderType: 'me' | 'other';
+  senderType: 'me' | 'other' | 'system';
   content: string;
 }
 
-const Container = styled.div<{ isMine: boolean }>`
+const Container = styled.div<{ isSystem: boolean }>`
   display: flex;
   flex-direction: row;
   width: 100%;
   height: auto;
-  justify-content: flex-start;
-  align-items: flex-start;
+  justify-content: ${({ isSystem }) => (isSystem ? 'center' : 'flex-start')};
+  align-items: ${({ isSystem }) => (isSystem ? 'center' : 'flex-start')};
   margin-bottom: 0.4rem;
 `;
 
@@ -87,6 +87,12 @@ const Option = styled.div`
   }
 `;
 
+const SystemMessage = styled.div`
+  font-size: 1rem;
+  font-weight: 400;
+  color: gray;
+`;
+
 export const Message = ({ senderType, content, sender }: Message) => {
   const [isOptionOpen, setIsOptionOpen] = useState(false);
   const [position, setPosition] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
@@ -120,14 +126,22 @@ export const Message = ({ senderType, content, sender }: Message) => {
 
   return (
     <>
-      <Container isMine={senderType === 'me'}>
-        {senderType === 'other' && (
-          <Profile ref={avatarRef} imageUrl={sender?.profile.imageUrl} onClick={handleClick} />
+      <Container isSystem={senderType === 'system'}>
+        {senderType === 'system' ? (
+          <>
+            <SystemMessage>{content}</SystemMessage>
+          </>
+        ) : (
+          <>
+            {senderType === 'other' && (
+              <Profile ref={avatarRef} imageUrl={sender?.profile.imageUrl} onClick={handleClick} />
+            )}
+            <SubContainer isMine={senderType === 'me'}>
+              {senderType === 'other' && <Name>{sender?.profile.nickname}</Name>}
+              <Content isMine={senderType === 'me'}>{content}</Content>
+            </SubContainer>
+          </>
         )}
-        <SubContainer isMine={senderType === 'me'}>
-          {senderType === 'other' && <Name>{sender?.profile.nickname}</Name>}
-          <Content isMine={senderType === 'me'}>{content}</Content>
-        </SubContainer>
       </Container>
 
       {isOptionOpen &&

@@ -12,6 +12,19 @@ type ActionType = 'ENTER' | 'LEAVE' | 'EXIT' | 'MESSAGE' | 'STARTED' | 'FINISH' 
 
 type MessageType = 'TEXT' | 'IMAGE' | 'SYSTEM';
 
+type DefaultActionMessage = {
+  participantId: number;
+  action: ActionType;
+};
+
+type JoinLeaveActionMessage = {
+  action: ActionType;
+  nickname: string;
+  participantId: number;
+  profileId: string;
+  profileImageUrl: string;
+};
+
 type Payload = {
   type: MessageType;
   content: string;
@@ -21,7 +34,9 @@ export function useChat(meetupId: string | null) {
   const isFirstConnectRef = useRef(true);
   const myIdRef = useRef<number | null>(null);
   const [isConnected, setIsConnected] = useState(false);
-  const [newAction, setNewAction] = useState<ActionType>(undefined);
+  const [newAction, setNewAction] = useState<
+    DefaultActionMessage | JoinLeaveActionMessage | undefined
+  >(undefined);
   const [newChatMessage, setNewChatMessage] = useState<ChatMessage | null>(null);
   const clientRef = useRef<Client | null>(null);
   const accessToken = getAccessToken();
@@ -61,7 +76,7 @@ export function useChat(meetupId: string | null) {
             isFirstConnectRef.current = false;
             setIsConnected(true);
           }
-          setNewAction(response.action);
+          setNewAction(response);
         },
         {
           Authorization: `Bearer ${accessToken}`,
@@ -85,7 +100,6 @@ export function useChat(meetupId: string | null) {
             time: new Date(response.sentAt),
           };
           setNewChatMessage(chatMessage);
-          setNewAction('MESSAGE');
         },
         {
           Authorization: `Bearer ${accessToken}`,

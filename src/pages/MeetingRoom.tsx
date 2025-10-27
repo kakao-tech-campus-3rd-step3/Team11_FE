@@ -86,9 +86,11 @@ const MeetingRoom = () => {
   }, [participants, myIdRef.current]);
 
   useEffect(() => {
+    if (!newAction) return;
     console.log('newAction', newAction);
-    setIsStarted(newAction === 'STARTED');
-    handleSocketAction(newAction, navigate);
+    setIsStarted(handleSocketAction('STARTED', newAction, navigate)!);
+    handleSocketAction('JOIN', newAction, navigate, setChatMessages);
+    handleSocketAction('EXIT', newAction, navigate, setChatMessages);
   }, [newAction]);
 
   useEffect(() => {
