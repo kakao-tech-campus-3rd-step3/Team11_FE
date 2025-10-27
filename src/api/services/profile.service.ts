@@ -36,7 +36,6 @@ export const updateProfile = async (profileData: MyProfileState) => {
 // 다른 사용자 프로필 조회
 export const getUserProfile = async (profileId: string): Promise<MyProfileState> => {
   const response = await api.get<MyProfileState>(`/api/profiles/${profileId}`);
-
   return response.data;
 };
 
@@ -44,5 +43,11 @@ export const getUserProfile = async (profileId: string): Promise<MyProfileState>
 export const getMyBadges = async (): Promise<BadgeListResponse> => {
   const response = await api.get<BadgeListResponse>('/api/profiles/me/badges');
   console.log('뱃지 조회 성공:', response.data);
+  return response.data;
+};
+
+// 다른 사용자 뱃지 조회
+export const getUserBadges = async (profileId: string): Promise<BadgeListResponse> => {
+  const response = await api.get<BadgeListResponse>(`/api/profiles/${profileId}/badges`);
   return response.data;
 };

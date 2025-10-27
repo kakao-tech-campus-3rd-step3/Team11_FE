@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Container, ContentContanier } from '@/style/CommonStyle';
-import { getMyBadges, getUserProfile } from '@/api/services/profile.service';
+import { getUserBadges, getUserProfile } from '@/api/services/profile.service';
 import type { MyProfileState } from '@/store/slices/myProfileSlice';
 import type { Badge } from '@/types/badge';
 import {
@@ -33,10 +33,13 @@ import {
   BackButton,
 } from './UserProfile.styled';
 import BottomNav from '@/components/common/BottomNav';
+import { useToast } from '@/hooks/useToast';
+import { Toast } from '@/components/common/Toast';
 
 const UserProfile = () => {
   const { userId } = useParams<{ userId: string }>();
   const navigate = useNavigate();
+  const { showToast, hideToast, toast } = useToast();
   const [userProfile, setUserProfile] = useState<MyProfileState | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [badges, setBadges] = useState<Badge[]>([]);
@@ -51,10 +54,12 @@ const UserProfile = () => {
         const profileData = await getUserProfile(userId);
         setUserProfile(profileData);
         console.log('사용자 프로필 조회 성공:', profileData);
-      } catch (error) {
+      } catch (error: any) {
         console.error('사용자 프로필 조회 실패:', error);
-        alert('프로필을 불러올 수 없습니다.');
-        navigate(-1);
+        showToast('프로필을 불러올 수 없습니다.');
+        setTimeout(() => {
+          navigate(-1);
+        }, 2000);
       } finally {
         setIsLoading(false);
       }
@@ -69,7 +74,7 @@ const UserProfile = () => {
       if (!userId) return;
 
       try {
-        const data = await getMyBadges();
+        const data = await getUserBadges(userId);
         setBadges(data.content);
         console.log('뱃지 조회 성공:', data);
       } catch (error) {
@@ -207,6 +212,7 @@ const UserProfile = () => {
           <BottomNav />
         </MainContentCard>
       </ContentContanier>
+      {toast.visible && <Toast message={toast.message} onClose={hideToast} />}
     </Container>
   );
 };
