@@ -8,6 +8,8 @@ import { body } from '@/data/mockApiBodyData';
 import type { ChatMessage } from '@/types/meeting_room_page/chatMessage';
 import type { ChatMessageDTO } from '@/api/types/meeting_room.dto';
 
+type ActionType = 'ENTER' | 'LEAVE' | 'EXIT' | 'MESSAGE' | 'STARTED' | 'FINISH' | undefined;
+
 type MessageType = 'TEXT' | 'IMAGE' | 'SYSTEM';
 
 type Payload = {
@@ -19,6 +21,7 @@ export function useChat(meetupId: string | null) {
   const isFirstConnectRef = useRef(true);
   const myIdRef = useRef<number | null>(null);
   const [isConnected, setIsConnected] = useState(false);
+  const [newAction, setNewAction] = useState<ActionType>(undefined);
   const [newChatMessage, setNewChatMessage] = useState<ChatMessage | null>(null);
   const clientRef = useRef<Client | null>(null);
   const accessToken = getAccessToken();
@@ -58,6 +61,7 @@ export function useChat(meetupId: string | null) {
             isFirstConnectRef.current = false;
             setIsConnected(true);
           }
+          setNewAction(response.action);
         },
         {
           Authorization: `Bearer ${accessToken}`,
@@ -81,6 +85,7 @@ export function useChat(meetupId: string | null) {
             time: new Date(response.sentAt),
           };
           setNewChatMessage(chatMessage);
+          setNewAction('MESSAGE');
         },
         {
           Authorization: `Bearer ${accessToken}`,
@@ -134,5 +139,5 @@ export function useChat(meetupId: string | null) {
     [meetupId, isConnected],
   );
 
-  return { connect, disconnect, isConnected, myIdRef, sendMessage, newChatMessage };
+  return { connect, disconnect, isConnected, myIdRef, sendMessage, newAction, newChatMessage };
 }

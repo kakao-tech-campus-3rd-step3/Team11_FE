@@ -2,12 +2,12 @@ import styled from '@emotion/styled';
 import Undo from '@/assets/meeting_room_page/undo.svg?react';
 import { useNavigate } from 'react-router-dom';
 import { handleMeetupAction } from '@/utils/handleMeetupSidebarAction';
-import { useState } from 'react';
 
 interface SidebarProps {
   isOpen: boolean;
   onClose: () => void;
   isHost: boolean;
+  isStarted: boolean;
   disconnect: () => void;
   meetUpId: string;
 }
@@ -69,9 +69,15 @@ const Option = styled.button`
 
 const UNDO_SVG_SIZE = '25.6';
 
-export const Sidebar = ({ isOpen, onClose, isHost, disconnect, meetUpId }: SidebarProps) => {
+export const Sidebar = ({
+  isOpen,
+  onClose,
+  isHost,
+  isStarted,
+  disconnect,
+  meetUpId,
+}: SidebarProps) => {
   const navigate = useNavigate();
-  const [isStarted, setIsStarted] = useState(false);
 
   return (
     <Container isOpen={isOpen}>
@@ -99,7 +105,6 @@ export const Sidebar = ({ isOpen, onClose, isHost, disconnect, meetUpId }: Sideb
             <Option
               onClick={() => {
                 handleMeetupAction('start', navigate);
-                setIsStarted(true);
               }}
             >
               실제 모임 시작

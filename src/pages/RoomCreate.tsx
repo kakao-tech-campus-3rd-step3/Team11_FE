@@ -149,11 +149,11 @@ const RoomCreate = () => {
         if (!update) {
           const response = await createMeetUp(finalFormState);
           console.log('방 생성 성공:', response);
-          toast.success('모임 방이 성공적으로 생성되었습니다!');
+          toast.success('모임방이 성공적으로 생성되었습니다!');
         } else {
           const response = await updateMeetUp(finalFormState);
           console.log('방 수정 성공:', response);
-          toast.success('모임 방이 성공적으로 수정되었습니다!');
+          toast.success('모임방이 성공적으로 수정되었습니다!');
         }
         navigate('/meeting-room');
       } catch (error: any) {

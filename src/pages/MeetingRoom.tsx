@@ -12,19 +12,23 @@ import { useChat } from '@/hooks/useChat';
 import { Container } from '@/style/CommonStyle';
 import type { ChatMessage } from '@/types/meeting_room_page/chatMessage';
 import { checkHost } from '@/utils/checkHost';
+import { checkHostId } from '@/utils/checkHostId';
+import { handleSocketAction } from '@/utils/handleSocketAction';
 import { useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-const TEST_MEETUP_ID = '2258edde-d510-439a-86c7-91c37a8ab430';
+const TEST_MEETUP_ID = import.meta.env.VITE_TEST_MEETUP_ID;
 
 const MeetingRoom = () => {
+  const navigate = useNavigate();
   const bottomElementRef = useRef<HTMLDivElement | null>(null);
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
   const [meetUpInfo, setmeetUpInfo] = useState<MeetupResponseDTO | null>(null);
   const [participants, setParticipants] = useState<ParticipantDTO[]>([]);
   const [isHost, setIsHost] = useState<boolean>(false);
-  const { connect, disconnect, isConnected, myIdRef, sendMessage, newChatMessage } = useChat(
-    meetUpInfo?.id || null,
-  );
+  const [isStarted, setIsStarted] = useState<boolean>(false);
+  const { connect, disconnect, isConnected, myIdRef, sendMessage, newAction, newChatMessage } =
+    useChat(meetUpInfo?.id || null);
 
   console.log(
     'MeetingRoom 렌더링, meetUpId:',
@@ -67,6 +71,7 @@ const MeetingRoom = () => {
       try {
         const response = await getParticipantsInMeetUp(meetUpInfo.id);
         setParticipants(response);
+        checkHostId(response);
         console.log('참여자 정보 조회 성공:', response);
       } catch (error) {
         console.error('참여자 정보 조회 실패:', error);
@@ -74,11 +79,17 @@ const MeetingRoom = () => {
     };
 
     getParticipantsInfo();
-  }, [meetUpInfo]);
+  }, [meetUpInfo, newAction]);
 
   useEffect(() => {
     setIsHost(checkHost(participants, myIdRef.current!));
   }, [participants, myIdRef.current]);
+
+  useEffect(() => {
+    console.log('newAction', newAction);
+    setIsStarted(newAction === 'STARTED');
+    handleSocketAction(newAction, navigate);
+  }, [newAction]);
 
   useEffect(() => {
     if (!newChatMessage) return;
@@ -92,6 +103,7 @@ const MeetingRoom = () => {
         roomTitle={meetUpInfo?.name || ''}
         meetUpId={meetUpInfo?.id || ''}
         isHost={isHost}
+        isStarted={isStarted}
         disconnect={disconnect}
       />
       <ParticipantList participants={participants} />

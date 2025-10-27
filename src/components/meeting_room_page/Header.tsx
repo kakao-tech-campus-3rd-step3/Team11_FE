@@ -9,6 +9,7 @@ interface HeaderProps {
   roomTitle: string;
   meetUpId: string;
   isHost: boolean;
+  isStarted: boolean;
   disconnect: () => void;
 }
 
@@ -67,14 +68,14 @@ const Overlay = styled.div`
 const BACKARROW_SVG_SIZE = '32';
 const MENU_SVG_SIZE = '25.6';
 
-export const Header = ({ roomTitle, meetUpId, isHost, disconnect }: HeaderProps) => {
+export const Header = ({ roomTitle, meetUpId, isHost, isStarted, disconnect }: HeaderProps) => {
   const naviagate = useNavigate();
   const [isSidebarOpen, { on: openSidebar, off: closeSidebar }] = useBoolean(false);
 
   return (
     <HeaderContainer>
       <HeaderContent>
-        <Button onClick={() => naviagate(-1)}>
+        <Button onClick={() => naviagate('/home')}>
           <BackArrow
             width={BACKARROW_SVG_SIZE}
             height={BACKARROW_SVG_SIZE}
@@ -95,6 +96,7 @@ export const Header = ({ roomTitle, meetUpId, isHost, disconnect }: HeaderProps)
         isOpen={isSidebarOpen}
         onClose={closeSidebar}
         isHost={isHost}
+        isStarted={isStarted}
         disconnect={disconnect}
         meetUpId={meetUpId}
       />
