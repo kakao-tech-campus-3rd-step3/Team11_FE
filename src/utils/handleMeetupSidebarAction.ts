@@ -28,10 +28,6 @@ export const handleMeetupAction = async (
     case 'cancel': {
       try {
         await cancelMeetUp();
-        toast.info('모집이 취소되었습니다.', {
-          id: 'CANCEL',
-        } as any);
-        navigate('/home');
       } catch (e: any) {
         toast.error(e.message, {
           id: 'CANCEL_ERROR',
@@ -54,11 +50,6 @@ export const handleMeetupAction = async (
     case 'end': {
       try {
         await endMeetUp();
-        toast.success('모임이 종료되었습니다.', {
-          id: 'FINISH',
-          position: 'bottom-center',
-        } as any);
-        navigate('/participant-evaluation');
       } catch (e: any) {
         toast.error(e.message, {
           id: 'END_ERROR',

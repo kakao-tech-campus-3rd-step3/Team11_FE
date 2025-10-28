@@ -45,6 +45,7 @@ const MeetingRoom = () => {
       try {
         const response = await getMyJoinedMeetup();
         setmeetUpInfo(response);
+        setIsStarted(response.status === 'IN_PROGRESS');
         console.log('모임 조회 성공:', response);
       } catch (error) {
         console.error(error);
@@ -52,6 +53,7 @@ const MeetingRoom = () => {
           await joinMeetUp(TEST_MEETUP_ID);
           const response = await getMyJoinedMeetup();
           setmeetUpInfo(response);
+          setIsStarted(response.status === 'IN_PROGRESS');
           console.log('모임 참가 성공:', response);
         } catch (error) {
           console.error(error);
@@ -93,10 +95,11 @@ const MeetingRoom = () => {
   useEffect(() => {
     if (!newAction || !myIdRef.current) return;
     console.log('newAction', newAction);
-    setIsStarted(handleSocketAction('STARTED', newAction, navigate)!);
+    handleSocketAction('STARTED', newAction, navigate, undefined, setIsStarted);
     handleSocketAction('FINISH', newAction, navigate);
     handleSocketAction('JOIN', newAction, navigate, myIdRef.current, setChatMessages);
     handleSocketAction('EXIT', newAction, navigate, myIdRef.current, setChatMessages);
+    handleSocketAction('CANCELED', newAction, navigate);
   }, [newAction]);
 
   // 새 메세지 수신 시 표시
