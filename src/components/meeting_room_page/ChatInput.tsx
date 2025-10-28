@@ -10,6 +10,7 @@ interface ChatInputProps {
   chatMessages: ChatMessage[];
   setChatMessages: SetState<ChatMessage[]>;
   sendMessage: (type: MessageType, message: string) => void;
+  myId: number | null;
 }
 
 const Container = styled.div`
@@ -59,12 +60,14 @@ const HelperText = styled.div`
   margin-top: 0.3rem;
 `;
 
-export const ChatInput = ({ chatMessages, setChatMessages, sendMessage }: ChatInputProps) => {
+export const ChatInput = ({ chatMessages, setChatMessages, sendMessage, myId }: ChatInputProps) => {
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const [text, setText] = useState('');
 
   const handleClick = () => {
     const trimmedText = text.trim();
+
+    if (!myId) return;
 
     if (!trimmedText) {
       setText('');
@@ -73,6 +76,7 @@ export const ChatInput = ({ chatMessages, setChatMessages, sendMessage }: ChatIn
 
     const newMessage: ChatMessage = {
       id: crypto.randomUUID(),
+      senderId: myId,
       senderType: 'me',
       content: trimmedText,
       time: new Date(),

@@ -28,7 +28,7 @@ const MeetingRoom = () => {
   const [isHost, setIsHost] = useState<boolean>(false);
   const [isStarted, setIsStarted] = useState<boolean>(false);
   const { connect, disconnect, isConnected, myIdRef, sendMessage, newAction, newChatMessage } =
-    useChat(meetUpInfo?.id || null);
+    useChat(meetUpInfo || null);
 
   console.log(
     'MeetingRoom 렌더링, meetUpId:',
@@ -132,6 +132,7 @@ const MeetingRoom = () => {
         chatMessages={chatMessages}
         setChatMessages={setChatMessages}
         sendMessage={sendMessage}
+        myId={myIdRef.current}
       />
     </Container>
   );
