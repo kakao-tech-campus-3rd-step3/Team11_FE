@@ -39,7 +39,7 @@ const MeetingRoom = () => {
     isConnected,
   );
 
-  // 모임 참가 임시 로직
+  // 모임 참가 임시 로직 & 모임 정보 조회
   useEffect(() => {
     const init = async () => {
       try {
@@ -49,9 +49,9 @@ const MeetingRoom = () => {
       } catch (error) {
         console.error(error);
         try {
-          const response = await joinMeetUp(TEST_MEETUP_ID);
-          const response2 = await getMyJoinedMeetup();
-          setmeetUpInfo(response2);
+          await joinMeetUp(TEST_MEETUP_ID);
+          const response = await getMyJoinedMeetup();
+          setmeetUpInfo(response);
           console.log('모임 참가 성공:', response);
         } catch (error) {
           console.error(error);
@@ -66,6 +66,7 @@ const MeetingRoom = () => {
     };
   }, [meetUpInfo]);
 
+  // 현재 참여자 정보 조회
   useEffect(() => {
     const getParticipantsInfo = async () => {
       if (!meetUpInfo) return;
@@ -83,19 +84,22 @@ const MeetingRoom = () => {
     getParticipantsInfo();
   }, [meetUpInfo, newAction]);
 
+  // 내가 방장인지 아닌지 확인
   useEffect(() => {
     setIsHost(checkHost(participants, myIdRef.current!));
   }, [participants, myIdRef.current]);
 
+  // 웹소캣 액션 메세지에 따른 로직 제어
   useEffect(() => {
-    if (!newAction) return;
+    if (!newAction || !myIdRef.current) return;
     console.log('newAction', newAction);
     setIsStarted(handleSocketAction('STARTED', newAction, navigate)!);
     handleSocketAction('FINISH', newAction, navigate);
-    handleSocketAction('JOIN', newAction, navigate, setChatMessages);
-    handleSocketAction('EXIT', newAction, navigate, setChatMessages);
+    handleSocketAction('JOIN', newAction, navigate, myIdRef.current, setChatMessages);
+    handleSocketAction('EXIT', newAction, navigate, myIdRef.current, setChatMessages);
   }, [newAction]);
 
+  // 새 메세지 수신 시 표시
   useEffect(() => {
     if (!newChatMessage) return;
     console.log('newChatMessage:', newChatMessage);

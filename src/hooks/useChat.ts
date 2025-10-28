@@ -8,7 +8,15 @@ import { body } from '@/data/mockApiBodyData';
 import type { ChatMessage } from '@/types/meeting_room_page/chatMessage';
 import type { ChatMessageDTO } from '@/api/types/meeting_room.dto';
 
-type ActionType = 'ENTER' | 'LEAVE' | 'EXIT' | 'MESSAGE' | 'STARTED' | 'FINISH' | undefined;
+type ActionType =
+  | 'ENTER'
+  | 'JOIN'
+  | 'LEAVE'
+  | 'EXIT'
+  | 'MESSAGE'
+  | 'STARTED'
+  | 'FINISH'
+  | undefined;
 
 type MessageType = 'TEXT' | 'IMAGE' | 'SYSTEM';
 

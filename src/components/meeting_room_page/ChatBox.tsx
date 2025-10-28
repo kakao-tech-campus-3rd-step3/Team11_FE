@@ -107,12 +107,14 @@ export const ChatBox = ({
     }
   };
 
+  // 초기 입장 시, 이전 채팅 내역 조회
   useEffect(() => {
     if (meetUpId && isConnected) {
       getChatData();
     }
   }, [meetUpId, isConnected]);
 
+  // 위로 스크롤 시, 이전 채팅 내역 조회
   useEffect(() => {
     const container = containerRef.current;
     const targetElement = intersectionTriggerRef?.current;

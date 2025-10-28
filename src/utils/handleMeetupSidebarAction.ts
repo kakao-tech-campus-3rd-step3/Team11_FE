@@ -18,7 +18,9 @@ export const handleMeetupAction = async (
       try {
         await startMeetUp();
       } catch (e: any) {
-        toast.error(e.message);
+        toast.error(e.message, {
+          id: 'STARTED_ERROR',
+        } as any);
       }
       break;
     }
@@ -26,10 +28,14 @@ export const handleMeetupAction = async (
     case 'cancel': {
       try {
         await cancelMeetUp();
-        toast.info('모집이 취소되었습니다.');
+        toast.info('모집이 취소되었습니다.', {
+          id: 'CANCEL',
+        } as any);
         navigate('/home');
       } catch (e: any) {
-        toast.error(e.message);
+        toast.error(e.message, {
+          id: 'CANCEL_ERROR',
+        } as any);
       }
       break;
     }
@@ -38,7 +44,9 @@ export const handleMeetupAction = async (
       try {
         navigate('/create-room/update');
       } catch (e: any) {
-        toast.error(e.message);
+        toast.error(e.message, {
+          id: 'MODIFY_ERROR',
+        } as any);
       }
       break;
     }
@@ -46,9 +54,15 @@ export const handleMeetupAction = async (
     case 'end': {
       try {
         await endMeetUp();
+        toast.success('모임이 종료되었습니다.', {
+          id: 'FINISH',
+          position: 'bottom-center',
+        } as any);
         navigate('/participant-evaluation');
       } catch (e: any) {
-        toast.error(e.message);
+        toast.error(e.message, {
+          id: 'END_ERROR',
+        } as any);
       }
       break;
     }
@@ -57,15 +71,16 @@ export const handleMeetupAction = async (
       try {
         await leaveMeetUp(meetUpId!);
         callback?.();
-        toast.success('모임에서 나갔습니다.');
+        toast.success('모임에서 나갔습니다.', {
+          id: 'LEAVE',
+        } as any);
         navigate('/home');
       } catch (e: any) {
-        toast.error(e.message);
+        toast.error(e.message, {
+          id: 'LEAVE_ERROR',
+        } as any);
       }
       break;
     }
-
-    default:
-      toast.error('잘못된 액션입니다.');
   }
 };
