@@ -21,7 +21,8 @@ export const ModalContainer = styled.div<{ $isVisible: boolean }>`
   margin: 0 auto;
   width: 100%;
   max-width: 720px;
-  max-height: 80vh;
+  /* max-height: 80vh; */
+  height: 70vh;
   background-color: white;
   border-top-left-radius: 20px;
   border-top-right-radius: 20px;
@@ -45,6 +46,7 @@ export const Content = styled.div`
   padding: 0 24px 24px;
   overflow-y: auto;
   flex: 1;
+  min-height: 0;
 `;
 
 export const Title = styled.h2`

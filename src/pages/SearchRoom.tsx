@@ -7,6 +7,8 @@ import { SearchInput } from '@/components/search_page/SearchInput';
 import { SearchFilters } from '@/components/search_page/SearchFilters';
 import { SearchResultList } from '@/components/search_page/SearchResultList';
 import { useMeetingsSearch } from '@/hooks/useMeetingsSearch';
+import { MeetingDetailModal } from '@/components/home_page/MeetingDetailModal';
+import type { Meeting } from '@/types/meeting';
 
 interface LocationData {
   lat: number;
@@ -56,6 +58,7 @@ const SearchRoom = () => {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [selectedRadius, setSelectedRadius] = useState<string | null>(null);
   const [userLocation, setUserLocation] = useState<LocationData | null>(null);
+  const [selectedMeeting, setSelectedMeeting] = useState<Meeting | null>(null);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -101,6 +104,14 @@ const SearchRoom = () => {
     setSelectedRadius((prev) => (prev === radius ? null : radius));
   };
 
+  const handleItemClick = (meeting: Meeting) => {
+    setSelectedMeeting(meeting);
+  };
+
+  const handleCloseModal = () => {
+    setSelectedMeeting(null);
+  };
+
   useEffect(() => {
     if (isClosing) {
       const timer = setTimeout(() => navigate(-1), 400);
@@ -126,6 +137,14 @@ const SearchRoom = () => {
             ...meeting,
             location: meeting.address,
           }))}
+          onItemClick={handleItemClick}
+        />
+      )}
+      {selectedMeeting && (
+        <MeetingDetailModal
+          meeting={selectedMeeting}
+          onClose={handleCloseModal}
+          isOpen={!!selectedMeeting}
         />
       )}
     </SearchPageContainer>
