@@ -1,3 +1,8 @@
+import type {
+  ActionType,
+  DefaultActionMessage,
+  JoinLeaveActionMessage,
+} from '@/types/meeting_room_page/actionMessage';
 import type { ChatMessage } from '@/types/meeting_room_page/chatMessage';
 import type React from 'react';
 import type { NavigateFunction } from 'react-router-dom';
@@ -5,30 +10,6 @@ import { toast } from 'react-toastify';
 
 let lastAction = '';
 let lastActionTime = 0;
-
-type ActionType =
-  | 'ENTER'
-  | 'JOIN'
-  | 'LEAVE'
-  | 'EXIT'
-  | 'CANCELED'
-  | 'MESSAGE'
-  | 'STARTED'
-  | 'FINISH'
-  | undefined;
-
-type DefaultActionMessage = {
-  participantId: number;
-  action: ActionType;
-};
-
-type JoinLeaveActionMessage = {
-  action: ActionType;
-  nickname: string;
-  participantId: number;
-  profileId: string;
-  profileImageUrl: string;
-};
 
 function isJoinLeaveActionMessage(
   msg: DefaultActionMessage | JoinLeaveActionMessage,
@@ -61,12 +42,28 @@ export const handleSocketAction = <T>(
       return true;
     }
 
-    case 'FINISH': {
-      toast.success('모임이 종료되었습니다.', {
-        id: 'FINISH',
+    case 'NEAR_END': {
+      toast.warn('모집 종료까지 10분 남았습니다!', {
+        id: 'NEAR_END',
+      } as any);
+      navigate('/participant-evaluation');
+      return false;
+    }
+
+    case 'END': {
+      toast.info('모임이 종료되었습니다.', {
+        id: 'END',
         position: 'bottom-center',
       } as any);
       navigate('/participant-evaluation');
+      return false;
+    }
+
+    case 'END_BY_SYSTEM': {
+      toast.info('모집 시간이 마감되었습니다.', {
+        id: 'END_BY_SYSTEM',
+      } as any);
+      navigate('/home');
       return false;
     }
 
@@ -100,10 +97,17 @@ export const handleSocketAction = <T>(
 
         setState((prev) => [systemMessage, ...(prev as any[])] as T);
         if (myId === receivedAction.participantId) return false;
-        toast.success(`${receivedAction.nickname}님이 퇴장하셨습니다.`, {
+        toast.info(`${receivedAction.nickname}님이 퇴장하셨습니다.`, {
           id: 'EXIT',
         } as any);
       }
+      return false;
+    }
+
+    case 'MODIFIED': {
+      toast.info('모임방 정보가 수정되었습니다.', {
+        id: 'MODIFIED',
+      } as any);
       return false;
     }
 
@@ -112,6 +116,7 @@ export const handleSocketAction = <T>(
         id: 'CANCELED',
       } as any);
       navigate('/home');
+      return false;
     }
   }
 };

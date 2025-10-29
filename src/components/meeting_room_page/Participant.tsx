@@ -35,7 +35,7 @@ const Avatar = styled.div<{ imageUrl: string; isHost: boolean }>`
 const NameTag = styled.div`
   margin-top: 0.5rem;
   font-size: 0.75rem;
-  font-weight: 500;
+  font-weight: 400;
   max-width: 6rem;
   white-space: nowrap;
   overflow: hidden;

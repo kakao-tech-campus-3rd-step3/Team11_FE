@@ -13,11 +13,11 @@ const Container = styled.div`
   flex-direction: column;
   width: 100%;
   max-width: 720px;
-  height: 5.5rem;
+  height: 6.5rem;
   padding-left: 2rem;
   padding-right: 2rem;
   justify-content: flex-start;
-  align-items: center;
+  align-items: flex-start;
   box-sizing: border-box;
 `;
 
@@ -29,12 +29,19 @@ const List = styled.div`
   justify-content: flex-start;
   align-items: center;
   overflow-x: auto;
-  border-bottom: 1px solid black;
+`;
+
+const Text = styled.div`
+  margin-top: 0.5rem;
+  margin-left: 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 500;
 `;
 
 export const ParticipantList = ({ participants }: ParticipantListProps) => {
   return (
     <Container>
+      <Text>현재 참여자</Text>
       <List>
         {participants.map((participant) => (
           <Participant key={crypto.randomUUID()} participant={participant} />

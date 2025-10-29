@@ -4,38 +4,12 @@ import { Client } from '@stomp/stompjs';
 import type { IMessage } from '@stomp/stompjs';
 import { getAccessToken } from '@/utils/tokenStorage';
 import { getUgradeToken } from '@/api/services/auth.service';
-import type { ChatMessage } from '@/types/meeting_room_page/chatMessage';
+import type { ChatMessage, MessageType, Payload } from '@/types/meeting_room_page/chatMessage';
 import type { ChatMessageDTO, MeetupResponseDTO } from '@/api/types/meeting_room.dto';
-
-type ActionType =
-  | 'ENTER'
-  | 'JOIN'
-  | 'LEAVE'
-  | 'EXIT'
-  | 'MESSAGE'
-  | 'STARTED'
-  | 'FINISH'
-  | undefined;
-
-type MessageType = 'TEXT' | 'IMAGE' | 'SYSTEM';
-
-type DefaultActionMessage = {
-  participantId: number;
-  action: ActionType;
-};
-
-type JoinLeaveActionMessage = {
-  action: ActionType;
-  nickname: string;
-  participantId: number;
-  profileId: string;
-  profileImageUrl: string;
-};
-
-type Payload = {
-  type: MessageType;
-  content: string;
-};
+import type {
+  DefaultActionMessage,
+  JoinLeaveActionMessage,
+} from '@/types/meeting_room_page/actionMessage';
 
 export function useChat(meetupInfo: MeetupResponseDTO | null) {
   const isFirstConnectRef = useRef(true);

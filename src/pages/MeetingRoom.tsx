@@ -8,6 +8,7 @@ import { ChatBox } from '@/components/meeting_room_page/ChatBox';
 import { ChatInput } from '@/components/meeting_room_page/ChatInput';
 import { Header } from '@/components/meeting_room_page/Header';
 import { ParticipantList } from '@/components/meeting_room_page/ParticipantList';
+import { Timer } from '@/components/meeting_room_page/Timer';
 import { useChat } from '@/hooks/useChat';
 import { Container } from '@/style/CommonStyle';
 import type { ChatMessage } from '@/types/meeting_room_page/chatMessage';
@@ -63,13 +64,19 @@ const MeetingRoom = () => {
     if (!meetUpInfo) init();
     else connect();
 
+    if (newAction?.action === 'MODIFIED') init();
+
     return () => {
       disconnect();
     };
-  }, [meetUpInfo]);
+  }, [meetUpInfo, newAction]);
 
   // 현재 참여자 정보 조회
   useEffect(() => {
+    if (!newAction) return;
+
+    if (!['JOIN', 'ENTER', 'EXIT'].includes(newAction.action ?? '')) return;
+
     const getParticipantsInfo = async () => {
       if (!meetUpInfo) return;
 
@@ -96,9 +103,12 @@ const MeetingRoom = () => {
     if (!newAction || !myIdRef.current) return;
     console.log('newAction', newAction);
     handleSocketAction('STARTED', newAction, navigate, undefined, setIsStarted);
-    handleSocketAction('FINISH', newAction, navigate);
+    handleSocketAction('NEAR_END', newAction, navigate);
+    handleSocketAction('END', newAction, navigate);
+    handleSocketAction('END_BY_SYSTEM', newAction, navigate);
     handleSocketAction('JOIN', newAction, navigate, myIdRef.current, setChatMessages);
     handleSocketAction('EXIT', newAction, navigate, myIdRef.current, setChatMessages);
+    handleSocketAction('MODIFIED', newAction, navigate);
     handleSocketAction('CANCELED', newAction, navigate);
   }, [newAction]);
 
@@ -119,6 +129,7 @@ const MeetingRoom = () => {
         disconnect={disconnect}
       />
       <ParticipantList participants={participants} />
+      <Timer startAt={meetUpInfo?.startAt} isStarted={isStarted} />
       <ChatBox
         chatMessages={chatMessages}
         meetUpId={meetUpInfo?.id || null}
