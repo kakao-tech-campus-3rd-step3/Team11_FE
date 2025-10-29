@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import Send from '@/assets/meeting_room_page/send.svg?react';
-import React from 'react';
+import { useRef, useState } from 'react';
 import type { ChatMessage } from '@/types/meeting_room_page/chatMessage';
 import type { SetState } from '@/types/meeting_room_page/chatMessage';
 
@@ -10,6 +10,7 @@ interface ChatInputProps {
   chatMessages: ChatMessage[];
   setChatMessages: SetState<ChatMessage[]>;
   sendMessage: (type: MessageType, message: string) => void;
+  myId: number | null;
 }
 
 const Container = styled.div`
@@ -59,11 +60,14 @@ const HelperText = styled.div`
   margin-top: 0.3rem;
 `;
 
-export const ChatInput = ({ chatMessages, setChatMessages, sendMessage }: ChatInputProps) => {
-  const [text, setText] = React.useState('');
+export const ChatInput = ({ chatMessages, setChatMessages, sendMessage, myId }: ChatInputProps) => {
+  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+  const [text, setText] = useState('');
 
   const handleClick = () => {
     const trimmedText = text.trim();
+
+    if (!myId) return;
 
     if (!trimmedText) {
       setText('');
@@ -71,20 +75,26 @@ export const ChatInput = ({ chatMessages, setChatMessages, sendMessage }: ChatIn
     }
 
     const newMessage: ChatMessage = {
-      id: `${Date.now()}-${Math.random().toString(36).substring(2, 8)}`,
+      id: crypto.randomUUID(),
+      senderId: myId,
       senderType: 'me',
       content: trimmedText,
       time: new Date(),
     };
 
     sendMessage('TEXT', trimmedText);
-    setChatMessages([...chatMessages, newMessage]);
+    setChatMessages([newMessage, ...chatMessages]);
     setText('');
+
+    if (textareaRef.current) {
+      textareaRef.current.value = '';
+    }
   };
 
   return (
     <Container>
       <TextArea
+        ref={textareaRef}
         value={text}
         onChange={(e) => setText(e.target.value)}
         placeholder="대화를 시작해 보세요!"

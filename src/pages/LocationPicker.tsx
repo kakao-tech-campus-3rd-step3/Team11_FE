@@ -70,6 +70,7 @@ const LocationPicker = () => {
   const markerRef = useRef<any>(null);
   const navigate = useNavigate();
   const location = useLocation();
+  const prevPath = location.state?.prevPath ?? '/create-room';
   const { formValues, hashtags, currentLocation } = location.state || {};
 
   const [map, setMap] = useState<any>(null);
@@ -171,7 +172,7 @@ const LocationPicker = () => {
 
   const handleConfirm = () => {
     if (selectedLocation) {
-      navigate('/create-room', {
+      navigate(prevPath, {
         state: {
           formValues: formValues,
           hashtags: hashtags,
@@ -183,7 +184,7 @@ const LocationPicker = () => {
   };
 
   const handleBack = () => {
-    navigate('/create-room', {
+    navigate(prevPath, {
       state: {
         formValues: formValues,
         hashtags: hashtags,
