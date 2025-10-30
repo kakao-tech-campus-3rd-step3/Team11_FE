@@ -36,3 +36,9 @@ export const verifyEmail = async (code: string) => {
   const response = await api.get(`/api/auth/verify?code=${code}`);
   return response.data;
 };
+
+// 회원탈퇴
+export const deleteAccount = async () => {
+  const response = await api.delete('/api/members/me');
+  return response.data;
+};
