@@ -31,7 +31,7 @@ const refreshAccessToken = async (): Promise<string | null> => {
 
     const { accessToken } = response.data;
     if (accessToken) {
-      // 새 토큰을 localStorage에 저장
+      // 새 토큰 저장, 재시도
       localStorage.setItem('accessToken', accessToken);
       return accessToken;
     }
@@ -65,6 +65,7 @@ api.interceptors.response.use(
       const newAccessToken = await refreshAccessToken();
 
       if (newAccessToken) {
+        // 새 토큰으로 원래 요청 재시도
         originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
         return api(originalRequest);
       } else {

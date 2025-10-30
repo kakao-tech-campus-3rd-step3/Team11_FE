@@ -7,6 +7,11 @@ import { setMyProfile, clearMyProfile } from '@/store/slices/myProfileSlice';
 import { clearProfile, clearTokens, saveTokens, saveProfile } from '@/utils/tokenStorage';
 import { kakaoLogin, login, logout, signup } from '@/api/services/auth.service';
 
+// 프로필이 있는지 확인
+const hasCompleteProfile = (profile: any): boolean => {
+  return profile && profile.nickname;
+};
+
 export const useLogin = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -18,22 +23,25 @@ export const useLogin = () => {
         saveTokens(result.accessToken, result.refreshToken);
         console.log(result.accessToken, result.refreshToken);
 
+        let hasProfile = false;
         try {
           const profileData = await getMyProfile();
-          dispatch(setMyProfile(profileData));
-          saveProfile(profileData);
-        } catch (profileError) {
+          // 프로필이 완전한지 확인
+          if (hasCompleteProfile(profileData)) {
+            dispatch(setMyProfile(profileData));
+            saveProfile(profileData);
+            hasProfile = true;
+          }
+        } catch (profileError: any) {
           console.error('프로필 조회 실패:', profileError);
-          // 프로필 조회 실패 시 기본 데이터로 설정
-          const userData = result.user || {};
-          const defaultProfile = {
-            name: userData.name || userData.nickname || result.email,
-          };
-          dispatch(setMyProfile(defaultProfile));
-          saveProfile(defaultProfile); // 기본 프로필도 저장
+          if (profileError.response?.status === 404) {
+            hasProfile = false;
+          } else {
+            throw profileError;
+          }
         }
 
-        navigate('/home');
+        navigate(hasProfile ? '/home' : '/onboarding');
       } catch (error) {
         console.error('로그인 후 처리 실패:', error);
         throw error;
@@ -75,21 +83,12 @@ export const useLogin = () => {
   // 회원가입
   const handleSignup = useCallback(
     async (email: string, password1: string, password2: string) => {
-      try {
-        const result = await signup(email, password1, password2);
-
-        if (result.accessToken && result.refreshToken) {
-          saveTokens(result.accessToken, result.refreshToken);
-          console.log('회원가입 성공 - 토큰 저장 완료');
-        }
-
-        navigate('/onboarding');
-      } catch (error: any) {
-        handleLoginError(error, 'email');
-        throw error;
-      }
+      // 회원가입 API는 성공 시 '1' 같은 단순 응답만 반환하고 토큰은 반환하지 않음
+      // 이메일 인증 후 로그인해야 토큰을 받을 수 있음
+      const result = await signup(email, password1, password2);
+      return result;
     },
-    [navigate, handleLoginError],
+    [],
   );
 
   // 로그아웃
