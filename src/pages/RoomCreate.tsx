@@ -199,7 +199,10 @@ const RoomCreate = () => {
 
   return (
     <PageContainer $closing={isClosing}>
-      <CommonHeader title="모임 만들기" onBackButtonClick={handleBackButtonClick} />
+      <CommonHeader
+        title={update ? '모임 수정하기' : '모임 만들기'}
+        onBackButtonClick={handleBackButtonClick}
+      />
       <FormContainer onSubmit={handleSubmit}>
         <InputGroup>
           <Label htmlFor="name">모임 이름</Label>

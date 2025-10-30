@@ -64,12 +64,22 @@ const MeetingRoom = () => {
     if (!meetUpInfo) init();
     else connect();
 
-    if (newAction?.action === 'MODIFIED') init();
-
     return () => {
       disconnect();
     };
-  }, [meetUpInfo, newAction]);
+  }, [meetUpInfo]);
+
+  useEffect(() => {
+    const getNewInfo = async () => {
+      try {
+        const response = await getMyJoinedMeetup();
+        setmeetUpInfo(response);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    if (newAction?.action === 'MODIFIED') getNewInfo();
+  }, [newAction]);
 
   // 현재 참여자 정보 조회
   useEffect(() => {
