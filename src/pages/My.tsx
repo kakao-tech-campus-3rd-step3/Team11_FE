@@ -50,6 +50,7 @@ import {
   EmptyBadgeMessage,
   GenderButtonGroup,
   GenderButton,
+  DeleteButton,
 } from './My.styled';
 import BottomNav from '@/components/common/BottomNav';
 import { useToast } from '@/hooks/useToast';
@@ -61,7 +62,7 @@ import { validateNickname, isNicknameValid } from '@/utils/nicknameValidation';
 const My = () => {
   const dispatch = useDispatch();
   const myProfile = useSelector((state: RootState) => state.myProfile);
-  const { handleLogout } = useLogin();
+  const { handleLogout, handleDeleteAccount } = useLogin();
   const { showToast, hideToast, toast } = useToast();
   const {
     sido,
@@ -316,6 +317,10 @@ const My = () => {
 
               <ActionButtons style={{ marginTop: '16px' }}>
                 <CancelButton onClick={handleLogout}>로그아웃</CancelButton>
+              </ActionButtons>
+
+              <ActionButtons style={{ marginTop: '12px' }}>
+                <DeleteButton onClick={handleDeleteAccount}>회원탈퇴</DeleteButton>
               </ActionButtons>
 
               <BottomNav />

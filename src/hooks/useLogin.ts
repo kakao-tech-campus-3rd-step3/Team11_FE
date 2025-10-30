@@ -5,7 +5,8 @@ import { useDispatch } from 'react-redux';
 import { getMyProfile } from '@/api/services/profile.service';
 import { setMyProfile, clearMyProfile } from '@/store/slices/myProfileSlice';
 import { clearProfile, clearTokens, saveTokens, saveProfile } from '@/utils/tokenStorage';
-import { kakaoLogin, login, logout, signup } from '@/api/services/auth.service';
+import { kakaoLogin, login, logout, signup, deleteAccount } from '@/api/services/auth.service';
+import { useToast } from '@/hooks/useToast';
 
 // 프로필이 있는지 확인
 const hasCompleteProfile = (profile: any): boolean => {
@@ -15,6 +16,7 @@ const hasCompleteProfile = (profile: any): boolean => {
 export const useLogin = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { showToast } = useToast();
 
   // 로그인 성공
   const handleLoginSuccess = useCallback(
@@ -50,17 +52,20 @@ export const useLogin = () => {
     [dispatch, navigate],
   );
 
-  const handleLoginError = useCallback((error: any, loginType: 'email' | 'kakao' = 'email') => {
-    console.error(`${loginType === 'kakao' ? '카카오 ' : ''}로그인 에러:`, error);
+  const handleLoginError = useCallback(
+    (error: any, loginType: 'email' | 'kakao' = 'email') => {
+      console.error(`${loginType === 'kakao' ? '카카오 ' : ''}로그인 에러:`, error);
 
-    const errorMessage =
-      error.response?.data?.detail ||
-      error.response?.data?.message ||
-      error.message ||
-      `${loginType === 'kakao' ? '카카오 ' : ''}로그인에 실패했습니다. 네트워크 연결을 확인해주세요.`;
+      const errorMessage =
+        error.response?.data?.detail ||
+        error.response?.data?.message ||
+        error.message ||
+        `${loginType === 'kakao' ? '카카오 ' : ''}로그인에 실패했습니다. 네트워크 연결을 확인해주세요.`;
 
-    alert(errorMessage);
-  }, []);
+      showToast(errorMessage);
+    },
+    [showToast],
+  );
 
   // 이메일 로그인
   const handleEmailLogin = useCallback(
@@ -83,8 +88,6 @@ export const useLogin = () => {
   // 회원가입
   const handleSignup = useCallback(
     async (email: string, password1: string, password2: string) => {
-      // 회원가입 API는 성공 시 '1' 같은 단순 응답만 반환하고 토큰은 반환하지 않음
-      // 이메일 인증 후 로그인해야 토큰을 받을 수 있음
       const result = await signup(email, password1, password2);
       return result;
     },
@@ -102,18 +105,48 @@ export const useLogin = () => {
       clearTokens();
       clearProfile();
       dispatch(clearMyProfile());
-      alert('로그아웃되었습니다.');
+      showToast('로그아웃되었습니다.');
       navigate('/login');
     } catch (error: any) {
       console.error('로그아웃 실패:', error);
-      alert(`로그아웃 실패: ${error.message}`);
+      showToast(`로그아웃 실패: ${error.message}`);
     }
-  }, [dispatch, navigate]);
+  }, [dispatch, navigate, showToast]);
+
+  // 회원탈퇴
+  const handleDeleteAccount = useCallback(async () => {
+    if (!confirm('정말 탈퇴하시겠습니까? 탈퇴 후에는 복구할 수 없습니다.')) {
+      return;
+    }
+
+    try {
+      const result = await deleteAccount();
+      // 성공 시 1 반환
+      if (result === 1) {
+        clearTokens();
+        clearProfile();
+        dispatch(clearMyProfile());
+        showToast('회원탈퇴가 완료되었습니다.');
+        navigate('/login');
+      } else {
+        showToast('회원탈퇴에 실패했습니다. 다시 시도해주세요.');
+      }
+    } catch (error: any) {
+      console.error('회원탈퇴 실패:', error);
+      const errorMessage =
+        error.response?.data?.detail ||
+        error.message ||
+        '회원탈퇴에 실패했습니다. 다시 시도해주세요.';
+      showToast(errorMessage);
+    }
+  }, [dispatch, navigate, showToast]);
 
   return {
     handleEmailLogin,
     handleKakaoLogin,
     handleSignup,
     handleLogout,
+    handleDeleteAccount,
   };
 };
+

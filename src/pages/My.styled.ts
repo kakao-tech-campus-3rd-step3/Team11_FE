@@ -385,6 +385,23 @@ export const CancelButton = styled.button`
   }
 `;
 
+export const DeleteButton = styled.button`
+  flex: 1;
+  padding: 12px;
+  background: #ef4444;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background: #dc2626;
+  }
+`;
+
 export const GenderButtonGroup = styled.div`
   display: flex;
   gap: 12px;

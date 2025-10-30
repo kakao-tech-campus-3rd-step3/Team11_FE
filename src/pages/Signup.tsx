@@ -25,10 +25,7 @@ const Signup = () => {
 
     try {
       await handleSignup(email, password1, password2);
-      // 회원가입 성공 시 toast 표시
       showToast('회원가입이 완료되었습니다. 이메일 인증을 진행해 주세요');
-      // 토큰이 저장되어 있으므로 이메일 인증 페이지로 이동 (또는 로그인 페이지로 이동 가능)
-      // 현재는 toast만 표시하고 페이지는 그대로 유지
     } catch (err: any) {
       console.error('회원가입 에러:', err);
 
