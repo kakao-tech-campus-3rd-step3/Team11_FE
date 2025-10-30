@@ -112,12 +112,12 @@ const MeetingRoom = () => {
   useEffect(() => {
     if (!newAction || !myIdRef.current) return;
     console.log('newAction', newAction);
+    handleSocketAction('JOIN', newAction, navigate, myIdRef.current, setChatMessages);
+    handleSocketAction('EXIT', newAction, navigate, myIdRef.current, setChatMessages);
+    handleSocketAction('NEAR_STARTED', newAction, navigate);
     handleSocketAction('STARTED', newAction, navigate, undefined, setIsStarted);
     handleSocketAction('NEAR_END', newAction, navigate);
     handleSocketAction('END', newAction, navigate);
-    handleSocketAction('END_BY_SYSTEM', newAction, navigate);
-    handleSocketAction('JOIN', newAction, navigate, myIdRef.current, setChatMessages);
-    handleSocketAction('EXIT', newAction, navigate, myIdRef.current, setChatMessages);
     handleSocketAction('MODIFIED', newAction, navigate);
     handleSocketAction('CANCELED', newAction, navigate);
   }, [newAction]);

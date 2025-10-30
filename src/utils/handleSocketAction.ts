@@ -34,6 +34,13 @@ export const handleSocketAction = <T>(
   lastActionTime = now;
 
   switch (expectedAction) {
+    case 'NEAR_STARTED': {
+      toast.info('모집 마감까지 10분 남았습니다!', {
+        id: 'NEAR_STARTED',
+      } as any);
+      return false;
+    }
+
     case 'STARTED': {
       toast.success('모임이 시작되었습니다.', {
         id: 'STARTED',
@@ -43,27 +50,18 @@ export const handleSocketAction = <T>(
     }
 
     case 'NEAR_END': {
-      toast.warn('모집 종료까지 10분 남았습니다!', {
+      toast.info('모임 종료까지 10분 남았습니다!', {
         id: 'NEAR_END',
       } as any);
-      navigate('/participant-evaluation');
-      return false;
+      return true;
     }
 
     case 'END': {
-      toast.info('모임이 종료되었습니다.', {
+      toast.success('모임이 종료되었습니다.', {
         id: 'END',
         position: 'bottom-center',
       } as any);
       navigate('/participant-evaluation');
-      return false;
-    }
-
-    case 'END_BY_SYSTEM': {
-      toast.info('모집 시간이 마감되었습니다.', {
-        id: 'END_BY_SYSTEM',
-      } as any);
-      navigate('/home');
       return false;
     }
 
