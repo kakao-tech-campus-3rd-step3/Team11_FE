@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useMemo } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { useNavigate, Link, useParams, useLocation } from 'react-router-dom';
 import { useCreateForm } from '@/hooks/useCreateForm';
@@ -107,16 +107,35 @@ const SubmitButton = styled.button`
   }
 `;
 
+// HobbySelector.tsx의 리스트와 동일해야 합니다.
+const hobbyCategoriesList = [
+  '스포츠',
+  '식사',
+  '문화/예술',
+  '스터디',
+  '여행',
+  '게임',
+  '덕질',
+  '기타',
+];
+
 const RoomCreate = () => {
   const { update } = useParams<{ update?: string }>();
   const location = useLocation();
-  const { selectedLocation } = location.state || {};
-  console.log(selectedLocation);
   const { formState, setFormState, hashtags, setHashtags, handleChange, timeError, isFormValid } =
     useCreateForm();
 
   const [isClosing, { on: startClosing }] = useBoolean(false);
   const navigate = useNavigate();
+
+  // API 값(영어)을 표시 값(한글)으로 변환하기 위한 역방향 맵 생성
+  const reverseCategoryMap = useMemo(() => {
+    const map = new Map<string, string>();
+    hobbyCategoriesList.forEach((category) => {
+      map.set(categoryMapper(category), category);
+    });
+    return map;
+  }, []);
 
   const handleBackButtonClick = () => {
     startClosing();
@@ -137,9 +156,9 @@ const RoomCreate = () => {
         startAt: formState.startTime,
         endAt: formState.endTime,
         location: {
-          latitude: selectedLocation?.lat || formState.location?.lat,
-          longitude: selectedLocation?.lng || formState.location?.lng,
-          address: selectedLocation?.name || formState.location?.name,
+          latitude: formState.location!.lat,
+          longitude: formState.location!.lng,
+          address: formState.location!.name,
         },
       };
 
@@ -161,32 +180,45 @@ const RoomCreate = () => {
         toast.error(error.message);
       }
     },
-    [update, formState, selectedLocation],
+    [update, formState, hashtags, isFormValid, navigate],
   );
 
   useEffect(() => {
-    if (!update) return;
+    // 수정 모드이고, 위치 선택 등에서 돌아온 상태가 아닐 때 (formValues가 없을 때)
+    if (update && !location.state?.formValues) {
+      const getPrevInfo = async () => {
+        const response = await getMyJoinedMeetup();
 
-    const getPrevInfo = async () => {
-      const response = await getMyJoinedMeetup();
+        // API 응답(영어)을 selector 표시 값(한글)으로 변환
+        const displayCategory = reverseCategoryMap.get(response.category) || '';
 
-      setFormState({
-        name: response.name,
-        category: response.category,
-        capacity: response.capacity.toString(),
-        scoreLimit: response.scoreLimit.toString(),
-        startTime: response.startAt,
-        endTime: response.endAt,
-        location: {
-          name: selectedLocation?.name || response.location.address!,
-          lat: selectedLocation?.lat || response.location.latitude!,
-          lng: selectedLocation?.lng || response.location.longitude!,
-        },
-      });
-    };
+        setFormState({
+          name: response.name,
+          category: displayCategory, // <-- 카테고리 문제 수정
+          capacity: response.capacity.toString(),
+          scoreLimit: response.scoreLimit.toString(),
+          startTime: response.startAt,
+          endTime: response.endAt,
+          location: {
+            name: response.location.address!,
+            lat: response.location.latitude!,
+            lng: response.location.longitude!,
+          },
+        });
 
-    getPrevInfo();
-  }, [update]);
+        // --- 해시태그 문제 수정 ---
+        // API 응답 (e.g., ['게임', '스터디'])을
+        // Input 형식 (e.g., ['#게임', '#스터디'])으로 변환
+        if (response.hashTags && Array.isArray(response.hashTags)) {
+          const formattedHashtags = response.hashTags.map((tag: string) => `#${tag}`);
+          setHashtags(formattedHashtags);
+        }
+      };
+
+      getPrevInfo();
+    }
+    // 의존성 배열에 setHashtags와 reverseCategoryMap 추가
+  }, [update, location.state?.formValues, setFormState, setHashtags, reverseCategoryMap]);
 
   useEffect(() => {
     if (isClosing) {
@@ -277,7 +309,7 @@ const RoomCreate = () => {
         </InputGroup>
 
         <SubmitButton type="submit" disabled={!isFormValid}>
-          만들기
+          {update ? '수정하기' : '만들기'}
         </SubmitButton>
       </FormContainer>
     </PageContainer>
