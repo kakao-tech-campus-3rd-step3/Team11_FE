@@ -7,12 +7,11 @@ export const Container = styled.div`
   align-items: center;
   justify-content: center;
   width: 100vw;
-  height: 100vh;
+  height: 100%;
   max-width: 720px;
   background-color: #ffffffff;
   overflow: hidden;
 `;
-
 
 export const ContentContanier = styled.div`
   width: 92%;
