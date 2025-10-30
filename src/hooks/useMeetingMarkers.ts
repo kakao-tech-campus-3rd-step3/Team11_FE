@@ -14,7 +14,7 @@ export const useMeetingMarkers = (
     markersRef.current.forEach((marker) => marker.setMap(null));
     markersRef.current = [];
 
-    if (!map || !window.kakao || meetings.length === 0) return;
+    if (!map || !window.kakao || !Array.isArray(meetings)) return;
 
     const newMarkers = meetings.map((meeting) => {
       const position = new window.kakao.maps.LatLng(meeting.latitude, meeting.longitude);

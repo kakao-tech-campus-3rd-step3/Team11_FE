@@ -13,7 +13,6 @@ export const Container = styled.div`
   overflow: hidden;
 `;
 
-
 export const ContentContanier = styled.div`
   width: 92%;
 `;

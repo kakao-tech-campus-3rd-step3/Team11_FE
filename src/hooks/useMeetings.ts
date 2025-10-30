@@ -29,7 +29,7 @@ export const useMeetings = (
         params.radius = parseInt(selectedRadius.replace('km', ''), 10) * 1000;
       }
       const meetingData = await getMeetings(params);
-      setMeetings(meetingData);
+      setMeetings(Array.isArray(meetingData) ? meetingData : []);
     } catch (err: any) {
       console.error('모임 정보를 불러오는 데 실패했습니다.', err);
       setError(
