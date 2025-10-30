@@ -13,6 +13,11 @@ const hasCompleteProfile = (profile: any): boolean => {
   return profile && profile.nickname;
 };
 
+// 프로필이 있는지 확인
+const hasCompleteProfile = (profile: any): boolean => {
+  return profile && profile.nickname;
+};
+
 export const useLogin = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
