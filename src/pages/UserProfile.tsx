@@ -7,6 +7,8 @@ import type { Badge } from '@/types/badge';
 import {
   HeaderSection,
   HeaderTitle,
+  TitleContainer,
+  BackButton,
   ProfileImageContainer,
   ProfileImage,
   ProfileImagePlaceholder,
@@ -30,8 +32,7 @@ import {
   BadgeIcon,
   BadgeName,
   EmptyBadgeMessage,
-  BackButton,
-} from './UserProfile.styled';
+} from './My.styled';
 import BottomNav from '@/components/common/BottomNav';
 import { useToast } from '@/hooks/useToast';
 import { Toast } from '@/components/common/Toast';
@@ -92,9 +93,21 @@ const UserProfile = () => {
   if (isLoading) {
     return (
       <Container>
-        <HeaderSection>
+        <HeaderSection />
+        <TitleContainer>
+          <BackButton onClick={handleBack}>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M19 12H5M12 19L5 12L12 5"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </BackButton>
           <HeaderTitle>프로필</HeaderTitle>
-        </HeaderSection>
+        </TitleContainer>
         <ContentContanier>
           <div style={{ textAlign: 'center', padding: '20px' }}>프로필 정보를 불러오는 중...</div>
         </ContentContanier>
@@ -105,9 +118,21 @@ const UserProfile = () => {
   if (!userProfile) {
     return (
       <Container>
-        <HeaderSection>
+        <HeaderSection />
+        <TitleContainer>
+          <BackButton onClick={handleBack}>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M19 12H5M12 19L5 12L12 5"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </BackButton>
           <HeaderTitle>프로필</HeaderTitle>
-        </HeaderSection>
+        </TitleContainer>
         <ContentContanier>
           <div style={{ textAlign: 'center', padding: '20px' }}>프로필을 찾을 수 없습니다.</div>
         </ContentContanier>
@@ -117,7 +142,8 @@ const UserProfile = () => {
 
   return (
     <Container>
-      <HeaderSection>
+      <HeaderSection />
+      <TitleContainer>
         <BackButton onClick={handleBack}>
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
             <path
@@ -130,7 +156,7 @@ const UserProfile = () => {
           </svg>
         </BackButton>
         <HeaderTitle>프로필</HeaderTitle>
-      </HeaderSection>
+      </TitleContainer>
       <ContentContanier>
         <MainContentCard>
           <ProfileImageContainer>

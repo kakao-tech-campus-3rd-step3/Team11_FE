@@ -35,10 +35,15 @@ export const useLogin = () => {
             hasProfile = true;
           }
         } catch (profileError: any) {
-          console.error('프로필 조회 실패:', profileError);
-          if (profileError.response?.status === 404) {
+          const isProfileNotFound = 
+            profileError.response?.status === 404 ||
+            profileError.message?.includes('프로필이 존재하지 않습니다') ||
+            profileError.message?.includes('404');
+          
+          if (isProfileNotFound) {
             hasProfile = false;
           } else {
+            console.error('프로필 조회 실패:', profileError);
             throw profileError;
           }
         }

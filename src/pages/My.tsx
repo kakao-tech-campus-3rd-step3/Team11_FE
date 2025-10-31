@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { Container, ContentContanier } from '@/style/CommonStyle';
 import type { RootState } from '@/store';
 import { setMyProfile } from '@/store/slices/myProfileSlice';
@@ -9,6 +10,8 @@ import { getProfile } from '@/utils/tokenStorage';
 import type { Badge } from '@/types/badge';
 import {
   HeaderTitle,
+  TitleContainer,
+  BackButton,
   ProfileImageContainer,
   ProfileImage,
   ProfileImagePlaceholder,
@@ -51,6 +54,7 @@ import {
   GenderButtonGroup,
   GenderButton,
   DeleteButton,
+  ScrollableCardContent,
 } from './My.styled';
 import BottomNav from '@/components/common/BottomNav';
 import { useToast } from '@/hooks/useToast';
@@ -60,6 +64,7 @@ import { useLocationInput } from '@/hooks/useLocationInput';
 import { validateNickname, isNicknameValid } from '@/utils/nicknameValidation';
 
 const My = () => {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const myProfile = useSelector((state: RootState) => state.myProfile);
   const { handleLogout, handleDeleteAccount } = useLogin();
@@ -224,11 +229,27 @@ const My = () => {
     }
   };
 
+  const handleBack = () => {
+    navigate(-1);
+  };
+
   return (
     <Container>
-      <HeaderSection>
+      <HeaderSection />
+      <TitleContainer>
+        <BackButton onClick={handleBack}>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path
+              d="M19 12H5M12 19L5 12L12 5"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </BackButton>
         <HeaderTitle>마이 페이지</HeaderTitle>
-      </HeaderSection>
+      </TitleContainer>
       <ContentContanier>
         {isLoading ? (
           <div style={{ textAlign: 'center', padding: '20px' }}>프로필 정보를 불러오는 중...</div>
@@ -261,7 +282,8 @@ const My = () => {
                 </UserBasicInfo>
               </UserInfo>
 
-              <ProfileInfoSection>
+              <ScrollableCardContent>
+                <ProfileInfoSection>
                 <ProfileInfoItem>
                   <InfoLabel>온도</InfoLabel>
                   <InfoValue>
@@ -315,13 +337,11 @@ const My = () => {
                 <SaveButton onClick={handleEdit}>편집</SaveButton>
               </ActionButtons>
 
-              <ActionButtons style={{ marginTop: '16px' }}>
-                <CancelButton onClick={handleLogout}>로그아웃</CancelButton>
+              <ActionButtons style={{ marginTop: '16px', display: 'flex', gap: '12px' }}>
+                <CancelButton onClick={handleLogout} style={{ flex: 1 }}>로그아웃</CancelButton>
+                <DeleteButton onClick={handleDeleteAccount} style={{ flex: 1 }}>회원탈퇴</DeleteButton>
               </ActionButtons>
-
-              <ActionButtons style={{ marginTop: '12px' }}>
-                <DeleteButton onClick={handleDeleteAccount}>회원탈퇴</DeleteButton>
-              </ActionButtons>
+              </ScrollableCardContent>
 
               <BottomNav />
             </MainContentCard>

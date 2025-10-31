@@ -76,8 +76,9 @@ api.interceptors.response.use(
       }
     }
 
-    // 에러 메시지 변환 후 재발행
-    const transformedError = new Error(transformErrorMessage(error));
+    const transformedError = new Error(transformErrorMessage(error)) as any;
+    transformedError.response = error.response;
+    transformedError.status = error.response?.status;
     return Promise.reject(transformedError);
   },
 );
