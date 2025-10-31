@@ -243,10 +243,7 @@ const LocationPicker = () => {
       <GlobalStyle />
       <KakaoMapCssFix />
       <PageContainer>
-        <CommonHeader
-          title="지도에서 위치 선택(주소지가 나오지 않을 시 좌표로 표시됩니다)"
-          onBackButtonClick={handleBack}
-        />
+        <CommonHeader title="지도에서 위치 선택" onBackButtonClick={handleBack} />
         <MapContainer ref={mapRef} />
         <LocationInfo>{displayAddress}</LocationInfo>
         <ConfirmButton onClick={handleConfirm} disabled={!selectedLocation}>
