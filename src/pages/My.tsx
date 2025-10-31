@@ -5,6 +5,7 @@ import { Container, ContentContanier } from '@/style/CommonStyle';
 import type { RootState } from '@/store';
 import { setMyProfile } from '@/store/slices/myProfileSlice';
 import { getMyBadges, getMyProfile, updateProfile } from '@/api/services/profile.service';
+import { getReports, deleteReport, type ReportListItem } from '@/api/services/report.service';
 import { useLogin } from '@/hooks/useLogin';
 import { getProfile } from '@/utils/tokenStorage';
 import type { Badge } from '@/types/badge';
@@ -55,6 +56,14 @@ import {
   GenderButton,
   DeleteButton,
   ScrollableCardContent,
+  ReportListContainer,
+  ReportItem,
+  ReportItemHeader,
+  ReportItemContent,
+  ReportCategory,
+  ReportStatus,
+  ReportDate,
+  ReportCancelButton,
 } from './My.styled';
 import BottomNav from '@/components/common/BottomNav';
 import { useToast } from '@/hooks/useToast';
@@ -84,6 +93,7 @@ const My = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [badges, setBadges] = useState<Badge[]>([]);
+  const [reports, setReports] = useState<ReportListItem[]>([]);
   const [editData, setEditData] = useState({
     nickname: myProfile.nickname || '',
     age: myProfile.age || '',
@@ -131,6 +141,21 @@ const My = () => {
     };
 
     fetchBadges();
+  }, []);
+
+  // 신고 목록 조회
+  useEffect(() => {
+    const fetchReports = async () => {
+      try {
+        const data = await getReports();
+        setReports(data.content);
+        console.log('신고 목록 조회 성공:', data);
+      } catch (error) {
+        console.error('신고 목록 조회 실패:', error);
+      }
+    };
+
+    fetchReports();
   }, []);
 
   const handleCancel = () => {
@@ -331,6 +356,62 @@ const My = () => {
                     <EmptyBadgeMessage>아직 획득한 뱃지가 없습니다</EmptyBadgeMessage>
                   )}
                 </BadgeContainer>
+              </BadgeSection>
+
+              {/* 신고 목록 섹션 */}
+              <BadgeSection>
+                <InfoLabel style={{ marginBottom: '12px', display: 'block' }}>
+                  내 신고 목록 ({reports.length}개)
+                </InfoLabel>
+                {reports.length > 0 ? (
+                  <ReportListContainer>
+                    {reports.map((report) => (
+                      <ReportItem key={report.reportId}>
+                        <ReportItemHeader>
+                          <ReportItemContent>
+                            <ReportCategory>
+                              신고 카테고리: {report.category === 'SPAM' ? '스팸' : report.category === 'ABUSE' ? '욕설/비방' : report.category === 'INAPPROPRIATE' ? '부적절한 콘텐츠' : '기타'}
+                            </ReportCategory>
+                            <ReportStatus>
+                              상태: {report.status === 'OPEN' ? '처리중' : report.status === 'CLOSED' ? '처리완료' : report.status}
+                            </ReportStatus>
+                            <ReportDate>
+                              {new Date(report.createdAt).toLocaleDateString('ko-KR', {
+                                year: 'numeric',
+                                month: 'long',
+                                day: 'numeric',
+                                hour: '2-digit',
+                                minute: '2-digit',
+                              })}
+                            </ReportDate>
+                          </ReportItemContent>
+                          {report.status === 'OPEN' && (
+                            <ReportCancelButton
+                              onClick={async () => {
+                                if (window.confirm('정말 이 신고를 취소하시겠습니까?')) {
+                                  try {
+                                    await deleteReport(report.reportId);
+                                    showToast('신고가 취소되었습니다.');
+                                    // 목록 새로고침
+                                    const data = await getReports();
+                                    setReports(data.content);
+                                  } catch (error: any) {
+                                    console.error('신고 취소 실패:', error);
+                                    showToast(`신고 취소에 실패했습니다: ${error.response?.data?.message || error.message}`);
+                                  }
+                                }
+                              }}
+                            >
+                              취소
+                            </ReportCancelButton>
+                          )}
+                        </ReportItemHeader>
+                      </ReportItem>
+                    ))}
+                  </ReportListContainer>
+                ) : (
+                  <EmptyBadgeMessage>신고 내역이 없습니다</EmptyBadgeMessage>
+                )}
               </BadgeSection>
 
               <ActionButtons>
