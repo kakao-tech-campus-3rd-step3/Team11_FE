@@ -42,7 +42,7 @@ const Onboarding = () => {
       await saveOnboardingProfile(completeData as MyProfileState);
       showToast('프로필 설정이 완료되었습니다!');
       setTimeout(() => {
-        navigate('/home');
+        navigate('/home', { replace: true });
       }, 2000);
     } catch (error: any) {
       console.error('프로필 설정 실패:', error);

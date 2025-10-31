@@ -69,6 +69,39 @@ export const EmptyBadgeMessage = styled.div`
   padding: 20px 0;
 `;
 
+export const TitleContainer = styled.div`
+  position: relative;
+  width: 100%;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  padding: 0 20px;
+`;
+
+export const BackButton = styled.button`
+  position: absolute;
+  left: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease;
+  z-index: 11;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+`;
+
 export const HeaderTitle = styled.h1`
   font-size: 24px;
   font-weight: 600;
@@ -76,6 +109,23 @@ export const HeaderTitle = styled.h1`
   margin: 0;
   position: relative;
   z-index: 1;
+`;
+
+export const ScrollableContentContainer = styled.div`
+  width: 92%;
+  height: calc(100vh - 120px);
+  overflow-y: auto;
+  padding-bottom: 100px;
+  margin-top: 120px;
+  background-color: transparent;
+
+  /* 스크롤바 숨기기 */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+
+  &::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+  }
 `;
 
 export const ProfileImageContainer = styled.div`
@@ -113,6 +163,24 @@ export const MainContentCard = styled.div`
   box-shadow: 0 4px 500px rgba(214, 214, 214, 0.49);
   position: relative;
   z-index: 100;
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 200px);
+  max-height: calc(100vh - 200px);
+`;
+
+export const ScrollableCardContent = styled.div`
+  overflow-y: auto;
+  flex: 1;
+  padding-bottom: 20px;
+
+  /* 스크롤바 숨기기 */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+
+  &::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+  }
 `;
 
 export const UserInfo = styled.div`
