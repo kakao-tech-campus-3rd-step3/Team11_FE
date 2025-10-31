@@ -65,35 +65,136 @@ const ConfirmButton = styled.button`
   }
 `;
 
+const LocationInfo = styled.div`
+  position: fixed;
+  top: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%;
+  max-width: 400px;
+  padding: 1rem;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+  text-align: center;
+  font-size: 0.95rem;
+  color: #333;
+`;
+
 const LocationPicker = () => {
   const mapRef = useRef<HTMLDivElement>(null);
   const markerRef = useRef<any>(null);
+  const geocoderRef = useRef<any>(null);
+  const mapInstanceRef = useRef<any>(null);
   const navigate = useNavigate();
   const location = useLocation();
   const prevPath = location.state?.prevPath ?? '/create-room';
   const { formValues, hashtags, currentLocation } = location.state || {};
 
-  const [map, setMap] = useState<any>(null);
-  const [geocoder, setGeocoder] = useState<any>(null);
   const [selectedLocation, setSelectedLocation] = useState<LocationInfo | null>(
     currentLocation || null,
+  );
+  const [displayAddress, setDisplayAddress] = useState<string>(
+    currentLocation ? currentLocation.name : '지도를 클릭하여 위치를 선택하세요',
   );
 
   useEffect(() => {
     const APP_KEY = (import.meta.env.VITE_KAKAO_MAP_KEY as string) || apikey?.kakaoMapKey;
     const scriptId = 'kakao-map-script';
 
-    const initializeMap = () => {
+    const loadKakaoMap = () => {
+      if (!window.kakao || !window.kakao.maps) return;
+
       window.kakao.maps.load(() => {
         if (!mapRef.current) return;
 
-        const center = new window.kakao.maps.LatLng(35.179554, 129.075642);
+        const center = currentLocation
+          ? new window.kakao.maps.LatLng(currentLocation.lat, currentLocation.lng)
+          : new window.kakao.maps.LatLng(35.2335, 129.081);
+
         const options = { center, level: 3 };
         const mapInstance = new window.kakao.maps.Map(mapRef.current, options);
-        const geocoderInstance = new window.kakao.maps.services.Geocoder();
 
-        setMap(mapInstance);
-        setGeocoder(geocoderInstance);
+        mapInstanceRef.current = mapInstance;
+
+        if (window.kakao.maps.services) {
+          geocoderRef.current = new window.kakao.maps.services.Geocoder();
+        }
+
+        if (currentLocation) {
+          const initialPosition = new window.kakao.maps.LatLng(
+            currentLocation.lat,
+            currentLocation.lng,
+          );
+          const marker = new window.kakao.maps.Marker({ position: initialPosition });
+          marker.setMap(mapInstance);
+          markerRef.current = marker;
+        }
+
+        const handleClick = (mouseEvent: any) => {
+          const latlng = mouseEvent.latLng;
+
+          if (markerRef.current) {
+            markerRef.current.setPosition(latlng);
+          } else {
+            const newMarker = new window.kakao.maps.Marker({ position: latlng });
+            newMarker.setMap(mapInstance);
+            markerRef.current = newMarker;
+          }
+
+          setDisplayAddress('주소를 검색하는 중...');
+
+          if (geocoderRef.current) {
+            geocoderRef.current.coord2Address(
+              latlng.getLng(),
+              latlng.getLat(),
+              (result: any, status: any) => {
+                if (status === window.kakao.maps.services.Status.OK && result[0]) {
+                  const roadAddress = result[0].road_address;
+                  const jibunAddress = result[0].address;
+
+                  const finalAddress = roadAddress
+                    ? roadAddress.address_name
+                    : jibunAddress.address_name;
+
+                  const locationData = {
+                    name: finalAddress,
+                    lat: latlng.getLat(),
+                    lng: latlng.getLng(),
+                  };
+
+                  setSelectedLocation(locationData);
+                  setDisplayAddress(finalAddress);
+                } else {
+                  const coordText = `위도: ${latlng.getLat().toFixed(6)}, 경도: ${latlng.getLng().toFixed(6)}`;
+
+                  const locationData = {
+                    name: coordText,
+                    lat: latlng.getLat(),
+                    lng: latlng.getLng(),
+                  };
+
+                  setSelectedLocation(locationData);
+                  setDisplayAddress(coordText);
+                }
+              },
+            );
+          } else {
+            const coordText = `위도: ${latlng.getLat().toFixed(6)}, 경도: ${latlng.getLng().toFixed(6)}`;
+
+            const locationData = {
+              name: coordText,
+              lat: latlng.getLat(),
+              lng: latlng.getLng(),
+            };
+
+            setSelectedLocation(locationData);
+            setDisplayAddress(coordText);
+          }
+        };
+
+        window.kakao.maps.event.addListener(mapInstance, 'click', handleClick);
       });
     };
 
@@ -105,70 +206,13 @@ const LocationPicker = () => {
       script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${APP_KEY}&libraries=services&autoload=false`;
       script.async = true;
       document.head.appendChild(script);
-
       script.onload = () => {
-        script!.dataset.loaded = 'true';
-        initializeMap();
+        loadKakaoMap();
       };
-    } else if (script.dataset.loaded) {
-      // 스크립트는 있지만, 로딩이 완료된 경우
-      initializeMap();
     } else {
-      // 스크립트는 있지만, 아직 로딩 중인 경우
-      const handleLoad = () => initializeMap();
-      script.addEventListener('load', handleLoad);
-      return () => {
-        script?.removeEventListener('load', handleLoad);
-      };
+      loadKakaoMap();
     }
   }, []);
-
-  useEffect(() => {
-    if (!map || !geocoder) return;
-
-    if (currentLocation && !selectedLocation) {
-      const initialPosition = new window.kakao.maps.LatLng(
-        currentLocation.lat,
-        currentLocation.lng,
-      );
-      map.setCenter(initialPosition);
-      const marker = new window.kakao.maps.Marker({ position: initialPosition });
-      marker.setMap(map);
-      markerRef.current = marker;
-    }
-
-    const handleClick = (mouseEvent: any) => {
-      const latlng = mouseEvent.latLng;
-
-      if (markerRef.current) {
-        markerRef.current.setPosition(latlng);
-      } else {
-        const newMarker = new window.kakao.maps.Marker({ position: latlng });
-        newMarker.setMap(map);
-        markerRef.current = newMarker;
-      }
-
-      geocoder.coord2Address(latlng.getLng(), latlng.getLat(), (result: any, status: any) => {
-        if (status === window.kakao.maps.services.Status.OK) {
-          const roadAddress =
-            result[0]?.road_address?.address_name || result[0]?.address?.address_name;
-          setSelectedLocation({
-            name: roadAddress,
-            lat: latlng.getLat(),
-            lng: latlng.getLng(),
-          });
-        }
-      });
-    };
-
-    window.kakao.maps.event.addListener(map, 'click', handleClick);
-
-    return () => {
-      if (window.kakao && window.kakao.maps && window.kakao.maps.event && map) {
-        window.kakao.maps.event.removeListener(map, 'click', handleClick);
-      }
-    };
-  }, [map, geocoder, currentLocation]);
 
   const handleConfirm = () => {
     if (selectedLocation) {
@@ -200,12 +244,13 @@ const LocationPicker = () => {
       <KakaoMapCssFix />
       <PageContainer>
         <CommonHeader
-          title="지도에서 위치 선택(위치선택이 되지 않을 시 새로고침)"
+          title="지도에서 위치 선택(주소지가 나오지 않을 시 좌표로 표시됩니다)"
           onBackButtonClick={handleBack}
         />
         <MapContainer ref={mapRef} />
+        <LocationInfo>{displayAddress}</LocationInfo>
         <ConfirmButton onClick={handleConfirm} disabled={!selectedLocation}>
-          {selectedLocation ? `'${selectedLocation.name}' 확정` : '지도를 클릭하여 위치 선택'}
+          {selectedLocation ? '위치 확정' : '지도를 클릭하여 위치 선택'}
         </ConfirmButton>
       </PageContainer>
     </>
