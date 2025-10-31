@@ -32,10 +32,16 @@ import {
   BadgeIcon,
   BadgeName,
   EmptyBadgeMessage,
+  LoadingMessage,
+  ErrorMessage,
+  BadgeLabel,
+  ReportButtonContainer,
+  ReportButton,
 } from './My.styled';
 import BottomNav from '@/components/common/BottomNav';
 import { useToast } from '@/hooks/useToast';
 import { Toast } from '@/components/common/Toast';
+import ReportModal from '@/components/user_profile/ReportModal';
 
 const UserProfile = () => {
   const { userId } = useParams<{ userId: string }>();
@@ -44,6 +50,7 @@ const UserProfile = () => {
   const [userProfile, setUserProfile] = useState<MyProfileState | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [badges, setBadges] = useState<Badge[]>([]);
+  const [isReportModalOpen, setIsReportModalOpen] = useState(false);
 
   // 페이지 로드 시 프로필 조회
   useEffect(() => {
@@ -109,7 +116,7 @@ const UserProfile = () => {
           <HeaderTitle>프로필</HeaderTitle>
         </TitleContainer>
         <ContentContanier>
-          <div style={{ textAlign: 'center', padding: '20px' }}>프로필 정보를 불러오는 중...</div>
+          <LoadingMessage>프로필 정보를 불러오는 중...</LoadingMessage>
         </ContentContanier>
       </Container>
     );
@@ -134,7 +141,7 @@ const UserProfile = () => {
           <HeaderTitle>프로필</HeaderTitle>
         </TitleContainer>
         <ContentContanier>
-          <div style={{ textAlign: 'center', padding: '20px' }}>프로필을 찾을 수 없습니다.</div>
+          <ErrorMessage>프로필을 찾을 수 없습니다.</ErrorMessage>
         </ContentContanier>
       </Container>
     );
@@ -218,9 +225,9 @@ const UserProfile = () => {
 
           {/* 뱃지 섹션 */}
           <BadgeSection>
-            <InfoLabel style={{ marginBottom: '12px', display: 'block' }}>
+            <BadgeLabel>
               획득한 뱃지 ({badges.length}개)
-            </InfoLabel>
+            </BadgeLabel>
             <BadgeContainer>
               {badges.length > 0 ? (
                 badges.map((badge) => (
@@ -235,10 +242,27 @@ const UserProfile = () => {
             </BadgeContainer>
           </BadgeSection>
 
+          {/* 신고 버튼 */}
+          <ReportButtonContainer>
+            <ReportButton onClick={() => setIsReportModalOpen(true)}>
+              사용자 신고
+            </ReportButton>
+          </ReportButtonContainer>
+
           <BottomNav />
         </MainContentCard>
       </ContentContanier>
       {toast.visible && <Toast message={toast.message} onClose={hideToast} />}
+      {userId && (
+        <ReportModal
+          isOpen={isReportModalOpen}
+          onClose={() => setIsReportModalOpen(false)}
+          targetProfileId={userId}
+          onSuccess={() => {
+            showToast('신고가 성공적으로 제출되었습니다.');
+          }}
+        />
+      )}
     </Container>
   );
 };

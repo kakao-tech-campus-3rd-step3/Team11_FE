@@ -15,9 +15,13 @@ export const HeaderSection = styled.div`
   clip-path: ellipse(130% 100% at 50% 0%);
 `;
 
-// 뱃지 섹션
-export const BadgeSection = styled.div`
+// 섹션 공통 스타일
+const SectionBase = styled.div`
   margin-top: 24px;
+`;
+
+// 뱃지 섹션
+export const BadgeSection = styled(SectionBase)`
   padding: 0 20px;
 `;
 
@@ -111,6 +115,16 @@ export const HeaderTitle = styled.h1`
   z-index: 1;
 `;
 
+// 스크롤바 숨기기
+const hideScrollbar = `
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+
+  &::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+  }
+`;
+
 export const ScrollableContentContainer = styled.div`
   width: 92%;
   height: calc(100vh - 120px);
@@ -118,14 +132,7 @@ export const ScrollableContentContainer = styled.div`
   padding-bottom: 100px;
   margin-top: 120px;
   background-color: transparent;
-
-  /* 스크롤바 숨기기 */
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* IE and Edge */
-
-  &::-webkit-scrollbar {
-    display: none; /* Chrome, Safari, Opera */
-  }
+  ${hideScrollbar}
 `;
 
 export const ProfileImageContainer = styled.div`
@@ -173,14 +180,7 @@ export const ScrollableCardContent = styled.div`
   overflow-y: auto;
   flex: 1;
   padding-bottom: 20px;
-
-  /* 스크롤바 숨기기 */
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* IE and Edge */
-
-  &::-webkit-scrollbar {
-    display: none; /* Chrome, Safari, Opera */
-  }
+  ${hideScrollbar}
 `;
 
 export const UserInfo = styled.div`
@@ -205,7 +205,7 @@ export const UserName = styled.h2`
   margin: 0;
 `;
 
-export const UserAge = styled.span`
+export const UserTag = styled.span`
   font-size: 14px;
   color: #666;
   background: #f0f0f0;
@@ -214,14 +214,9 @@ export const UserAge = styled.span`
   font-weight: 500;
 `;
 
-export const UserGender = styled.span`
-  font-size: 14px;
-  color: #666;
-  background: #f0f0f0;
-  padding: 4px 8px;
-  border-radius: 12px;
-  font-weight: 500;
-`;
+// 호환성을 위한 별칭
+export const UserAge = UserTag;
+export const UserGender = UserTag;
 
 
 export const ProfileInfoSection = styled.div`
@@ -346,14 +341,7 @@ export const ModalContent = styled.div`
   overflow-y: auto;
   position: relative;
   z-index: 1001;
-
-  /* 스크롤바 숨기기 */
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* IE and Edge */
-
-  &::-webkit-scrollbar {
-    display: none; /* Chrome, Safari, Opera */
-  }
+  ${hideScrollbar}
 `;
 
 export const ModalHeader = styled.div`
@@ -401,7 +389,7 @@ export const FormLabel = styled.label`
   margin-bottom: 8px;
 `;
 
-export const FormInput = styled.input`
+const FormInputBase = `
   width: 100%;
   padding: 12px;
   border: 1px solid #ddd;
@@ -415,20 +403,14 @@ export const FormInput = styled.input`
   }
 `;
 
+export const FormInput = styled.input`
+  ${FormInputBase}
+`;
+
 export const FormTextArea = styled.textarea`
-  width: 100%;
-  padding: 12px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  font-size: 16px;
+  ${FormInputBase}
   resize: vertical;
   min-height: 80px;
-  box-sizing: border-box;
-
-  &:focus {
-    outline: none;
-    border-color: ${colors.primary};
-  }
 `;
 
 export const ButtonGroup = styled.div`
@@ -453,14 +435,10 @@ export const CancelButton = styled.button`
   }
 `;
 
-export const DeleteButton = styled.button`
-  flex: 1;
-  padding: 12px;
+const DangerButtonBase = styled.button`
   background: #ef4444;
   color: white;
   border: none;
-  border-radius: 8px;
-  font-size: 16px;
   font-weight: 500;
   cursor: pointer;
   transition: background-color 0.2s ease;
@@ -468,6 +446,13 @@ export const DeleteButton = styled.button`
   &:hover {
     background: #dc2626;
   }
+`;
+
+export const DeleteButton = styled(DangerButtonBase)`
+  flex: 1;
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 16px;
 `;
 
 export const GenderButtonGroup = styled.div`
@@ -492,4 +477,78 @@ export const GenderButton = styled.button<{ selected: boolean }>`
     border-color: ${colors.primary};
     background: ${(props) => (props.selected ? colors.primary400 : '#f8f9fa')};
   }
+`;
+
+// 신고 목록 
+export const ReportListContainer = styled(SectionBase)`
+  padding: 0 20px;
+`;
+
+export const ReportItem = styled.div`
+  padding: 16px;
+  margin-bottom: 12px;
+  background-color: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+`;
+
+export const ReportItemHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 8px;
+`;
+
+export const ReportItemContent = styled.div`
+  flex: 1;
+`;
+
+export const ReportCategory = styled.div`
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 4px;
+`;
+
+export const ReportStatus = styled.div`
+  font-size: 12px;
+  color: #666;
+`;
+
+export const ReportDate = styled.div`
+  font-size: 12px;
+  color: #999;
+  margin-top: 4px;
+`;
+
+export const ReportCancelButton = styled(DangerButtonBase)`
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+`;
+
+// 유저 프로필 페이지 스타일
+export const CenterMessage = styled.div`
+  text-align: center;
+  padding: 20px;
+`;
+
+export const LoadingMessage = CenterMessage;
+export const ErrorMessage = CenterMessage;
+
+export const BadgeLabel = styled(InfoLabel)`
+  margin-bottom: 12px;
+  display: block;
+`;
+
+export const ReportButtonContainer = styled.div`
+  padding: 20px;
+  margin-top: 24px;
+`;
+
+export const ReportButton = styled(DangerButtonBase)`
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 16px;
 `;
