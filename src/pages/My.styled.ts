@@ -15,14 +15,12 @@ export const HeaderSection = styled.div`
   clip-path: ellipse(130% 100% at 50% 0%);
 `;
 
-// 섹션 공통 스타일
 const SectionBase = styled.div`
-  margin-top: 24px;
+  width: 100%;
 `;
 
-// 뱃지 섹션
 export const BadgeSection = styled(SectionBase)`
-  padding: 0 20px;
+  width: 100%;
 `;
 
 export const BadgeContainer = styled.div`
@@ -76,12 +74,13 @@ export const EmptyBadgeMessage = styled.div`
 export const TitleContainer = styled.div`
   position: relative;
   width: 100%;
-  height: 60px;
+  height: 80px;
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 10;
   padding: 0 20px;
+  
 `;
 
 export const BackButton = styled.button`
@@ -164,16 +163,26 @@ export const ProfileImagePlaceholder = styled.div`
 
 export const MainContentCard = styled.div`
   background: white;
-  border-radius: 20px;
+  border-radius: 8px 8px 2px 2px;
   padding: 40px 20px 20px 20px;
   margin-top: 40px;
-  box-shadow: 0 4px 500px rgba(214, 214, 214, 0.49);
+  margin-bottom: 2px;
+
   position: relative;
   z-index: 100;
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 200px);
-  max-height: calc(100vh - 200px);
+`;
+
+export const SectionCard = styled.div`
+  background: white;
+  border-radius: 2px;
+  padding: 20px;
+  margin-bottom: 2px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  position: relative;
+  z-index: 100;
+
 `;
 
 export const ScrollableCardContent = styled.div`
@@ -300,7 +309,7 @@ export const SaveButton = styled.button`
   background: ${colors.primary};
   color: white;
   border: none;
-  border-radius: 12px;
+  border-radius: 4px;
   font-size: 16px;
   font-weight: 600;
   cursor: pointer;
@@ -393,7 +402,7 @@ const FormInputBase = `
   width: 100%;
   padding: 12px;
   border: 1px solid #ddd;
-  border-radius: 8px;
+  border-radius: 4px;
   font-size: 16px;
   box-sizing: border-box;
 
@@ -425,7 +434,7 @@ export const CancelButton = styled.button`
   background: #f8f9fa;
   color: #666;
   border: none;
-  border-radius: 8px;
+  border-radius: 4px;
   font-size: 16px;
   font-weight: 500;
   cursor: pointer;
@@ -451,7 +460,7 @@ const DangerButtonBase = styled.button`
 export const DeleteButton = styled(DangerButtonBase)`
   flex: 1;
   padding: 12px;
-  border-radius: 8px;
+  border-radius: 4px;
   font-size: 16px;
 `;
 
@@ -467,7 +476,7 @@ export const GenderButton = styled.button<{ selected: boolean }>`
   border: 2px solid ${(props) => (props.selected ? colors.primary : '#ddd')};
   background: ${(props) => (props.selected ? colors.primary : 'white')};
   color: ${(props) => (props.selected ? 'white' : '#666')};
-  border-radius: 8px;
+  border-radius: 4px;
   font-size: 16px;
   font-weight: 600;
   cursor: pointer;
@@ -549,6 +558,97 @@ export const ReportButtonContainer = styled.div`
 export const ReportButton = styled(DangerButtonBase)`
   width: 100%;
   padding: 12px;
-  border-radius: 8px;
+  border-radius: 4px;
   font-size: 16px;
+`;
+
+// 모임 목록 스타일
+export const MeetupListContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+`;
+
+export const MeetupItem = styled.div`
+  padding: 16px;
+  background-color: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background-color: #f3f4f6;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  }
+`;
+
+export const MeetupItemHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #e5e7eb;
+`;
+
+export const MeetupName = styled.h3`
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  margin: 0;
+  flex: 1;
+`;
+
+export const MeetupCategory = styled.span`
+  font-size: 12px;
+  font-weight: 500;
+  color: ${colors.primary};
+  background-color: ${colors.primary100};
+  padding: 4px 10px;
+  border-radius: 12px;
+  white-space: nowrap;
+`;
+
+export const MeetupItemContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+`;
+
+export const MeetupInfo = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+`;
+
+export const MeetupInfoLabel = styled.span`
+  font-weight: 500;
+  color: #666;
+`;
+
+export const MeetupInfoValue = styled.span`
+  color: #333;
+  text-align: right;
+  flex: 1;
+  margin-left: 12px;
+`;
+
+export const MeetupStatus = styled.span<{ evaluated: boolean }>`
+  font-size: 12px;
+  font-weight: 500;
+  padding: 4px 8px;
+  border-radius: 6px;
+  width: fit-content;
+  margin-top: 8px;
+  ${(props) =>
+    props.evaluated
+      ? `
+    background-color: #dcfce7;
+    color: #166534;
+  `
+      : `
+    background-color: #fef3c7;
+    color: #92400e;
+  `}
 `;

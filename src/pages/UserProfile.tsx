@@ -37,6 +37,7 @@ import {
   BadgeLabel,
   ReportButtonContainer,
   ReportButton,
+  SectionCard,
 } from './My.styled';
 import BottomNav from '@/components/common/BottomNav';
 import { useToast } from '@/hooks/useToast';
@@ -222,8 +223,10 @@ const UserProfile = () => {
               </SelfIntroContent>
             </SelfIntroItem>
           </ProfileInfoSection>
+        </MainContentCard>
 
-          {/* 뱃지 섹션 */}
+        {/* 뱃지 섹션 */}
+        <SectionCard>
           <BadgeSection>
             <BadgeLabel>
               획득한 뱃지 ({badges.length}개)
@@ -241,16 +244,18 @@ const UserProfile = () => {
               )}
             </BadgeContainer>
           </BadgeSection>
+        </SectionCard>
 
-          {/* 신고 버튼 */}
+        {/* 신고 버튼 */}
+        <SectionCard>
           <ReportButtonContainer>
             <ReportButton onClick={() => setIsReportModalOpen(true)}>
               사용자 신고
             </ReportButton>
           </ReportButtonContainer>
+        </SectionCard>
 
-          <BottomNav />
-        </MainContentCard>
+        <BottomNav />
       </ContentContanier>
       {toast.visible && <Toast message={toast.message} onClose={hideToast} />}
       {userId && (

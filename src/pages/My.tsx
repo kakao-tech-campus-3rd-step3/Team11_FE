@@ -2,13 +2,15 @@ import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { Container, ContentContanier } from '@/style/CommonStyle';
+import BackArrow from '@/assets/meeting_room_page/chevron_left.svg?react';
 import type { RootState } from '@/store';
 import { setMyProfile } from '@/store/slices/myProfileSlice';
-import { getMyBadges, getMyProfile, updateProfile } from '@/api/services/profile.service';
+import { getMyBadges, getMyProfile, updateProfile, getMyMeetups } from '@/api/services/profile.service';
 import { getReports, deleteReport, type ReportListItem } from '@/api/services/report.service';
 import { useLogin } from '@/hooks/useLogin';
 import { getProfile } from '@/utils/tokenStorage';
 import type { Badge } from '@/types/badge';
+import type { Meetup } from '@/types/evaluation';
 import {
   HeaderTitle,
   TitleContainer,
@@ -55,7 +57,6 @@ import {
   GenderButtonGroup,
   GenderButton,
   DeleteButton,
-  ScrollableCardContent,
   ReportListContainer,
   ReportItem,
   ReportItemHeader,
@@ -64,6 +65,17 @@ import {
   ReportStatus,
   ReportDate,
   ReportCancelButton,
+  MeetupListContainer,
+  MeetupItem,
+  MeetupItemHeader,
+  MeetupName,
+  MeetupCategory,
+  MeetupItemContent,
+  MeetupInfo,
+  MeetupInfoLabel,
+  MeetupInfoValue,
+  MeetupStatus,
+  SectionCard,
 } from './My.styled';
 import BottomNav from '@/components/common/BottomNav';
 import { useToast } from '@/hooks/useToast';
@@ -94,6 +106,7 @@ const My = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [badges, setBadges] = useState<Badge[]>([]);
   const [reports, setReports] = useState<ReportListItem[]>([]);
+  const [meetups, setMeetups] = useState<Meetup[]>([]);
   const [editData, setEditData] = useState({
     nickname: myProfile.nickname || '',
     age: myProfile.age || '',
@@ -158,6 +171,21 @@ const My = () => {
     fetchReports();
   }, []);
 
+  // 최근 모임 조회
+  useEffect(() => {
+    const fetchMeetups = async () => {
+      try {
+        const data = await getMyMeetups();
+        setMeetups(data.content);
+        console.log('모임 조회 성공:', data);
+      } catch (error) {
+        console.error('모임 조회 실패:', error);
+      }
+    };
+
+    fetchMeetups();
+  }, []);
+
   const handleCancel = () => {
     setIsEditing(false);
     setEditData({
@@ -175,7 +203,7 @@ const My = () => {
   const handleEdit = () => {
     setIsEditing(true);
 
-    // 기존 프로필 데이터로 editData 채우기
+    // 기존 프로필 데이터 가져오기
     setEditData({
       nickname: myProfile.nickname || '',
       age: myProfile.age || '',
@@ -185,7 +213,6 @@ const My = () => {
       imageUrl: myProfile.imageUrl || '',
     });
 
-    // 기존 위치 데이터에서 시/도, 시/군/구 분리
     if (myProfile.baseLocation) {
       if (typeof myProfile.baseLocation === 'string') {
         const parts = myProfile.baseLocation.split(' ');
@@ -211,7 +238,7 @@ const My = () => {
     }
 
     const profileData = {
-      ...myProfile, // 기존 프로필 데이터 유지
+      ...myProfile,
       ...editData,
       age: typeof editData.age === 'string' ? parseInt(editData.age) || null : editData.age,
       temperature:
@@ -258,20 +285,35 @@ const My = () => {
     navigate(-1);
   };
 
+  const getCategoryName = (category: string): string => {
+    const categoryMap: { [key: string]: string } = {
+      SPORTS: '운동',
+      STUDY: '스터디',
+      GAME: '게임',
+      MUKBANG: '맛집탐방',
+      MOVIE: '영화',
+      OTHER: '기타',
+    };
+    return categoryMap[category] || category;
+  };
+
+  const formatDate = (dateString: string): string => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('ko-KR', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+  };
+
   return (
     <Container>
       <HeaderSection />
       <TitleContainer>
         <BackButton onClick={handleBack}>
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-            <path
-              d="M19 12H5M12 19L5 12L12 5"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
+          <BackArrow width="24" height="24" fill="currentColor" />
         </BackButton>
         <HeaderTitle>마이 페이지</HeaderTitle>
       </TitleContainer>
@@ -307,8 +349,7 @@ const My = () => {
                 </UserBasicInfo>
               </UserInfo>
 
-              <ScrollableCardContent>
-                <ProfileInfoSection>
+              <ProfileInfoSection>
                 <ProfileInfoItem>
                   <InfoLabel>온도</InfoLabel>
                   <InfoValue>
@@ -339,7 +380,13 @@ const My = () => {
                 </SelfIntroItem>
               </ProfileInfoSection>
 
-              {/* 뱃지 섹션 */}
+              <ActionButtons>
+                <SaveButton onClick={handleEdit}>편집</SaveButton>
+              </ActionButtons>
+            </MainContentCard>
+
+            {/* 뱃지 섹션 */}
+            <SectionCard>
               <BadgeSection>
                 <InfoLabel style={{ marginBottom: '12px', display: 'block' }}>
                   획득한 뱃지 ({badges.length}개)
@@ -357,8 +404,62 @@ const My = () => {
                   )}
                 </BadgeContainer>
               </BadgeSection>
+            </SectionCard>
 
-              {/* 신고 목록 섹션 */}
+            {/* 최근 모임 섹션 */}
+            <SectionCard>
+              <BadgeSection>
+                <InfoLabel style={{ marginBottom: '12px', display: 'block' }}>
+                  최근 모임 ({meetups.length}개)
+                </InfoLabel>
+                {meetups.length > 0 ? (
+                  <MeetupListContainer>
+                    {meetups.map((meetup) => (
+                      <MeetupItem key={meetup.meetupId}>
+                        <MeetupItemHeader>
+                          <MeetupName>{meetup.name}</MeetupName>
+                          <MeetupCategory>{getCategoryName(meetup.category)}</MeetupCategory>
+                        </MeetupItemHeader>
+                        <MeetupItemContent>
+                          <MeetupInfo>
+                            <MeetupInfoLabel>시작 시간:</MeetupInfoLabel>
+                            <MeetupInfoValue>{formatDate(meetup.startAt)}</MeetupInfoValue>
+                          </MeetupInfo>
+                          <MeetupInfo>
+                            <MeetupInfoLabel>종료 시간:</MeetupInfoLabel>
+                            <MeetupInfoValue>{formatDate(meetup.endAt)}</MeetupInfoValue>
+                          </MeetupInfo>
+                          <MeetupInfo>
+                            <MeetupInfoLabel>참가 인원:</MeetupInfoLabel>
+                            <MeetupInfoValue>
+                              {meetup.participantCount} / {meetup.capacity}명
+                            </MeetupInfoValue>
+                          </MeetupInfo>
+                          <MeetupStatus 
+                            evaluated={meetup.evaluated}
+                            onClick={() => {
+                              if (!meetup.evaluated) {
+                                navigate('/participant-evaluation');
+                              }
+                            }}
+                            style={{
+                              cursor: meetup.evaluated ? 'default' : 'pointer',
+                            }}
+                          >
+                            {meetup.evaluated ? '평가 완료' : '평가 미완료'}
+                          </MeetupStatus>
+                        </MeetupItemContent>
+                      </MeetupItem>
+                    ))}
+                  </MeetupListContainer>
+                ) : (
+                  <EmptyBadgeMessage>참가한 모임이 없습니다</EmptyBadgeMessage>
+                )}
+              </BadgeSection>
+            </SectionCard>
+
+            {/* 신고 목록 섹션 */}
+            <SectionCard>
               <BadgeSection>
                 <InfoLabel style={{ marginBottom: '12px', display: 'block' }}>
                   내 신고 목록 ({reports.length}개)
@@ -413,19 +514,15 @@ const My = () => {
                   <EmptyBadgeMessage>신고 내역이 없습니다</EmptyBadgeMessage>
                 )}
               </BadgeSection>
+            </SectionCard>
 
-              <ActionButtons>
-                <SaveButton onClick={handleEdit}>편집</SaveButton>
-              </ActionButtons>
+            {/* 로그아웃 및 회원탈퇴 버튼 */}
+            <ActionButtons style={{ marginTop: '20px', marginBottom: '20px', display: 'flex', gap: '12px', padding: '0 20px' }}>
+              <CancelButton onClick={handleLogout} style={{ flex: 1 }}>로그아웃</CancelButton>
+              <DeleteButton onClick={handleDeleteAccount} style={{ flex: 1 }}>회원탈퇴</DeleteButton>
+            </ActionButtons>
 
-              <ActionButtons style={{ marginTop: '16px', display: 'flex', gap: '12px' }}>
-                <CancelButton onClick={handleLogout} style={{ flex: 1 }}>로그아웃</CancelButton>
-                <DeleteButton onClick={handleDeleteAccount} style={{ flex: 1 }}>회원탈퇴</DeleteButton>
-              </ActionButtons>
-              </ScrollableCardContent>
-
-              <BottomNav />
-            </MainContentCard>
+            <BottomNav />
 
             {isEditing && (
               <Modal>
