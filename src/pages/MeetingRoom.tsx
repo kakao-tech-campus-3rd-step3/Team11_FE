@@ -118,6 +118,11 @@ const MeetingRoom = () => {
     if (!newChatMessage) return;
     console.log('newChatMessage:', newChatMessage);
     setChatMessages((prevMessages) => [newChatMessage, ...prevMessages]);
+    if (newChatMessage.senderId === myIdRef.current) {
+      requestAnimationFrame(() => {
+        bottomElementRef.current?.scrollIntoView({ behavior: 'auto' });
+      });
+    }
   }, [newChatMessage]);
 
   return (
