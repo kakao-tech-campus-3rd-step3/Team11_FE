@@ -97,7 +97,7 @@ const MeetingRoom = () => {
   // 내가 방장인지 아닌지 확인
   useEffect(() => {
     setIsHost(checkHost(participants, myIdRef.current!));
-  }, [participants, myIdRef.current]);
+  }, [participants]);
 
   // 웹소캣 액션 메세지에 따른 로직 제어
   useEffect(() => {
