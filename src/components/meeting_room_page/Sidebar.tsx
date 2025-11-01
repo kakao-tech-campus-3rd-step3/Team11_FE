@@ -92,29 +92,19 @@ export const Sidebar = ({
         </Button>
       </Header>
       {isStarted ? (
-        <>
-          {isHost && (
-            <Option onClick={() => handleMeetupAction('end', navigate, meetUpId, disconnect)}>
-              모임 종료
-            </Option>
-          )}
-        </>
+        isHost && (
+          <Option onClick={() => handleMeetupAction('end', navigate, meetUpId, disconnect)}>
+            모임 종료
+          </Option>
+        )
       ) : (
         <>
           {isHost && (
-            <Option
-              onClick={() => {
-                handleMeetupAction('start', navigate);
-              }}
-            >
-              실제 모임 시작
-            </Option>
-          )}
-          {isHost && (
-            <Option onClick={() => handleMeetupAction('cancel', navigate)}>모집 취소</Option>
-          )}
-          {isHost && (
-            <Option onClick={() => handleMeetupAction('update', navigate)}>방 수정하기</Option>
+            <>
+              <Option onClick={() => handleMeetupAction('start', navigate)}>실제 모임 시작</Option>
+              <Option onClick={() => handleMeetupAction('cancel', navigate)}>모집 취소</Option>
+              <Option onClick={() => handleMeetupAction('update', navigate)}>방 수정하기</Option>
+            </>
           )}
           <Option onClick={() => handleMeetupAction('leave', navigate, meetUpId, disconnect)}>
             방 나가기
