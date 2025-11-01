@@ -101,10 +101,6 @@ export const useLogin = () => {
 
   // 로그아웃
   const handleLogout = useCallback(async () => {
-    if (!confirm('로그아웃하시겠습니까?')) {
-      return;
-    }
-
     try {
       await logout();
       clearTokens();
@@ -120,10 +116,6 @@ export const useLogin = () => {
 
   // 회원탈퇴
   const handleDeleteAccount = useCallback(async () => {
-    if (!confirm('정말 탈퇴하시겠습니까? 탈퇴 후에는 복구할 수 없습니다.')) {
-      return;
-    }
-
     try {
       const result = await deleteAccount();
       // 성공 시 1 반환

@@ -83,6 +83,7 @@ import { Toast } from '@/components/common/Toast';
 import { LocationInput } from '@/components/common/LocationInput';
 import { useLocationInput } from '@/hooks/useLocationInput';
 import { validateNickname, isNicknameValid } from '@/utils/nicknameValidation';
+import ConfirmModal from '@/components/common/ConfirmModal';
 
 const My = () => {
   const navigate = useNavigate();
@@ -107,6 +108,17 @@ const My = () => {
   const [badges, setBadges] = useState<Badge[]>([]);
   const [reports, setReports] = useState<ReportListItem[]>([]);
   const [meetups, setMeetups] = useState<Meetup[]>([]);
+  const [confirmModal, setConfirmModal] = useState<{
+    isOpen: boolean;
+    message: string;
+    onConfirm: () => void;
+    confirmText?: string;
+    cancelText?: string;
+  }>({
+    isOpen: false,
+    message: '',
+    onConfirm: () => {},
+  });
   const [editData, setEditData] = useState({
     nickname: myProfile.nickname || '',
     age: myProfile.age || '',
@@ -488,19 +500,24 @@ const My = () => {
                           </ReportItemContent>
                           {report.status === 'OPEN' && (
                             <ReportCancelButton
-                              onClick={async () => {
-                                if (window.confirm('정말 이 신고를 취소하시겠습니까?')) {
-                                  try {
-                                    await deleteReport(report.reportId);
-                                    showToast('신고가 취소되었습니다.');
-                                    // 목록 새로고침
-                                    const data = await getReports();
-                                    setReports(data.content);
-                                  } catch (error: any) {
-                                    console.error('신고 취소 실패:', error);
-                                    showToast(`신고 취소에 실패했습니다: ${error.response?.data?.message || error.message}`);
-                                  }
-                                }
+                              onClick={() => {
+                                setConfirmModal({
+                                  isOpen: true,
+                                  message: '정말 이 신고를 취소하시겠습니까?',
+                                  onConfirm: async () => {
+                                    setConfirmModal({ ...confirmModal, isOpen: false });
+                                    try {
+                                      await deleteReport(report.reportId);
+                                      showToast('신고가 취소되었습니다.');
+                                      // 목록 새로고침
+                                      const data = await getReports();
+                                      setReports(data.content);
+                                    } catch (error: any) {
+                                      console.error('신고 취소 실패:', error);
+                                      showToast(`신고 취소에 실패했습니다: ${error.response?.data?.message || error.message}`);
+                                    }
+                                  },
+                                });
                               }}
                             >
                               취소
@@ -518,8 +535,36 @@ const My = () => {
 
             {/* 로그아웃 및 회원탈퇴 버튼 */}
             <ActionButtons style={{ marginTop: '20px', marginBottom: '20px', display: 'flex', gap: '12px', padding: '0 20px' }}>
-              <CancelButton onClick={handleLogout} style={{ flex: 1 }}>로그아웃</CancelButton>
-              <DeleteButton onClick={handleDeleteAccount} style={{ flex: 1 }}>회원탈퇴</DeleteButton>
+              <CancelButton 
+                onClick={() => {
+                  setConfirmModal({
+                    isOpen: true,
+                    message: '로그아웃하시겠습니까?',
+                    onConfirm: () => {
+                      setConfirmModal({ ...confirmModal, isOpen: false });
+                      handleLogout();
+                    },
+                  });
+                }} 
+                style={{ flex: 1 }}
+              >
+                로그아웃
+              </CancelButton>
+              <DeleteButton 
+                onClick={() => {
+                  setConfirmModal({
+                    isOpen: true,
+                    message: '정말 탈퇴하시겠습니까? 탈퇴 후에는 복구할 수 없습니다.',
+                    onConfirm: () => {
+                      setConfirmModal({ ...confirmModal, isOpen: false });
+                      handleDeleteAccount();
+                    },
+                  });
+                }} 
+                style={{ flex: 1 }}
+              >
+                회원탈퇴
+              </DeleteButton>
             </ActionButtons>
 
             <BottomNav />
@@ -675,6 +720,14 @@ const My = () => {
         )}
       </ContentContanier>
       {toast.visible && <Toast message={toast.message} onClose={hideToast} />}
+      <ConfirmModal
+        isOpen={confirmModal.isOpen}
+        message={confirmModal.message}
+        onConfirm={confirmModal.onConfirm}
+        onCancel={() => setConfirmModal({ ...confirmModal, isOpen: false })}
+        confirmText={confirmModal.confirmText || '확인'}
+        cancelText={confirmModal.cancelText || '취소'}
+      />
     </Container>
   );
 };
