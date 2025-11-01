@@ -140,12 +140,7 @@ const MeetingRoom = () => {
         setChatMessages={setChatMessages}
         bottomElementRef={bottomElementRef}
       />
-      <ChatInput
-        chatMessages={chatMessages}
-        setChatMessages={setChatMessages}
-        sendMessage={sendMessage}
-        myId={myIdRef.current}
-      />
+      <ChatInput sendMessage={sendMessage} myId={myIdRef.current} />
     </Container>
   );
 };

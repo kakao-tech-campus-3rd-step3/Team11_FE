@@ -71,16 +71,27 @@ export function useChat(meetupInfo: MeetupResponseDTO | null) {
           console.log('Message:', JSON.parse(msg.body));
           const response: ChatMessageDTO = JSON.parse(msg.body);
 
-          if (!myIdRef.current || myIdRef.current === response.senderId) return;
+          if (!myIdRef.current) return;
 
-          const chatMessage: ChatMessage = {
-            id: crypto.randomUUID(),
-            senderId: response.senderId,
-            senderType: 'other',
-            content: response.content,
-            time: new Date(response.sentAt),
-          };
-          setNewChatMessage(chatMessage);
+          if (myIdRef.current === response.senderId) {
+            const chatMessage: ChatMessage = {
+              id: crypto.randomUUID(),
+              senderId: response.senderId,
+              senderType: 'me',
+              content: response.content,
+              time: new Date(response.sentAt),
+            };
+            setNewChatMessage(chatMessage);
+          } else {
+            const chatMessage: ChatMessage = {
+              id: crypto.randomUUID(),
+              senderId: response.senderId,
+              senderType: 'other',
+              content: response.content,
+              time: new Date(response.sentAt),
+            };
+            setNewChatMessage(chatMessage);
+          }
         },
         {
           Authorization: `Bearer ${accessToken}`,
