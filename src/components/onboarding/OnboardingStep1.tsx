@@ -12,7 +12,7 @@ import {
   TopSubtitle,
 } from './OnboardingStyles';
 import { Spacer } from '@/style/CommonStyle';
-import { validateNickname, isNicknameValid } from '@/utils/nicknameValidation';
+import { validateNickname } from '@/utils/nicknameValidation';
 
 const OnboardingStep1 = ({ data, onNext }: OnboardingStepProps) => {
   const [formData, setFormData] = useState({
