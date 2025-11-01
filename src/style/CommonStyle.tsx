@@ -15,8 +15,20 @@ export const Container = styled.div`
 
 
 export const ContentContanier = styled.div`
-  width: 92%;
+  width: 96%;
+  overflow-y: auto;
+  padding-bottom: 100px;
+  
+  /* 스크롤바 숨기기 */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  
+  &::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+  }
 `;
+
+
 export const Spacer = styled.div<{ h?: number; w?: number }>`
   height: ${({ h }) => (h ? `${h}px` : '0')};
   width: ${({ w }) => (w ? `${w}px` : '0')};
