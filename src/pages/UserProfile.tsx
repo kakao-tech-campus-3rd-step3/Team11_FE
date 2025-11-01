@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Container, ContentContanier } from '@/style/CommonStyle';
-import { getMyBadges, getUserProfile } from '@/api/services/profile.service';
+import { getUserBadges, getUserProfile } from '@/api/services/profile.service';
 import type { MyProfileState } from '@/store/slices/myProfileSlice';
 import type { Badge } from '@/types/badge';
 import {
   HeaderSection,
   HeaderTitle,
+  TitleContainer,
+  BackButton,
   ProfileImageContainer,
   ProfileImage,
   ProfileImagePlaceholder,
@@ -30,16 +32,26 @@ import {
   BadgeIcon,
   BadgeName,
   EmptyBadgeMessage,
-  BackButton,
-} from './UserProfile.styled';
+  LoadingMessage,
+  ErrorMessage,
+  BadgeLabel,
+  ReportButtonContainer,
+  ReportButton,
+  SectionCard,
+} from './My.styled';
 import BottomNav from '@/components/common/BottomNav';
+import { useToast } from '@/hooks/useToast';
+import { Toast } from '@/components/common/Toast';
+import ReportModal from '@/components/user_profile/ReportModal';
 
 const UserProfile = () => {
   const { userId } = useParams<{ userId: string }>();
   const navigate = useNavigate();
+  const { showToast, hideToast, toast } = useToast();
   const [userProfile, setUserProfile] = useState<MyProfileState | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [badges, setBadges] = useState<Badge[]>([]);
+  const [isReportModalOpen, setIsReportModalOpen] = useState(false);
 
   // 페이지 로드 시 프로필 조회
   useEffect(() => {
@@ -51,10 +63,12 @@ const UserProfile = () => {
         const profileData = await getUserProfile(userId);
         setUserProfile(profileData);
         console.log('사용자 프로필 조회 성공:', profileData);
-      } catch (error) {
+      } catch (error: any) {
         console.error('사용자 프로필 조회 실패:', error);
-        alert('프로필을 불러올 수 없습니다.');
-        navigate(-1);
+        showToast('프로필을 불러올 수 없습니다.');
+        setTimeout(() => {
+          navigate(-1);
+        }, 2000);
       } finally {
         setIsLoading(false);
       }
@@ -69,7 +83,7 @@ const UserProfile = () => {
       if (!userId) return;
 
       try {
-        const data = await getMyBadges();
+        const data = await getUserBadges(userId);
         setBadges(data.content);
         console.log('뱃지 조회 성공:', data);
       } catch (error) {
@@ -87,11 +101,23 @@ const UserProfile = () => {
   if (isLoading) {
     return (
       <Container>
-        <HeaderSection>
+        <HeaderSection />
+        <TitleContainer>
+          <BackButton onClick={handleBack}>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M19 12H5M12 19L5 12L12 5"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </BackButton>
           <HeaderTitle>프로필</HeaderTitle>
-        </HeaderSection>
+        </TitleContainer>
         <ContentContanier>
-          <div style={{ textAlign: 'center', padding: '20px' }}>프로필 정보를 불러오는 중...</div>
+          <LoadingMessage>프로필 정보를 불러오는 중...</LoadingMessage>
         </ContentContanier>
       </Container>
     );
@@ -100,11 +126,23 @@ const UserProfile = () => {
   if (!userProfile) {
     return (
       <Container>
-        <HeaderSection>
+        <HeaderSection />
+        <TitleContainer>
+          <BackButton onClick={handleBack}>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M19 12H5M12 19L5 12L12 5"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </BackButton>
           <HeaderTitle>프로필</HeaderTitle>
-        </HeaderSection>
+        </TitleContainer>
         <ContentContanier>
-          <div style={{ textAlign: 'center', padding: '20px' }}>프로필을 찾을 수 없습니다.</div>
+          <ErrorMessage>프로필을 찾을 수 없습니다.</ErrorMessage>
         </ContentContanier>
       </Container>
     );
@@ -112,7 +150,8 @@ const UserProfile = () => {
 
   return (
     <Container>
-      <HeaderSection>
+      <HeaderSection />
+      <TitleContainer>
         <BackButton onClick={handleBack}>
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
             <path
@@ -125,7 +164,7 @@ const UserProfile = () => {
           </svg>
         </BackButton>
         <HeaderTitle>프로필</HeaderTitle>
-      </HeaderSection>
+      </TitleContainer>
       <ContentContanier>
         <MainContentCard>
           <ProfileImageContainer>
@@ -184,12 +223,14 @@ const UserProfile = () => {
               </SelfIntroContent>
             </SelfIntroItem>
           </ProfileInfoSection>
+        </MainContentCard>
 
-          {/* 뱃지 섹션 */}
+        {/* 뱃지 섹션 */}
+        <SectionCard>
           <BadgeSection>
-            <InfoLabel style={{ marginBottom: '12px', display: 'block' }}>
+            <BadgeLabel>
               획득한 뱃지 ({badges.length}개)
-            </InfoLabel>
+            </BadgeLabel>
             <BadgeContainer>
               {badges.length > 0 ? (
                 badges.map((badge) => (
@@ -203,10 +244,30 @@ const UserProfile = () => {
               )}
             </BadgeContainer>
           </BadgeSection>
+        </SectionCard>
 
-          <BottomNav />
-        </MainContentCard>
+        {/* 신고 버튼 */}
+        <SectionCard>
+          <ReportButtonContainer>
+            <ReportButton onClick={() => setIsReportModalOpen(true)}>
+              사용자 신고
+            </ReportButton>
+          </ReportButtonContainer>
+        </SectionCard>
+
+        <BottomNav />
       </ContentContanier>
+      {toast.visible && <Toast message={toast.message} onClose={hideToast} />}
+      {userId && (
+        <ReportModal
+          isOpen={isReportModalOpen}
+          onClose={() => setIsReportModalOpen(false)}
+          targetProfileId={userId}
+          onSuccess={() => {
+            showToast('신고가 성공적으로 제출되었습니다.');
+          }}
+        />
+      )}
     </Container>
   );
 };

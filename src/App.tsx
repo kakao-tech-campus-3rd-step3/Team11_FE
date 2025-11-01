@@ -14,6 +14,7 @@ import LocationPicker from '@/pages/LocationPicker';
 import ParticipantEvaluation from './pages/ParticipantEvaluation';
 import My from './pages/My';
 import UserProfile from './pages/UserProfile';
+import EmailVerification from './pages/EmailVerification';
 import ProtectedRoute from '@/components/common/ProtectedRoute';
 import { ToastContainer } from 'react-toastify';
 
@@ -26,10 +27,11 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/kakaoLogin" element={<KakaoLogin />} />
-        <Route path="/onboarding" element={<Onboarding />} />
+        <Route path="/email-verification" element={<EmailVerification />} />
 
         {/* 로그인 필요*/}
         <Route element={<ProtectedRoute />}>
+          <Route path="/onboarding" element={<Onboarding />} />
           <Route path="/home" element={<Home />} />
           <Route path="/my" element={<My />} />
           <Route path="/user/:userId" element={<UserProfile />} />

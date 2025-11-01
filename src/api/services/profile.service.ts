@@ -2,6 +2,7 @@ import api from '../clients/axiosInstance';
 import type { MyProfileState } from '@/store/slices/myProfileSlice';
 import { createProfileFormData } from '../utils/createProfileFormData';
 import type { BadgeListResponse } from '@/types/badge';
+import type { EvaluationListResponse } from '@/types/evaluation';
 
 // 프로필 조회
 export const getMyProfile = async (): Promise<MyProfileState> => {
@@ -36,7 +37,6 @@ export const updateProfile = async (profileData: MyProfileState) => {
 // 다른 사용자 프로필 조회
 export const getUserProfile = async (profileId: string): Promise<MyProfileState> => {
   const response = await api.get<MyProfileState>(`/api/profiles/${profileId}`);
-
   return response.data;
 };
 
@@ -44,5 +44,18 @@ export const getUserProfile = async (profileId: string): Promise<MyProfileState>
 export const getMyBadges = async (): Promise<BadgeListResponse> => {
   const response = await api.get<BadgeListResponse>('/api/profiles/me/badges');
   console.log('뱃지 조회 성공:', response.data);
+  return response.data;
+};
+
+// 다른 사용자 뱃지 조회
+export const getUserBadges = async (profileId: string): Promise<BadgeListResponse> => {
+  const response = await api.get<BadgeListResponse>(`/api/profiles/${profileId}/badges`);
+  return response.data;
+};
+
+// 내 모임 조회
+export const getMyMeetups = async (evaluated?: boolean): Promise<EvaluationListResponse> => {
+  const params = evaluated !== undefined ? { evaluated: evaluated.toString() } : {};
+  const response = await api.get<EvaluationListResponse>('/api/profiles/me/meetups', { params });
   return response.data;
 };
