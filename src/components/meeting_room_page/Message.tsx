@@ -100,7 +100,7 @@ export const Message = ({ senderType, content, sender }: Message) => {
   const popoverRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
 
-  const handleClick = () => setIsOptionOpen((prev) => !prev);
+  const handleProfileClick = () => setIsOptionOpen((prev) => !prev);
 
   useLayoutEffect(() => {
     if (isOptionOpen && avatarRef.current) {
@@ -134,7 +134,11 @@ export const Message = ({ senderType, content, sender }: Message) => {
         ) : (
           <>
             {senderType === 'other' && (
-              <Profile ref={avatarRef} imageUrl={sender?.profile.imageUrl} onClick={handleClick} />
+              <Profile
+                ref={avatarRef}
+                imageUrl={sender?.profile.imageUrl}
+                onClick={handleProfileClick}
+              />
             )}
             <SubContainer isMine={senderType === 'me'}>
               {senderType === 'other' && <Name>{sender?.profile.nickname}</Name>}

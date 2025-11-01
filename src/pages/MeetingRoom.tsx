@@ -31,15 +31,6 @@ const MeetingRoom = () => {
   const { connect, disconnect, isConnected, myIdRef, sendMessage, newAction, newChatMessage } =
     useChat(meetUpInfo || null);
 
-  console.log(
-    'MeetingRoom 렌더링, meetUpId:',
-    meetUpInfo?.id,
-    'myId:',
-    myIdRef.current,
-    'isConnected:',
-    isConnected,
-  );
-
   // 모임 참가 임시 로직 & 모임 정보 조회
   useEffect(() => {
     const init = async () => {
@@ -106,7 +97,7 @@ const MeetingRoom = () => {
   // 내가 방장인지 아닌지 확인
   useEffect(() => {
     setIsHost(checkHost(participants, myIdRef.current!));
-  }, [participants, myIdRef.current]);
+  }, [participants]);
 
   // 웹소캣 액션 메세지에 따른 로직 제어
   useEffect(() => {
@@ -127,6 +118,11 @@ const MeetingRoom = () => {
     if (!newChatMessage) return;
     console.log('newChatMessage:', newChatMessage);
     setChatMessages((prevMessages) => [newChatMessage, ...prevMessages]);
+    if (newChatMessage.senderId === myIdRef.current) {
+      requestAnimationFrame(() => {
+        bottomElementRef.current?.scrollIntoView({ behavior: 'auto' });
+      });
+    }
   }, [newChatMessage]);
 
   return (
@@ -149,12 +145,7 @@ const MeetingRoom = () => {
         setChatMessages={setChatMessages}
         bottomElementRef={bottomElementRef}
       />
-      <ChatInput
-        chatMessages={chatMessages}
-        setChatMessages={setChatMessages}
-        sendMessage={sendMessage}
-        myId={myIdRef.current}
-      />
+      <ChatInput sendMessage={sendMessage} myId={myIdRef.current} />
     </Container>
   );
 };

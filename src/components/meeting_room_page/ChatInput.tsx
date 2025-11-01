@@ -1,14 +1,10 @@
 import styled from '@emotion/styled';
 import Send from '@/assets/meeting_room_page/send.svg?react';
 import { useRef, useState } from 'react';
-import type { ChatMessage } from '@/types/meeting_room_page/chatMessage';
-import type { SetState } from '@/types/meeting_room_page/chatMessage';
 
 type MessageType = 'TEXT' | 'IMAGE' | 'SYSTEM';
 
 interface ChatInputProps {
-  chatMessages: ChatMessage[];
-  setChatMessages: SetState<ChatMessage[]>;
   sendMessage: (type: MessageType, message: string) => void;
   myId: number | null;
 }
@@ -60,7 +56,7 @@ const HelperText = styled.div`
   margin-top: 0.3rem;
 `;
 
-export const ChatInput = ({ chatMessages, setChatMessages, sendMessage, myId }: ChatInputProps) => {
+export const ChatInput = ({ sendMessage, myId }: ChatInputProps) => {
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const [text, setText] = useState('');
 
@@ -74,16 +70,7 @@ export const ChatInput = ({ chatMessages, setChatMessages, sendMessage, myId }: 
       return;
     }
 
-    const newMessage: ChatMessage = {
-      id: crypto.randomUUID(),
-      senderId: myId,
-      senderType: 'me',
-      content: trimmedText,
-      time: new Date(),
-    };
-
     sendMessage('TEXT', trimmedText);
-    setChatMessages([newMessage, ...chatMessages]);
     setText('');
 
     if (textareaRef.current) {
