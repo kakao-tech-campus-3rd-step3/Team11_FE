@@ -3,7 +3,7 @@ import SockJS from 'sockjs-client';
 import { Client } from '@stomp/stompjs';
 import type { IMessage } from '@stomp/stompjs';
 import { getAccessToken } from '@/utils/tokenStorage';
-import { getUgradeToken } from '@/api/services/auth.service';
+import { getUpgradeToken } from '@/api/services/auth.service';
 import type { ChatMessage, MessageType, Payload } from '@/types/meeting_room_page/chatMessage';
 import type { ChatMessageDTO, MeetupResponseDTO } from '@/api/types/meeting_room.dto';
 import type {
@@ -29,7 +29,7 @@ export function useChat(meetupInfo: MeetupResponseDTO | null) {
       return;
     }
 
-    const upgradeToken = await getUgradeToken(meetupInfo);
+    const upgradeToken = await getUpgradeToken(meetupInfo);
 
     if (clientRef.current?.connected) {
       console.log('Already connected');

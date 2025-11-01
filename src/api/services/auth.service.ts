@@ -26,7 +26,7 @@ export const logout = async () => {
 };
 
 // WebSocket 연결 시, 업그레이드 토큰 발급
-export const getUgradeToken = async (body: MeetupRequestDTO) => {
+export const getUpgradeToken = async (body: MeetupRequestDTO) => {
   const response = await api.post('/api/auth/ws-upgrade', body);
   return response.data;
 };
