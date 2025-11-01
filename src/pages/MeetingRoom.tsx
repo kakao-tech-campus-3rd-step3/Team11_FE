@@ -31,15 +31,6 @@ const MeetingRoom = () => {
   const { connect, disconnect, isConnected, myIdRef, sendMessage, newAction, newChatMessage } =
     useChat(meetUpInfo || null);
 
-  console.log(
-    'MeetingRoom 렌더링, meetUpId:',
-    meetUpInfo?.id,
-    'myId:',
-    myIdRef.current,
-    'isConnected:',
-    isConnected,
-  );
-
   // 모임 참가 임시 로직 & 모임 정보 조회
   useEffect(() => {
     const init = async () => {
