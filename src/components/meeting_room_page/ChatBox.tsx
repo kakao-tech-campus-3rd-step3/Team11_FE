@@ -20,7 +20,7 @@ interface ChatBoxProps {
 
 const Container = styled.div<{ isFirstRender: boolean }>`
   position: absolute;
-  top: 11.5rem;
+  top: 15.5rem;
   bottom: 4.5rem;
   display: flex;
   flex-direction: column-reverse;
