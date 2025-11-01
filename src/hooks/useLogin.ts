@@ -57,7 +57,7 @@ export const useLogin = () => {
     [dispatch, navigate],
   );
 
-  const handleLoginError = useCallback(
+ /* const handleLoginError = useCallback(
     (error: any, loginType: 'email' | 'kakao' = 'email') => {
       console.error(`${loginType === 'kakao' ? '카카오 ' : ''}로그인 에러:`, error);
 
@@ -71,7 +71,7 @@ export const useLogin = () => {
     },
     [showToast],
   );
-
+*/
   // 이메일 로그인
   const handleEmailLogin = useCallback(
     async (email: string, password: string) => {
