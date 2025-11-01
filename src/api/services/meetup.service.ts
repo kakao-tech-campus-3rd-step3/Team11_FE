@@ -1,5 +1,5 @@
-import api from './axiosInstance';
 import type { Meeting } from '@/types/meeting';
+import api from '../clients/axiosInstance';
 
 export interface GetMeetingsParams {
   name?: string;
@@ -10,11 +10,6 @@ export interface GetMeetingsParams {
 }
 
 export const getMeetings = async (params: GetMeetingsParams): Promise<Meeting[]> => {
-  try {
-    const response = await api.get<Meeting[]>('/api/meetings', { params });
-    return response.data;
-  } catch (error) {
-    console.error('모임 목록 조회 실패:', error);
-    throw error;
-  }
+  const response = await api.get<Meeting[]>('/api/meetings', { params });
+  return response.data;
 };

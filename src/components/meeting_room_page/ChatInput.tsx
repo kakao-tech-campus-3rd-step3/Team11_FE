@@ -1,15 +1,12 @@
 import styled from '@emotion/styled';
 import Send from '@/assets/meeting_room_page/send.svg?react';
-import React from 'react';
-import type { ChatMessage } from '@/types/meeting_room_page/chatMessage';
-import type { SetState } from '@/types/meeting_room_page/chatMessage';
+import { useRef, useState } from 'react';
 
 type MessageType = 'TEXT' | 'IMAGE' | 'SYSTEM';
 
 interface ChatInputProps {
-  chatMessages: ChatMessage[];
-  setChatMessages: SetState<ChatMessage[]>;
   sendMessage: (type: MessageType, message: string) => void;
+  myId: number | null;
 }
 
 const Container = styled.div`
@@ -59,36 +56,38 @@ const HelperText = styled.div`
   margin-top: 0.3rem;
 `;
 
-export const ChatInput = ({ chatMessages, setChatMessages, sendMessage }: ChatInputProps) => {
-  const [text, setText] = React.useState('');
+export const ChatInput = ({ sendMessage, myId }: ChatInputProps) => {
+  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+  const [text, setText] = useState('');
 
   const handleClick = () => {
     const trimmedText = text.trim();
+
+    if (!myId) return;
 
     if (!trimmedText) {
       setText('');
       return;
     }
 
-    const newMessage: ChatMessage = {
-      id: `${Date.now()}-${Math.random().toString(36).substring(2, 8)}`,
-      senderType: 'me',
-      content: trimmedText,
-      time: new Date(),
-    };
-
     sendMessage('TEXT', trimmedText);
-    setChatMessages([...chatMessages, newMessage]);
     setText('');
+
+    if (textareaRef.current) {
+      textareaRef.current.value = '';
+    }
   };
 
   return (
     <Container>
       <TextArea
+        ref={textareaRef}
         value={text}
         onChange={(e) => setText(e.target.value)}
         placeholder="대화를 시작해 보세요!"
         onKeyDown={(e) => {
+          if (e.nativeEvent.isComposing) return;
+
           if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault();
             handleClick();

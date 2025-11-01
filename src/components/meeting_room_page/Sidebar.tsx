@@ -1,10 +1,15 @@
 import styled from '@emotion/styled';
 import Undo from '@/assets/meeting_room_page/undo.svg?react';
 import { useNavigate } from 'react-router-dom';
+import { handleMeetupAction } from '@/utils/handleMeetupSidebarAction';
 
 interface SidebarProps {
   isOpen: boolean;
   onClose: () => void;
+  isHost: boolean;
+  isStarted: boolean;
+  disconnect: () => void;
+  meetUpId: string;
 }
 
 const Container = styled.div<{ isOpen: boolean }>`
@@ -64,7 +69,14 @@ const Option = styled.button`
 
 const UNDO_SVG_SIZE = '25.6';
 
-export const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
+export const Sidebar = ({
+  isOpen,
+  onClose,
+  isHost,
+  isStarted,
+  disconnect,
+  meetUpId,
+}: SidebarProps) => {
   const navigate = useNavigate();
 
   return (
@@ -79,10 +91,26 @@ export const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
           />
         </Button>
       </Header>
-      <Option onClick={() => navigate('/participant-evaluation')}>실제 모임 시작</Option>
-      <Option>방 나가기</Option>
-      <Option>방 수정하기</Option>
-      <Option>마감 기한 연장</Option>
+      {isStarted ? (
+        isHost && (
+          <Option onClick={() => handleMeetupAction('end', navigate, meetUpId, disconnect)}>
+            모임 종료
+          </Option>
+        )
+      ) : (
+        <>
+          {isHost && (
+            <>
+              <Option onClick={() => handleMeetupAction('start', navigate)}>실제 모임 시작</Option>
+              <Option onClick={() => handleMeetupAction('cancel', navigate)}>모집 취소</Option>
+              <Option onClick={() => handleMeetupAction('update', navigate)}>방 수정하기</Option>
+            </>
+          )}
+          <Option onClick={() => handleMeetupAction('leave', navigate, meetUpId, disconnect)}>
+            방 나가기
+          </Option>
+        </>
+      )}
     </Container>
   );
 };

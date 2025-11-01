@@ -6,7 +6,7 @@ import OnboardingStep2 from '@/components/onboarding/OnboardingStep2';
 import OnboardingStep3 from '@/components/onboarding/OnboardingStep3';
 import OnboardingStep4 from '@/components/onboarding/OnboardingStep4';
 import type { MyProfileState } from '@/store/slices/myProfileSlice';
-import { saveOnboardingProfile } from '@/api/auth';
+import { saveOnboardingProfile } from '@/api/services/profile.service';
 import { useFunnel } from '@/hooks/useFunnel';
 
 const Onboarding = () => {
@@ -48,7 +48,7 @@ const Onboarding = () => {
   return (
     <Container>
       <ContentContanier>
-        <Funnel>
+        <Funnel duration={400}>
           <Step name="기본정보">
             <OnboardingStep1
               data={onboardingData}

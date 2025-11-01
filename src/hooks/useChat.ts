@@ -3,33 +3,33 @@ import SockJS from 'sockjs-client';
 import { Client } from '@stomp/stompjs';
 import type { IMessage } from '@stomp/stompjs';
 import { getAccessToken } from '@/utils/tokenStorage';
-import { getUgradeToken } from '@/api/services/auth.service';
-import { body } from '@/api/services/mockBodyData';
-import type { ChatMessage } from '@/types/meeting_room_page/chatMessage';
+import { getUpgradeToken } from '@/api/services/auth.service';
+import type { ChatMessage, MessageType, Payload } from '@/types/meeting_room_page/chatMessage';
+import type { ChatMessageDTO, MeetupResponseDTO } from '@/api/types/meeting_room.dto';
+import type {
+  DefaultActionMessage,
+  JoinLeaveActionMessage,
+} from '@/types/meeting_room_page/actionMessage';
 
-type MessageType = 'TEXT' | 'IMAGE' | 'SYSTEM';
-type Payload = {
-  type: MessageType;
-  content: string;
-};
-
-export function useChat(meetupId: string | null) {
+export function useChat(meetupInfo: MeetupResponseDTO | null) {
   const isFirstConnectRef = useRef(true);
-  const [connected, setConnected] = useState(false);
-  const [myId, setMyId] = useState<string | null>(null);
-  const [actorId, setActorId] = useState<string | null>(null);
+  const myIdRef = useRef<number | null>(null);
+  const [isConnected, setIsConnected] = useState(false);
+  const [newAction, setNewAction] = useState<
+    DefaultActionMessage | JoinLeaveActionMessage | undefined
+  >(undefined);
   const [newChatMessage, setNewChatMessage] = useState<ChatMessage | null>(null);
   const clientRef = useRef<Client | null>(null);
   const accessToken = getAccessToken();
 
   // 연결
   const connect = useCallback(async () => {
-    if (!meetupId) {
+    if (!meetupInfo?.id) {
       console.warn('[useChat] Cannot connect: meetupId is null or undefined.');
       return;
     }
 
-    const upgradeToken = await getUgradeToken(body);
+    const upgradeToken = await getUpgradeToken(meetupInfo);
 
     if (clientRef.current?.connected) {
       console.log('Already connected');
@@ -48,16 +48,16 @@ export function useChat(meetupId: string | null) {
     client.onConnect = () => {
       // 액션 구독
       client.subscribe(
-        `/topic/meetups/${meetupId}/actions`,
+        `/topic/meetups/${meetupInfo.id}/actions`,
         (msg: IMessage) => {
           console.log('Action:', JSON.parse(msg.body));
           const response = JSON.parse(msg.body);
-          if (isFirstConnectRef.current) {
-            setMyId(response.participantId.toString());
+          if (isFirstConnectRef.current && response.action === 'ENTER') {
+            myIdRef.current = response.participantId;
             isFirstConnectRef.current = false;
-          } else {
-            setActorId(response.participantId.toString());
+            setIsConnected(true);
           }
+          setNewAction(response);
         },
         {
           Authorization: `Bearer ${accessToken}`,
@@ -66,17 +66,32 @@ export function useChat(meetupId: string | null) {
 
       // 메시지 구독
       client.subscribe(
-        `/topic/meetups/${meetupId}/messages`,
+        `/topic/meetups/${meetupInfo.id}/messages`,
         (msg: IMessage) => {
           console.log('Message:', JSON.parse(msg.body));
-          const response = JSON.parse(msg.body);
-          const chatMessage: ChatMessage = {
-            id: Math.random().toString(36).substring(2, 10),
-            senderType: 'other',
-            content: response.content,
-            time: response.sentAt,
-          };
-          setNewChatMessage(chatMessage);
+          const response: ChatMessageDTO = JSON.parse(msg.body);
+
+          if (!myIdRef.current) return;
+
+          if (myIdRef.current === response.senderId) {
+            const chatMessage: ChatMessage = {
+              id: crypto.randomUUID(),
+              senderId: response.senderId,
+              senderType: 'me',
+              content: response.content,
+              time: new Date(response.sentAt),
+            };
+            setNewChatMessage(chatMessage);
+          } else {
+            const chatMessage: ChatMessage = {
+              id: crypto.randomUUID(),
+              senderId: response.senderId,
+              senderType: 'other',
+              content: response.content,
+              time: new Date(response.sentAt),
+            };
+            setNewChatMessage(chatMessage);
+          }
         },
         {
           Authorization: `Bearer ${accessToken}`,
@@ -88,7 +103,6 @@ export function useChat(meetupId: string | null) {
         console.error('Error:', msg.body);
       });
 
-      setConnected(true);
       console.log('Connected');
     };
 
@@ -98,7 +112,7 @@ export function useChat(meetupId: string | null) {
 
     client.activate();
     clientRef.current = client;
-  }, [meetupId]);
+  }, [meetupInfo]);
 
   // 연결 해제
   const disconnect = useCallback(() => {
@@ -112,14 +126,14 @@ export function useChat(meetupId: string | null) {
   // 메시지 보내기
   const sendMessage = useCallback(
     (type: MessageType, content: string) => {
-      if (!connected) {
+      if (!isConnected) {
         console.warn('Not connected');
         return;
       }
       // !clientRef.current: 아직 클라이언트를 만들지 않은 경우를 차단
       // !clientRef.current.connected: clientRef.current 객체는 있는데, 실제 연결은 아직 안 된 경우를 차단
 
-      const destination = `/app/meetups/${meetupId}/messages`;
+      const destination = `/app/meetups/${meetupInfo?.id}/messages`;
       const payload: Payload = { type, content };
       clientRef.current?.publish({
         destination: destination,
@@ -128,8 +142,8 @@ export function useChat(meetupId: string | null) {
       });
       console.log('Sent:', payload);
     },
-    [meetupId, connected],
+    [meetupInfo, isConnected],
   );
 
-  return { connect, disconnect, myId, actorId, sendMessage, newChatMessage };
+  return { connect, disconnect, isConnected, myIdRef, sendMessage, newAction, newChatMessage };
 }

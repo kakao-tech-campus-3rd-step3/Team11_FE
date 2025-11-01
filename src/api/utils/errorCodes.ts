@@ -6,8 +6,8 @@ export const NETWORK_ERROR_CODES = {
 
 // HTTP 상태 코드
 export const HTTP_STATUS = {
-  UNAUTHORIZED: 401,
   BAD_REQUEST: 400,
+  UNAUTHORIZED: 401,
   FORBIDDEN: 403,
   NOT_FOUND: 404,
   INTERNAL_SERVER_ERROR: 500,
@@ -28,4 +28,3 @@ export const SERVER_RESPONSE_KEYS = {
   MESSAGE: 'message',
   VALIDATION_ERRORS: 'validationErrors',
 } as const;
-

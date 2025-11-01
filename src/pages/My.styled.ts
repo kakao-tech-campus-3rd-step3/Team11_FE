@@ -376,3 +376,27 @@ export const CancelButton = styled.button`
     background: #e9ecef;
   }
 `;
+
+export const GenderButtonGroup = styled.div`
+  display: flex;
+  gap: 12px;
+  width: 100%;
+`;
+
+export const GenderButton = styled.button<{ selected: boolean }>`
+  flex: 1;
+  padding: 12px;
+  border: 2px solid ${(props) => (props.selected ? colors.primary : '#ddd')};
+  background: ${(props) => (props.selected ? colors.primary : 'white')};
+  color: ${(props) => (props.selected ? 'white' : '#666')};
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    border-color: ${colors.primary};
+    background: ${(props) => (props.selected ? colors.primary400 : '#f8f9fa')};
+  }
+`;

@@ -13,15 +13,24 @@ const iconComponents = {
   MOVIE: MovieIcon,
 };
 
+const categoryMap: { [key: string]: MeetingCategory } = {
+  스터디: 'STUDY',
+  운동: 'SPORTS',
+  게임: 'GAME',
+  맛집탐방: 'MUKBANG',
+  영화: 'MOVIE',
+};
+
 export type MeetingCategory = keyof typeof iconComponents;
 
 interface MeetingIconProps {
-  category: MeetingCategory;
+  category: string;
   className?: string;
 }
 
 const MeetingIcon = ({ category, className }: MeetingIconProps) => {
-  const IconComponent = iconComponents[category] || DefaultIcon;
+  const iconKey = categoryMap[category];
+  const IconComponent = iconComponents[iconKey] || DefaultIcon;
   return <IconComponent className={className} />;
 };
 
