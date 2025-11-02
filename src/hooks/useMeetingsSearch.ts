@@ -161,7 +161,7 @@ export const useMeetingsSearch = ({
           const params: GetMeetingsParams = {};
 
           if (debouncedQuery) params.name = debouncedQuery;
-          if (categories.length > 0) params.hobby = categories.join(',');
+          if (categories.length > 0) params.category = categories.join(',');
 
           params.latitude = locationForApi.lat;
           params.longitude = locationForApi.lng;
