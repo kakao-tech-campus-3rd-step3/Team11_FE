@@ -3,7 +3,7 @@ import api from '../clients/axiosInstance';
 
 export interface GetMeetingsParams {
   name?: string;
-  hobby?: string;
+  category?: string;
   latitude?: number;
   longitude?: number;
   radius?: number;

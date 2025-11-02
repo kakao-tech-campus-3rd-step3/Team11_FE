@@ -1,7 +1,14 @@
 import { useState, useEffect, useCallback } from 'react';
 import type { Meeting } from '@/types/meeting';
 import { ERROR_MESSAGES } from '@/constants/messages';
-import { getMeetings } from '@/api/services/meetup.service';
+import api from '@/api/clients/axiosInstance';
+
+interface ApiMeetingsParams {
+  latitude: number;
+  longitude: number;
+  category?: string;
+  radius?: number;
+}
 
 export const useMeetings = (
   map: any,
@@ -18,23 +25,37 @@ export const useMeetings = (
     setError(null);
     try {
       const center = map.getCenter();
-      const params: any = {
+
+      const params: ApiMeetingsParams = {
         latitude: center.getLat(),
         longitude: center.getLng(),
       };
+
       if (selectedCategories.length > 0) {
-        params.hobby = selectedCategories.join(',');
-      }
-      if (selectedRadius) {
-        params.radius = parseInt(selectedRadius.replace('km', ''), 10) * 1000;
+        params.category = selectedCategories.join(',');
       }
 
+      if (selectedRadius) {
+        params.radius = parseInt(selectedRadius.replace('km', ''), 10);
+      }
+
+<<<<<<< HEAD
       const meetingData = await getMeetings(params);
       setMeetings(meetingData);
+=======
+      const response = await api.get('/api/meetups/geo', { params });
+
+      const meetingData = response.data;
+
+      setMeetings(Array.isArray(meetingData) ? meetingData : []);
+>>>>>>> 96ab381 (feature:다건조회 api연동(#91))
     } catch (err: any) {
       console.error('모임 정보를 불러오는 데 실패했습니다.', err);
+
+      const errorMessage = err.message || '알 수 없는 오류';
+
       setError(
-        err.response?.status === 401
+        errorMessage.includes('401')
           ? ERROR_MESSAGES.LOGIN_REQUIRED
           : ERROR_MESSAGES.MEETING_FETCH_FAILED,
       );
@@ -46,6 +67,7 @@ export const useMeetings = (
 
   useEffect(() => {
     if (map) {
+      fetchMeetings();
       const listener = window.kakao.maps.event.addListener(map, 'idle', fetchMeetings);
       return () => {
         window.kakao.maps.event.removeListener(map, 'idle', listener);
@@ -54,8 +76,15 @@ export const useMeetings = (
   }, [map, fetchMeetings]);
 
   useEffect(() => {
+<<<<<<< HEAD
     fetchMeetings();
   }, [fetchMeetings]);
+=======
+    if (map) {
+      fetchMeetings();
+    }
+  }, [selectedCategories, selectedRadius, map, fetchMeetings]);
+>>>>>>> 96ab381 (feature:다건조회 api연동(#91))
 
   return { meetings, isLoading, error };
 };
