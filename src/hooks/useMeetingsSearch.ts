@@ -97,7 +97,7 @@ interface LocationData {
   lng: number;
 }
 
-const useDebounce = (value: string, delay: number) => {
+const useDebounceValue = (value: string, delay: number) => {
   const [debouncedValue, setDebouncedValue] = useState(value);
   useEffect(() => {
     const handler = setTimeout(() => {
@@ -127,7 +127,7 @@ export const useMeetingsSearch = ({
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const debouncedQuery = useDebounce(query, 500);
+  const debouncedQuery = useDebounceValue(query, 500);
 
   useEffect(() => {
     if (searchCenter && !radius) {
@@ -161,7 +161,7 @@ export const useMeetingsSearch = ({
           const params: GetMeetingsParams = {};
 
           if (debouncedQuery) params.name = debouncedQuery;
-          if (categories.length > 0) params.category = categories.join(',');
+          if (categories.length > 0) params.hobby = categories.join(',');
 
           params.latitude = locationForApi.lat;
           params.longitude = locationForApi.lng;
