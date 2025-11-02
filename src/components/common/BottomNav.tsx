@@ -7,6 +7,8 @@ import {
   IoPersonOutline,
 } from 'react-icons/io5';
 import { colors } from '@/style/themes';
+import { useEffect, useState } from 'react';
+import { getMyJoinedMeetup } from '@/api/services/meetup_room.service';
 
 const NavContainer = styled.nav`
   position: fixed;
@@ -44,10 +46,7 @@ const NavButton = styled.button<{ $isActive: boolean }>`
 const BottomNav = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  {
-    /*추후 로직 수정 예정 - 속한 모임 있는지 없는지 여부 */
-  }
-  const userIsInGroup = false;
+  const [userIsInGroup, setUserIsInGroup] = useState(false);
 
   const handleChatClick = () => {
     if (userIsInGroup) {
@@ -64,6 +63,18 @@ const BottomNav = () => {
       navigate('/create-room');
     }
   };
+
+  useEffect(() => {
+    const checkUserGroupStatus = async () => {
+      try {
+        const response = await getMyJoinedMeetup();
+        setUserIsInGroup(!!response);
+      } catch (error) {
+        setUserIsInGroup(false);
+      }
+    };
+    checkUserGroupStatus();
+  });
 
   return (
     <NavContainer>

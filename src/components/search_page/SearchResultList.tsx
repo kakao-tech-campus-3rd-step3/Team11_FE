@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import { colors } from '@/style/themes';
+import type { Meeting } from '@/types/meeting';
 
 const ListContainer = styled.div`
   width: 100%;
@@ -27,18 +28,12 @@ const ItemInfo = styled.p`
   color: ${colors.secondary600};
 `;
 
-interface Meeting {
-  id: number;
-  title: string;
-  location: string;
-  category: string;
-}
-
 interface Props {
-  results: Meeting[];
+  results: (Meeting & { location: string })[];
+  onItemClick: (meeting: Meeting) => void;
 }
 
-export const SearchResultList = ({ results }: Props) => {
+export const SearchResultList = ({ results, onItemClick }: Props) => {
   if (results.length === 0) {
     return <ItemInfo>검색 결과가 없습니다.</ItemInfo>;
   }
@@ -46,7 +41,7 @@ export const SearchResultList = ({ results }: Props) => {
   return (
     <ListContainer>
       {results.map((item) => (
-        <ResultItem key={item.id}>
+        <ResultItem key={item.id} onClick={() => onItemClick(item)}>
           <ItemTitle>{item.title}</ItemTitle>
           <ItemInfo>
             📍 {item.location} | 🏷️ {item.category}

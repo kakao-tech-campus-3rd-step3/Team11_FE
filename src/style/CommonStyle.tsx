@@ -13,13 +13,6 @@ export const Container = styled.div`
   overflow: hidden;
 `;
 
-export const Text = styled.div`
-  font-size: 1.25rem;
-  font-weight: 500;
-  color: #333;
-  margin-bottom: 2rem;
-`;
-
 export const ContentContanier = styled.div`
   width: 92%;
 `;
