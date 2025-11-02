@@ -1,4 +1,4 @@
-import { clearTokens } from '@/utils/tokenStorage';
+import { clearTokens, getAccessToken } from '@/utils/tokenStorage';
 import axios from 'axios';
 
 const HTTP_STATUS = {
@@ -16,7 +16,7 @@ export const api = axios.create({
 });
 
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('accessToken');
+  const token = getAccessToken();
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }

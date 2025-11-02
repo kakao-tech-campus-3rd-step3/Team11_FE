@@ -11,7 +11,12 @@ import { useFunnel } from '@/hooks/useFunnel';
 
 const Onboarding = () => {
   const navigate = useNavigate();
-  const [Funnel, Step, setStep] = useFunnel(['기본정보', '프로필사진', '추가정보', '완료']);
+  const [Funnel, Step, setStep, _step, goToPreviousStep, _hasPreviousStep] = useFunnel([
+    '기본정보',
+    '프로필사진',
+    '추가정보',
+    '완료',
+  ]);
 
   const [onboardingData, setOnboardingData] = useState<MyProfileState>({
     name: null,
@@ -66,7 +71,7 @@ const Onboarding = () => {
                 handleNext(data);
                 setStep('추가정보');
               }}
-              onPrev={() => setStep('기본정보')}
+              onPrev={goToPreviousStep}
             />
           </Step>
 
@@ -77,7 +82,7 @@ const Onboarding = () => {
                 handleNext(data);
                 setStep('완료');
               }}
-              onPrev={() => setStep('프로필사진')}
+              onPrev={goToPreviousStep}
             />
           </Step>
 
@@ -85,7 +90,7 @@ const Onboarding = () => {
             <OnboardingStep4
               data={onboardingData}
               onComplete={handleComplete}
-              onPrev={() => setStep('추가정보')}
+              onPrev={goToPreviousStep}
               onNext={() => {}}
             />
           </Step>

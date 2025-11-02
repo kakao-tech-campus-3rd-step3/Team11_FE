@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import type { OnboardingStepProps } from '@/types/onboarding';
 import {
   FormSection,
@@ -25,17 +25,9 @@ import { useUserSigungu } from '@/hooks/useUserSigungu';
 
 const OnboardingStep3 = ({ onNext, onPrev }: OnboardingStepProps) => {
   const { sidoName, sigunguList, isLoading, error } = useUserSigungu();
-  const [sido, setSido] = useState('');
   const [sigungu, setSigungu] = useState('');
   const [sigunguSuggestions, setSigunguSuggestions] = useState<string[]>([]);
   const [showSigunguSuggestions, setShowSigunguSuggestions] = useState(false);
-
-  // sidoName이 로드되면 sido에 자동으로 설정
-  useEffect(() => {
-    if (sidoName) {
-      setSido(sidoName);
-    }
-  }, [sidoName]);
 
   const handleSigunguChange = (value: string) => {
     setSigungu(value);
@@ -58,10 +50,10 @@ const OnboardingStep3 = ({ onNext, onPrev }: OnboardingStepProps) => {
   };
 
   const handleNext = () => {
-    if (sido.trim() && sigungu.trim()) {
+    if (sidoName.trim() && sigungu.trim()) {
       onNext({
         baseLocation: {
-          sidoName: sido,
+          sidoName: sidoName,
           sigunguName: sigungu,
         },
       });
@@ -90,7 +82,7 @@ const OnboardingStep3 = ({ onNext, onPrev }: OnboardingStepProps) => {
             <FormInput
               type="text"
               placeholder="시/도 선택 (예: 부산광역시)"
-              value={sido}
+              value={sidoName}
               readOnly
             />
             <SearchIcon src={searchIcon} alt="search" />
@@ -108,7 +100,7 @@ const OnboardingStep3 = ({ onNext, onPrev }: OnboardingStepProps) => {
               }
               onFocus={() => setShowSigunguSuggestions(true)}
               onBlur={() => setTimeout(() => setShowSigunguSuggestions(false), 100)}
-              disabled={!sido.trim() || isLoading}
+              disabled={!sidoName.trim() || isLoading}
             />
             <SearchIcon src={searchIcon} alt="search" />
             {showSigunguSuggestions && sigunguSuggestions.length > 0 && (
