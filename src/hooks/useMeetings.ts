@@ -55,7 +55,7 @@ export const useMeetings = (
 
   useEffect(() => {
     fetchMeetings();
-  }, [selectedCategories, selectedRadius, fetchMeetings]);
+  }, [fetchMeetings]);
 
   return { meetings, isLoading, error };
 };
