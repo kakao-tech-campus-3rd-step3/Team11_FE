@@ -28,8 +28,9 @@ export const useMeetings = (
       if (selectedRadius) {
         params.radius = parseInt(selectedRadius.replace('km', ''), 10) * 1000;
       }
+
       const meetingData = await getMeetings(params);
-      setMeetings(Array.isArray(meetingData) ? meetingData : []);
+      setMeetings(meetingData);
     } catch (err: any) {
       console.error('모임 정보를 불러오는 데 실패했습니다.', err);
       setError(
@@ -54,7 +55,7 @@ export const useMeetings = (
 
   useEffect(() => {
     fetchMeetings();
-  }, [selectedCategories, selectedRadius, fetchMeetings]);
+  }, [fetchMeetings]);
 
   return { meetings, isLoading, error };
 };

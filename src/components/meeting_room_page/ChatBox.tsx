@@ -20,7 +20,7 @@ interface ChatBoxProps {
 
 const Container = styled.div<{ isFirstRender: boolean }>`
   position: absolute;
-  top: 11.5rem;
+  top: 15.5rem;
   bottom: 4.5rem;
   display: flex;
   flex-direction: column-reverse;
@@ -77,29 +77,23 @@ export const ChatBox = ({
   const [isLoading, setIsLoading] = useState(true);
 
   const getChatData = async () => {
-    if (!meetUpId || !myId || !nextId) return;
+    if (!meetUpId || !myId) return;
+
+    if (!hasNext.current) return;
 
     try {
-      for (let i = 0; i < 3; i++) {
-        if (!hasNext.current) break;
-
-        const response = await getChatList(meetUpId, nextId.current);
-        const parsedMessages = messageParser(response.content, myId);
-        setChatMessages((prevMessages) => [...prevMessages, ...parsedMessages]);
-        hasNext.current = response.hasNext;
-        nextId.current = response.nextId;
-        console.log(`채팅 목록 조회 성공(${i}):`, response);
-      }
+      const response = await getChatList(meetUpId, nextId.current);
+      const parsedMessages = messageParser(response.content, myId);
+      setChatMessages((prevMessages) => [...prevMessages, ...parsedMessages]);
+      hasNext.current = response.hasNext;
+      nextId.current = response.nextId;
+      console.log('채팅 목록 조회 성공:', response);
 
       if (isFirstRender) {
         requestAnimationFrame(() => {
-          requestAnimationFrame(() => {
-            bottomElementRef.current?.scrollIntoView({ behavior: 'auto' });
-            requestAnimationFrame(() => {
-              setIsLoading(false);
-              setIsFirstRender(false);
-            });
-          });
+          bottomElementRef.current?.scrollIntoView({ behavior: 'auto' });
+          setIsLoading(false);
+          setIsFirstRender(false);
         });
       }
     } catch (error) {

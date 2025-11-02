@@ -1,5 +1,6 @@
 import type {
   ChatListResponseDTO,
+  ChatMessageDTO,
   MeetupRequestDTO,
   MeetupResponseDTO,
   ParticipantDTO,
@@ -37,11 +38,32 @@ export const endMeetUp = async () => {
 };
 
 // 채팅 목록 조회
+const MAX_CHAT_FETCH_COUNT = 3; // 한 번에 최대 30개씩 반환
+
 export const getChatList = async (meetUpId: string, nextId?: number) => {
-  const response = await api.get<ChatListResponseDTO>(`/api/meetups/${meetUpId}/messages`, {
-    params: nextId ? { cursorId: nextId } : undefined,
-  });
-  return response.data;
+  const messages: ChatMessageDTO[] = [];
+  let hasNext = true;
+  let cursorId = nextId;
+
+  for (let i = 0; i < MAX_CHAT_FETCH_COUNT; i++) {
+    if (!hasNext) break;
+
+    const response = await api.get<ChatListResponseDTO>(`/api/meetups/${meetUpId}/messages`, {
+      params: cursorId ? { cursorId } : undefined,
+    });
+
+    const data = response.data;
+    messages.push(...data.content);
+
+    hasNext = data.hasNext;
+    cursorId = data.nextId;
+  }
+
+  return {
+    content: messages,
+    hasNext,
+    nextId: cursorId,
+  };
 };
 
 // 현재 내가 참여 중인 모임 조회

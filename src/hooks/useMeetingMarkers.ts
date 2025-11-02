@@ -12,7 +12,7 @@ export const useMeetingMarkers = (
 
   useEffect(() => {
     markersRef.current.forEach((marker) => marker.setMap(null));
-    markersRef.current = [];
+    //markersRef.current = [];
 
     if (!map || !window.kakao || !Array.isArray(meetings)) return;
 
