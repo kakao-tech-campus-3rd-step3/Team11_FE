@@ -14,7 +14,7 @@ let lastActionTime = 0;
 function isJoinLeaveActionMessage(
   msg: DefaultActionMessage | JoinLeaveActionMessage,
 ): msg is JoinLeaveActionMessage {
-  return ['JOIN', 'EXIT'].includes(msg.action ?? '') && 'nickname' in msg;
+  return ['JOIN', 'EXIT', 'KICKED'].includes(msg.action ?? '') && 'nickname' in msg;
 }
 
 export const handleSocketAction = <T>(
@@ -98,6 +98,19 @@ export const handleSocketAction = <T>(
         toast.info(`${receivedAction.nickname}님이 퇴장하셨습니다.`, {
           id: 'EXIT',
         } as any);
+      }
+      return false;
+    }
+
+    case 'KICKED': {
+      if (isJoinLeaveActionMessage(receivedAction)) {
+        toast.info(`${receivedAction.nickname}님이 강제 퇴장 되셨습니다.`, {
+          id: 'KICKED',
+        } as any);
+
+        if (receivedAction.participantId === myId) {
+          navigate('/home');
+        }
       }
       return false;
     }

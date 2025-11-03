@@ -78,6 +78,12 @@ export const getParticipantsInMeetUp = async (meetUpId: string) => {
   return response.data;
 };
 
+// 특정 참여자 강퇴
+export const kickUser = async (meetUpId: string, userId: number) => {
+  const response = await api.delete(`/api/meetups/${meetUpId}/participants/${userId}`);
+  return response.data;
+};
+
 // 모집 취소
 export const cancelMeetUp = async () => {
   const response = await api.post(`/api/meetups/me/cancel`);

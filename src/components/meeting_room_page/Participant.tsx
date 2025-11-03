@@ -1,11 +1,13 @@
 import type { ParticipantDTO } from '@/api/types/meeting_room.dto';
 import styled from '@emotion/styled';
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { createPortal } from 'react-dom';
-import { useNavigate } from 'react-router-dom';
+import { useLayoutEffect, useRef, useState } from 'react';
+import { ProfileOptions } from './ProfileOptions';
 
 interface ParticipantProps {
+  myId: number | null;
+  isHost: boolean;
   participant: ParticipantDTO;
+  meetUpId: string;
 }
 
 const Container = styled.div`
@@ -18,7 +20,7 @@ const Container = styled.div`
   width: 6rem;
 `;
 
-const Avatar = styled.div<{ imageUrl: string; isHost: boolean }>`
+const Avatar = styled.div<{ imageUrl: string; isOwner: boolean }>`
   height: 3rem;
   aspect-ratio: 1/1;
   border-radius: 1.5rem;
@@ -26,8 +28,8 @@ const Avatar = styled.div<{ imageUrl: string; isHost: boolean }>`
   background-image: url(${(props) => props.imageUrl});
   background-size: cover;
   background-position: center;
-  border-width: ${(props) => (props.isHost ? '0.2rem' : '0.05rem')};
-  border-color: ${(props) => (props.isHost ? 'green' : 'black')};
+  border-width: ${(props) => (props.isOwner ? '0.2rem' : '0.05rem')};
+  border-color: ${(props) => (props.isOwner ? 'green' : 'black')};
   box-sizing: border-box;
   cursor: pointer;
 `;
@@ -43,34 +45,11 @@ const NameTag = styled.div`
   text-align: center;
 `;
 
-const Popover = styled.div`
-  position: absolute;
-  top: 3.5rem;
-  left: 0;
-  background: white;
-  border: 1px solid #ddd;
-  border-radius: 0.5rem;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-  padding: 0.5rem;
-  z-index: 100;
-`;
-
-const Option = styled.div`
-  padding: 0.3rem 0.6rem;
-  font-size: 0.8rem;
-  cursor: pointer;
-  &:hover {
-    background-color: #f3f3f3;
-  }
-`;
-
-export const Participant = ({ participant }: ParticipantProps) => {
-  const isHost = participant.role === 'HOST';
+export const Participant = ({ myId, isHost, participant, meetUpId }: ParticipantProps) => {
+  const isOwner = participant.role === 'HOST';
   const [isOptionOpen, setIsOptionOpen] = useState(false);
   const [position, setPosition] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
   const avatarRef = useRef<HTMLDivElement>(null);
-  const popoverRef = useRef<HTMLDivElement>(null);
-  const navigate = useNavigate();
 
   const handleClick = () => setIsOptionOpen((prev) => !prev);
 
@@ -81,37 +60,23 @@ export const Participant = ({ participant }: ParticipantProps) => {
     }
   }, [isOptionOpen]);
 
-  useEffect(() => {
-    const handleOutsideClick = (e: MouseEvent) => {
-      if (
-        avatarRef.current &&
-        !avatarRef.current.contains(e.target as Node) &&
-        popoverRef.current &&
-        !popoverRef.current.contains(e.target as Node)
-      ) {
-        setIsOptionOpen(false);
-      }
-    };
-    document.addEventListener('mousedown', handleOutsideClick);
-    return () => document.removeEventListener('mousedown', handleOutsideClick);
-  }, []);
-
   return (
     <>
       <Container ref={avatarRef}>
-        <Avatar imageUrl={participant.profile.imageUrl} isHost={isHost} onClick={handleClick} />
+        <Avatar imageUrl={participant.profile.imageUrl} isOwner={isOwner} onClick={handleClick} />
         <NameTag>{participant.profile.nickname}</NameTag>
       </Container>
 
-      {isOptionOpen &&
-        createPortal(
-          <Popover ref={popoverRef} style={{ top: position.y, left: position.x }}>
-            <Option onClick={() => navigate(`/user/${participant.profile.id}`)}>프로필 보기</Option>
-            <Option>차단</Option>
-            <Option>신고</Option>
-          </Popover>,
-          document.body,
-        )}
+      {isOptionOpen && (
+        <ProfileOptions
+          myId={myId}
+          isHost={isHost}
+          position={position}
+          onClose={() => setIsOptionOpen(false)}
+          meetUpId={meetUpId}
+          target={participant}
+        />
+      )}
     </>
   );
 };

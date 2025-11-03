@@ -105,6 +105,7 @@ const MeetingRoom = () => {
     console.log('newAction', newAction);
     handleSocketAction('JOIN', newAction, navigate, myIdRef.current, setChatMessages);
     handleSocketAction('EXIT', newAction, navigate, myIdRef.current, setChatMessages);
+    handleSocketAction('KICKED', newAction, navigate, myIdRef.current);
     handleSocketAction('NEAR_STARTED', newAction, navigate);
     handleSocketAction('STARTED', newAction, navigate, undefined, setIsStarted);
     handleSocketAction('NEAR_END', newAction, navigate);
@@ -134,11 +135,17 @@ const MeetingRoom = () => {
         isStarted={isStarted}
         disconnect={disconnect}
       />
-      <ParticipantList participants={participants} />
+      <ParticipantList
+        myId={myIdRef.current}
+        isHost={isHost}
+        participants={participants}
+        meetUpId={meetUpInfo?.id || ''}
+      />
       <Timer startAt={meetUpInfo?.startAt} isStarted={isStarted} />
       <ChatBox
         chatMessages={chatMessages}
-        meetUpId={meetUpInfo?.id || null}
+        isHost={isHost}
+        meetUpId={meetUpInfo?.id || ''}
         myId={myIdRef.current}
         participants={participants}
         isConnected={isConnected}
