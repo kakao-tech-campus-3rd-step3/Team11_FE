@@ -9,6 +9,7 @@ import { kickUser } from '@/api/services/meetup_room.service';
 import type { ParticipantDTO } from '@/api/types/meeting_room.dto';
 
 interface ProfileOptionsProps {
+  myId: number | null;
   isHost: boolean;
   position: { x: number; y: number };
   onClose: () => void;
@@ -36,6 +37,7 @@ const Option = styled.div`
 `;
 
 export const ProfileOptions = ({
+  myId,
   isHost,
   position,
   onClose,
@@ -94,9 +96,13 @@ export const ProfileOptions = ({
       {createPortal(
         <ProfileOptionsContainer ref={popoverRef} style={{ top: position.y, left: position.x }}>
           <Option onClick={handleViewProfile}>프로필 보기</Option>
-          <Option onClick={handleBlock}>차단</Option>
-          <Option onClick={handleReport}>신고</Option>
-          {isHost && <Option onClick={handleKick}>강퇴</Option>}
+          {myId !== target.id && (
+            <>
+              <Option onClick={handleBlock}>차단</Option>
+              <Option onClick={handleReport}>신고</Option>
+              {isHost && <Option onClick={handleKick}>강퇴</Option>}
+            </>
+          )}
         </ProfileOptionsContainer>,
         document.body,
       )}

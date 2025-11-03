@@ -4,6 +4,8 @@ import { useLayoutEffect, useRef, useState } from 'react';
 import { ProfileOptions } from './ProfileOptions';
 
 interface ParticipantProps {
+  myId: number | null;
+  isHost: boolean;
   participant: ParticipantDTO;
   meetUpId: string;
 }
@@ -18,7 +20,7 @@ const Container = styled.div`
   width: 6rem;
 `;
 
-const Avatar = styled.div<{ imageUrl: string; isHost: boolean }>`
+const Avatar = styled.div<{ imageUrl: string; isOwner: boolean }>`
   height: 3rem;
   aspect-ratio: 1/1;
   border-radius: 1.5rem;
@@ -26,8 +28,8 @@ const Avatar = styled.div<{ imageUrl: string; isHost: boolean }>`
   background-image: url(${(props) => props.imageUrl});
   background-size: cover;
   background-position: center;
-  border-width: ${(props) => (props.isHost ? '0.2rem' : '0.05rem')};
-  border-color: ${(props) => (props.isHost ? 'green' : 'black')};
+  border-width: ${(props) => (props.isOwner ? '0.2rem' : '0.05rem')};
+  border-color: ${(props) => (props.isOwner ? 'green' : 'black')};
   box-sizing: border-box;
   cursor: pointer;
 `;
@@ -43,8 +45,8 @@ const NameTag = styled.div`
   text-align: center;
 `;
 
-export const Participant = ({ participant, meetUpId }: ParticipantProps) => {
-  const isHost = participant.role === 'HOST';
+export const Participant = ({ myId, isHost, participant, meetUpId }: ParticipantProps) => {
+  const isOwner = participant.role === 'HOST';
   const [isOptionOpen, setIsOptionOpen] = useState(false);
   const [position, setPosition] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
   const avatarRef = useRef<HTMLDivElement>(null);
@@ -61,12 +63,13 @@ export const Participant = ({ participant, meetUpId }: ParticipantProps) => {
   return (
     <>
       <Container ref={avatarRef}>
-        <Avatar imageUrl={participant.profile.imageUrl} isHost={isHost} onClick={handleClick} />
+        <Avatar imageUrl={participant.profile.imageUrl} isOwner={isOwner} onClick={handleClick} />
         <NameTag>{participant.profile.nickname}</NameTag>
       </Container>
 
       {isOptionOpen && (
         <ProfileOptions
+          myId={myId}
           isHost={isHost}
           position={position}
           onClose={() => setIsOptionOpen(false)}

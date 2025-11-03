@@ -98,6 +98,7 @@ const TextArea = styled.textarea`
   font-size: 0.9rem;
   resize: none;
   min-height: 6rem;
+  width: 93.5%;
   background-color: #fafafa;
 `;
 

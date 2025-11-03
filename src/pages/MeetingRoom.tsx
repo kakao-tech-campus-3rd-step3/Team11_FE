@@ -135,7 +135,12 @@ const MeetingRoom = () => {
         isStarted={isStarted}
         disconnect={disconnect}
       />
-      <ParticipantList participants={participants} meetUpId={meetUpInfo?.id || ''} />
+      <ParticipantList
+        myId={myIdRef.current}
+        isHost={isHost}
+        participants={participants}
+        meetUpId={meetUpInfo?.id || ''}
+      />
       <Timer startAt={meetUpInfo?.startAt} isStarted={isStarted} />
       <ChatBox
         chatMessages={chatMessages}
