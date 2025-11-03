@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useLogin } from '@/hooks/useLogin';
+import { useToast } from '@/hooks/useToast';
+import { Toast } from '@/components/common/Toast';
 
 import { Container, ContentContanier, Spacer } from '@/style/CommonStyle';
 import LogoImg from '@/assets/momeetLogo.svg';
@@ -8,6 +10,7 @@ import { InputSection, Logo, LoginButton, LoginMain, LoginSection, LinkText } fr
 
 const Signup = () => {
   const { handleSignup } = useLogin();
+  const { showToast, hideToast, toast } = useToast();
 
   const [email, setEmail] = useState('');
   const [password1, setPassword1] = useState('');
@@ -22,11 +25,12 @@ const Signup = () => {
 
     try {
       await handleSignup(email, password1, password2);
+      showToast('회원가입이 완료되었습니다. 이메일 인증을 진행해 주세요');
     } catch (err: any) {
       console.error('회원가입 에러:', err);
 
       if (err.response?.status === 409) {
-        alert('이미 가입한 이메일입니다.');
+        showToast('이미 가입한 이메일입니다.');
       } else if (err.response?.status === 400 && err.response?.data?.validationErrors) {
         // 유효성 검사 에러 처리
         const validationErrors = err.response.data.validationErrors;
@@ -35,12 +39,16 @@ const Signup = () => {
         // 첫 번째 에러 메시지 표시
         const firstError = Object.values(validationErrors)[0];
         if (Array.isArray(firstError)) {
-          alert(firstError[0]);
+          showToast(firstError[0]);
         } else {
-          alert(firstError);
+          showToast(firstError as string);
         }
       } else {
-        alert('회원가입에 실패했습니다. 다시 시도해주세요.');
+        const errorMessage =
+          err.response?.data?.detail ||
+          err.response?.data?.message ||
+          '회원가입에 실패했습니다. 다시 시도해주세요.';
+        showToast(errorMessage);
       }
     } finally {
       setIsLoading(false);
@@ -125,6 +133,7 @@ const Signup = () => {
           </LoginSection>
         </LoginMain>
       </ContentContanier>
+      {toast.visible && <Toast message={toast.message} onClose={hideToast} />}
     </Container>
   );
 };

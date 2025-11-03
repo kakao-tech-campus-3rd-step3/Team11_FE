@@ -5,126 +5,145 @@ import { useDispatch } from 'react-redux';
 import { getMyProfile } from '@/api/services/profile.service';
 import { setMyProfile, clearMyProfile } from '@/store/slices/myProfileSlice';
 import { clearProfile, clearTokens, saveTokens, saveProfile } from '@/utils/tokenStorage';
-import { kakaoLogin, login, logout, signup } from '@/api/services/auth.service';
+import { kakaoLogin, login, logout, signup, deleteAccount } from '@/api/services/auth.service';
+import { useToast } from '@/hooks/useToast';
+
+// 프로필이 있는지 확인
+const hasCompleteProfile = (profile: any): boolean => {
+  return profile && profile.nickname;
+};
 
 export const useLogin = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { showToast } = useToast();
 
   // 로그인 성공
   const handleLoginSuccess = useCallback(
-    async (result: any, loginType: 'email' | 'kakao' = 'email') => {
+    async (result: any) => {
       try {
         saveTokens(result.accessToken, result.refreshToken);
         console.log(result.accessToken, result.refreshToken);
 
+        let hasProfile = false;
         try {
           const profileData = await getMyProfile();
-          dispatch(setMyProfile(profileData));
-          saveProfile(profileData);
-        } catch (profileError) {
-          console.error('프로필 조회 실패:', profileError);
-          // 프로필 조회 실패 시 기본 데이터로 설정
-          const userData = result.user || {};
-          const defaultProfile = {
-            name: userData.name || userData.nickname || result.email,
-          };
-          dispatch(setMyProfile(defaultProfile));
-          saveProfile(defaultProfile); // 기본 프로필도 저장
+          // 프로필이 완전한지 확인
+          if (hasCompleteProfile(profileData)) {
+            dispatch(setMyProfile(profileData));
+            saveProfile(profileData);
+            hasProfile = true;
+          }
+        } catch (profileError: any) {
+          const isProfileNotFound = 
+            profileError.response?.status === 404 ||
+            profileError.message?.includes('프로필이 존재하지 않습니다') ||
+            profileError.message?.includes('404');
+          
+          if (isProfileNotFound) {
+            hasProfile = false;
+          } else {
+            console.error('프로필 조회 실패:', profileError);
+            throw profileError;
+          }
         }
 
-        alert(`${loginType === 'kakao' ? '카카오' : ''}로그인 성공!`);
-        navigate('/home');
+        navigate(hasProfile ? '/home' : '/onboarding');
       } catch (error) {
         console.error('로그인 후 처리 실패:', error);
-        alert('로그인은 성공했지만 프로필을 불러오는데 실패했습니다.');
-        navigate('/home');
+        throw error;
       }
     },
     [dispatch, navigate],
   );
 
-  const handleLoginError = useCallback((error: any, loginType: 'email' | 'kakao' = 'email') => {
-    console.error(`${loginType === 'kakao' ? '카카오 ' : ''}로그인 에러:`, error);
+ /* const handleLoginError = useCallback(
+    (error: any, loginType: 'email' | 'kakao' = 'email') => {
+      console.error(`${loginType === 'kakao' ? '카카오 ' : ''}로그인 에러:`, error);
 
-    const errorMessage =
-      error.response?.data?.detail ||
-      error.response?.data?.message ||
-      error.message ||
-      `${loginType === 'kakao' ? '카카오 ' : ''}로그인에 실패했습니다. 네트워크 연결을 확인해주세요.`;
+      const errorMessage =
+        error.response?.data?.detail ||
+        error.response?.data?.message ||
+        error.message ||
+        `${loginType === 'kakao' ? '카카오 ' : ''}로그인에 실패했습니다. 네트워크 연결을 확인해주세요.`;
 
-    alert(errorMessage);
-  }, []);
-
+      showToast(errorMessage);
+    },
+    [showToast],
+  );
+*/
   // 이메일 로그인
   const handleEmailLogin = useCallback(
     async (email: string, password: string) => {
-      try {
-        const result = await login(email, password);
-        handleLoginSuccess(result, 'email');
-      } catch (error: any) {
-        handleLoginError(error, 'email');
-      }
+      const result = await login(email, password);
+      handleLoginSuccess(result);
     },
-    [handleLoginSuccess, handleLoginError],
+    [handleLoginSuccess],
   );
 
   // 카카오 로그인
   const handleKakaoLogin = useCallback(
     async (code: string) => {
-      try {
-        const result = await kakaoLogin(code);
-        handleLoginSuccess(result, 'kakao');
-      } catch (error: any) {
-        handleLoginError(error, 'kakao');
-      }
+      const result = await kakaoLogin(code);
+      handleLoginSuccess(result);
     },
-    [handleLoginSuccess, handleLoginError],
+    [handleLoginSuccess],
   );
 
   // 회원가입
   const handleSignup = useCallback(
     async (email: string, password1: string, password2: string) => {
-      try {
-        const result = await signup(email, password1, password2);
-
-        if (result.accessToken && result.refreshToken) {
-          saveTokens(result.accessToken, result.refreshToken);
-          console.log('회원가입 성공 - 토큰 저장 완료');
-        }
-
-        navigate('/onboarding');
-      } catch (error: any) {
-        handleLoginError(error, 'email');
-        throw error;
-      }
+      const result = await signup(email, password1, password2);
+      return result;
     },
-    [navigate, handleLoginError],
+    [],
   );
 
   // 로그아웃
   const handleLogout = useCallback(async () => {
-    if (!confirm('로그아웃하시겠습니까?')) {
-      return;
-    }
-
     try {
       await logout();
       clearTokens();
       clearProfile();
       dispatch(clearMyProfile());
-      alert('로그아웃되었습니다.');
+      showToast('로그아웃되었습니다.');
       navigate('/login');
     } catch (error: any) {
       console.error('로그아웃 실패:', error);
-      alert(`로그아웃 실패: ${error.message}`);
+      showToast(`로그아웃 실패: ${error.message}`);
     }
-  }, [dispatch, navigate]);
+  }, [dispatch, navigate, showToast]);
+
+  // 회원탈퇴
+  const handleDeleteAccount = useCallback(async () => {
+    try {
+      const result = await deleteAccount();
+      // 성공 시 1 반환
+      if (result === 1) {
+        clearTokens();
+        clearProfile();
+        dispatch(clearMyProfile());
+        showToast('회원탈퇴가 완료되었습니다.');
+        navigate('/login');
+      } else {
+        showToast('회원탈퇴에 실패했습니다. 다시 시도해주세요.');
+      }
+    } catch (error: any) {
+      console.error('회원탈퇴 실패:', error);
+      const errorMessage =
+        error.response?.data?.detail ||
+        error.message ||
+        '회원탈퇴에 실패했습니다. 다시 시도해주세요.';
+      showToast(errorMessage);
+    }
+  }, [dispatch, navigate, showToast]);
 
   return {
     handleEmailLogin,
     handleKakaoLogin,
     handleSignup,
     handleLogout,
+    handleDeleteAccount,
   };
 };
+
