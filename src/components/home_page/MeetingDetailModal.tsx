@@ -18,7 +18,8 @@ import {
 import { joinMeetUp } from '@/api/services/meetup_room.service';
 import { useMyProfile } from '@/hooks/useMyProfile';
 import { useMyCurrentMeeting } from '@/hooks/useMyCurrentMeeting';
-
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 interface MeetingDetailModalProps {
   meeting: Meeting;
   onClose: () => void;
@@ -29,6 +30,8 @@ export const MeetingDetailModal = ({ meeting, onClose, isOpen }: MeetingDetailMo
   const [isVisible, setIsVisible] = useState(false);
   const [isJoining, setIsJoining] = useState(false);
   const [joinError, setJoinError] = useState<string | null>(null);
+
+  const navigate = useNavigate();
 
   const { myProfile, isLoadingProfile } = useMyProfile();
   const { myMeeting, isLoadingMeeting, refetchMyMeeting } = useMyCurrentMeeting();
@@ -52,18 +55,18 @@ export const MeetingDetailModal = ({ meeting, onClose, isOpen }: MeetingDetailMo
 
   const handleEnterRoom = async () => {
     if (!myProfile) {
-      alert('로그인이 필요합니다.');
+      toast.error('로그인이 필요합니다.');
       return;
     }
 
     if (isInRoom) {
-      alert('이미 다른 모임에 참여 중입니다.');
+      toast.error('이미 다른 모임에 참여 중입니다.');
       return;
     }
 
     const limit = meeting.scoreLimit;
     if (userTemperature < limit) {
-      alert(
+      toast.error(
         `이 모임은 매너 점수 ${limit}점 이상이어야 입장할 수 있습니다. (현재 ${userTemperature}점)`,
       );
       return;
@@ -73,13 +76,15 @@ export const MeetingDetailModal = ({ meeting, onClose, isOpen }: MeetingDetailMo
     setJoinError(null);
     try {
       await joinMeetUp(String(meeting.id));
-      alert(`${meeting.name} 방에 성공적으로 입장했습니다!`);
+      toast.success(`${meeting.name} 방에 성공적으로 입장했습니다!`);
       await refetchMyMeeting();
+
       handleClose();
+      navigate(`/meeting-room/${meeting.id}`);
     } catch (err: any) {
       const errorMessage = err.message || '알 수 없는 오류';
       setJoinError(errorMessage);
-      alert(`입장 실패: ${errorMessage}`);
+      toast.error(`입장 실패: ${errorMessage}`);
     } finally {
       setIsJoining(false);
     }
@@ -89,7 +94,6 @@ export const MeetingDetailModal = ({ meeting, onClose, isOpen }: MeetingDetailMo
     return null;
   }
 
-  //
   const tags = meeting.hashTags || [];
 
   return (
@@ -101,7 +105,6 @@ export const MeetingDetailModal = ({ meeting, onClose, isOpen }: MeetingDetailMo
           <Category>{meeting.category}</Category>
           <Title>{meeting.name}</Title>
           <HashtagContainer>
-            {/* */}
             {tags.map((tag) => (
               <Hashtag key={tag}>{tag}</Hashtag>
             ))}

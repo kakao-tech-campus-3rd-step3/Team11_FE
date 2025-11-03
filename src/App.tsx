@@ -1,5 +1,4 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-
 import Landing from '@/pages/Landing';
 import Login from '@/pages/Login';
 import Signup from '@/pages/Signup';
@@ -29,7 +28,6 @@ function App() {
         <Route path="/kakaoLogin" element={<KakaoLogin />} />
         <Route path="/email-verification" element={<EmailVerification />} />
 
-        {/* 로그인 필요*/}
         <Route element={<ProtectedRoute />}>
           <Route path="/onboarding" element={<Onboarding />} />
           <Route path="/home" element={<Home />} />
@@ -38,7 +36,7 @@ function App() {
           <Route path="/create-room/:update?" element={<RoomCreate />} />
           <Route path="/create-room/location" element={<LocationPicker />} />
           <Route path="/search-room" element={<SearchRoom />} />
-          <Route path="/meeting-room" element={<MeetingRoom />} />
+          <Route path="/meeting-room/:roomId" element={<MeetingRoom />} />
           <Route path="/participant-evaluation" element={<ParticipantEvaluation />} />
         </Route>
       </Routes>
