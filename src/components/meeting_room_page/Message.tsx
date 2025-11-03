@@ -1,8 +1,7 @@
 import type { ParticipantDTO } from '@/api/types/meeting_room.dto';
 import styled from '@emotion/styled';
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { createPortal } from 'react-dom';
-import { useNavigate } from 'react-router-dom';
+import { useLayoutEffect, useRef, useState } from 'react';
+import { ProfileOptions } from './ProfileOptions';
 
 interface Message {
   sender: ParticipantDTO | undefined;
@@ -66,27 +65,6 @@ const Content = styled.div<{ isMine: boolean }>`
   font-weight: 400;
 `;
 
-const Popover = styled.div`
-  position: absolute;
-  top: 3.5rem;
-  left: 0;
-  background: white;
-  border: 1px solid #ddd;
-  border-radius: 0.5rem;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-  padding: 0.5rem;
-  z-index: 100;
-`;
-
-const Option = styled.div`
-  padding: 0.3rem 0.6rem;
-  font-size: 0.8rem;
-  cursor: pointer;
-  &:hover {
-    background-color: #f3f3f3;
-  }
-`;
-
 const SystemMessage = styled.div`
   font-size: 1rem;
   font-weight: 400;
@@ -97,8 +75,6 @@ export const Message = ({ senderType, content, sender }: Message) => {
   const [isOptionOpen, setIsOptionOpen] = useState(false);
   const [position, setPosition] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
   const avatarRef = useRef<HTMLDivElement>(null);
-  const popoverRef = useRef<HTMLDivElement>(null);
-  const navigate = useNavigate();
 
   const handleProfileClick = () => setIsOptionOpen((prev) => !prev);
 
@@ -108,21 +84,6 @@ export const Message = ({ senderType, content, sender }: Message) => {
       setPosition({ x: rect.right + 10, y: rect.top + 20 });
     }
   }, [isOptionOpen]);
-
-  useEffect(() => {
-    const handleOutsideClick = (e: MouseEvent) => {
-      if (
-        avatarRef.current &&
-        !avatarRef.current.contains(e.target as Node) &&
-        popoverRef.current &&
-        !popoverRef.current.contains(e.target as Node)
-      ) {
-        setIsOptionOpen(false);
-      }
-    };
-    document.addEventListener('mousedown', handleOutsideClick);
-    return () => document.removeEventListener('mousedown', handleOutsideClick);
-  }, []);
 
   return (
     <>
@@ -141,22 +102,20 @@ export const Message = ({ senderType, content, sender }: Message) => {
               />
             )}
             <SubContainer isMine={senderType === 'me'}>
-              {senderType === 'other' && <Name>{sender?.profile.nickname}</Name>}
+              {senderType === 'other' && <Name>{sender?.profile.nickname || '(알 수 없음)'}</Name>}
               <Content isMine={senderType === 'me'}>{content}</Content>
             </SubContainer>
           </>
         )}
       </Container>
 
-      {isOptionOpen &&
-        createPortal(
-          <Popover ref={popoverRef} style={{ top: position.y, left: position.x }}>
-            <Option onClick={() => navigate(`/user/${sender?.profile.id}`)}>프로필 보기</Option>
-            <Option>차단</Option>
-            <Option>신고</Option>
-          </Popover>,
-          document.body,
-        )}
+      {isOptionOpen && (
+        <ProfileOptions
+          position={position}
+          onClose={() => setIsOptionOpen(false)}
+          targetId={sender?.profile.id}
+        />
+      )}
     </>
   );
 };
