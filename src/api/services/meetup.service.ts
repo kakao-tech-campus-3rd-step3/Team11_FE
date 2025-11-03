@@ -9,7 +9,10 @@ export interface GetMeetingsParams {
   radius?: number;
 }
 
+const baseURL = import.meta.env.VITE_API_BASE_URL as string | undefined;
+
 export const getMeetings = async (params: GetMeetingsParams): Promise<Meeting[]> => {
-  const response = await api.get<Meeting[]>('/api/meetings', { params });
+  const url = baseURL ? `${baseURL}/api/meetups/geo` : '/api/meetups/geo';
+  const response = await api.get<Meeting[]>(url, { params });
   return response.data;
 };

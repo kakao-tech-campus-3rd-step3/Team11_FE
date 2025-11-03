@@ -10,9 +10,21 @@ interface ApiMeetingsParams {
   radius?: number;
 }
 
+//
+//
+//
+const CATEGORY_API_MAP: { [key: string]: string } = {
+  스터디: 'STUDY',
+  운동: 'SPORTS',
+  게임: 'GAME',
+  맛집탐방: 'MUKBANG',
+  영화: 'MOVIE',
+};
+//
+
 export const useMeetings = (
   map: any,
-  selectedCategories: string[],
+  selectedCategories: string[], //
   selectedRadius: string | null,
 ) => {
   const [meetings, setMeetings] = useState<Meeting[]>([]);
@@ -32,7 +44,13 @@ export const useMeetings = (
       };
 
       if (selectedCategories.length > 0) {
-        params.category = selectedCategories.join(',');
+        //
+        //
+        //
+        const apiCategories = selectedCategories.map(
+          (korCategory) => CATEGORY_API_MAP[korCategory] || korCategory,
+        );
+        params.category = apiCategories.join(','); //
       }
 
       if (selectedRadius) {
