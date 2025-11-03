@@ -4,6 +4,8 @@ import { useLayoutEffect, useRef, useState } from 'react';
 import { ProfileOptions } from './ProfileOptions';
 
 interface Message {
+  isHost: boolean;
+  meetUpId: string;
   sender: ParticipantDTO | undefined;
   senderType: 'me' | 'other' | 'system';
   content: string;
@@ -71,7 +73,7 @@ const SystemMessage = styled.div`
   color: gray;
 `;
 
-export const Message = ({ senderType, content, sender }: Message) => {
+export const Message = ({ isHost, meetUpId, senderType, content, sender }: Message) => {
   const [isOptionOpen, setIsOptionOpen] = useState(false);
   const [position, setPosition] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
   const avatarRef = useRef<HTMLDivElement>(null);
@@ -109,11 +111,13 @@ export const Message = ({ senderType, content, sender }: Message) => {
         )}
       </Container>
 
-      {isOptionOpen && (
+      {isOptionOpen && sender && (
         <ProfileOptions
+          isHost={isHost}
           position={position}
           onClose={() => setIsOptionOpen(false)}
-          targetId={sender?.profile.id}
+          meetUpId={meetUpId}
+          target={sender}
         />
       )}
     </>

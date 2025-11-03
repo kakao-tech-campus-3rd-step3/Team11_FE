@@ -1,12 +1,19 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import styled from '@emotion/styled';
 import { useNavigate } from 'react-router-dom';
+import { blockUser } from '@/api/services/block.service';
+import { toast } from 'react-toastify';
+import { ReportModal } from './ReportModal';
+import { kickUser } from '@/api/services/meetup_room.service';
+import type { ParticipantDTO } from '@/api/types/meeting_room.dto';
 
 interface ProfileOptionsProps {
+  isHost: boolean;
   position: { x: number; y: number };
   onClose: () => void;
-  targetId: string | undefined;
+  meetUpId: string;
+  target: ParticipantDTO;
 }
 
 const ProfileOptionsContainer = styled.div`
@@ -28,47 +35,74 @@ const Option = styled.div`
   }
 `;
 
-export const ProfileOptions = ({ position, onClose, targetId }: ProfileOptionsProps) => {
+export const ProfileOptions = ({
+  isHost,
+  position,
+  onClose,
+  meetUpId,
+  target,
+}: ProfileOptionsProps) => {
   const popoverRef = useRef<HTMLDivElement>(null);
+  const [isReportOpen, setIsReportOpen] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
     const handleOutsideClick = (e: MouseEvent) => {
       if (popoverRef.current && !popoverRef.current.contains(e.target as Node)) {
+        if (isReportOpen) return;
         onClose();
       }
     };
     document.addEventListener('mousedown', handleOutsideClick);
     return () => document.removeEventListener('mousedown', handleOutsideClick);
-  }, [onClose]);
+  }, [onClose, isReportOpen]);
 
   const handleViewProfile = () => {
-    navigate(`/user/${targetId}`);
+    navigate(`/user/${target.profile.id}`);
     onClose();
   };
 
-  const handleBlock = () => {
-    console.log('차단:', targetId);
+  const handleBlock = async () => {
+    if (!target.profile.id) return;
+
+    try {
+      const response = await blockUser(target.profile.id);
+      toast.info('해당 사용자를 차단했습니다.');
+      console.log(response);
+    } catch (error) {
+      console.error(error);
+    }
     onClose();
   };
 
   const handleReport = () => {
-    console.log('신고:', targetId);
+    setIsReportOpen(true);
+  };
+
+  const handleKick = async () => {
+    try {
+      const response = await kickUser(meetUpId, target.id);
+      console.log(response);
+    } catch (error) {
+      console.error(error);
+    }
     onClose();
   };
 
-  const handleKick = () => {
-    console.log('강퇴:', targetId);
-    onClose();
-  };
-
-  return createPortal(
-    <ProfileOptionsContainer ref={popoverRef} style={{ top: position.y, left: position.x }}>
-      <Option onClick={handleViewProfile}>프로필 보기</Option>
-      <Option onClick={handleBlock}>차단</Option>
-      <Option onClick={handleReport}>신고</Option>
-      <Option onClick={handleKick}>강퇴</Option>
-    </ProfileOptionsContainer>,
-    document.body,
+  return (
+    <>
+      {createPortal(
+        <ProfileOptionsContainer ref={popoverRef} style={{ top: position.y, left: position.x }}>
+          <Option onClick={handleViewProfile}>프로필 보기</Option>
+          <Option onClick={handleBlock}>차단</Option>
+          <Option onClick={handleReport}>신고</Option>
+          {isHost && <Option onClick={handleKick}>강퇴</Option>}
+        </ProfileOptionsContainer>,
+        document.body,
+      )}
+      {isReportOpen && target.profile.id && (
+        <ReportModal onClose={() => setIsReportOpen(false)} targetProfileId={target.profile.id} />
+      )}
+    </>
   );
 };

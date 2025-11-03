@@ -10,7 +10,8 @@ import { findSender } from '@/utils/findSender';
 
 interface ChatBoxProps {
   chatMessages: ChatMessage[];
-  meetUpId: string | null;
+  isHost: boolean;
+  meetUpId: string;
   myId: number | null;
   participants: ParticipantDTO[];
   isConnected: boolean;
@@ -62,6 +63,7 @@ const IntersectionTrigger = styled.div`
 
 export const ChatBox = ({
   chatMessages,
+  isHost,
   meetUpId,
   myId,
   isConnected,
@@ -146,6 +148,8 @@ export const ChatBox = ({
             return (
               <Message
                 key={message.id}
+                isHost={isHost}
+                meetUpId={meetUpId}
                 senderType={message.senderType}
                 content={message.content}
                 sender={sender}

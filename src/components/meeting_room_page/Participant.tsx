@@ -5,6 +5,7 @@ import { ProfileOptions } from './ProfileOptions';
 
 interface ParticipantProps {
   participant: ParticipantDTO;
+  meetUpId: string;
 }
 
 const Container = styled.div`
@@ -42,7 +43,7 @@ const NameTag = styled.div`
   text-align: center;
 `;
 
-export const Participant = ({ participant }: ParticipantProps) => {
+export const Participant = ({ participant, meetUpId }: ParticipantProps) => {
   const isHost = participant.role === 'HOST';
   const [isOptionOpen, setIsOptionOpen] = useState(false);
   const [position, setPosition] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
@@ -66,9 +67,11 @@ export const Participant = ({ participant }: ParticipantProps) => {
 
       {isOptionOpen && (
         <ProfileOptions
+          isHost={isHost}
           position={position}
           onClose={() => setIsOptionOpen(false)}
-          targetId={participant?.profile.id}
+          meetUpId={meetUpId}
+          target={participant}
         />
       )}
     </>

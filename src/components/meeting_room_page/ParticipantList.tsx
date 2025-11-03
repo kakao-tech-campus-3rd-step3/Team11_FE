@@ -4,6 +4,7 @@ import type { ParticipantDTO } from '@/api/types/meeting_room.dto';
 
 interface ParticipantListProps {
   participants: ParticipantDTO[];
+  meetUpId: string;
 }
 
 const Container = styled.div`
@@ -38,13 +39,13 @@ const Text = styled.div`
   font-weight: 500;
 `;
 
-export const ParticipantList = ({ participants }: ParticipantListProps) => {
+export const ParticipantList = ({ participants, meetUpId }: ParticipantListProps) => {
   return (
     <Container>
       <Text>현재 참여자</Text>
       <List>
         {participants.map((participant) => (
-          <Participant key={crypto.randomUUID()} participant={participant} />
+          <Participant key={crypto.randomUUID()} participant={participant} meetUpId={meetUpId} />
         ))}
       </List>
     </Container>
