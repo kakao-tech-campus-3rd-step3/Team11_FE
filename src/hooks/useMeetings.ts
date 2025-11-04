@@ -44,29 +44,21 @@ export const useMeetings = (
       };
 
       if (selectedCategories.length > 0) {
-        //
-        //
-        //
         const apiCategories = selectedCategories.map(
           (korCategory) => CATEGORY_API_MAP[korCategory] || korCategory,
         );
-        params.category = apiCategories.join(','); //
+        params.category = apiCategories.join(',');
       }
 
       if (selectedRadius) {
         params.radius = parseInt(selectedRadius.replace('km', ''), 10);
       }
 
-<<<<<<< HEAD
-      const meetingData = await getMeetings(params);
-      setMeetings(meetingData);
-=======
       const response = await api.get('/api/meetups/geo', { params });
 
       const meetingData = response.data;
 
       setMeetings(Array.isArray(meetingData) ? meetingData : []);
->>>>>>> 96ab381 (feature:다건조회 api연동(#91))
     } catch (err: any) {
       console.error('모임 정보를 불러오는 데 실패했습니다.', err);
 
@@ -94,15 +86,10 @@ export const useMeetings = (
   }, [map, fetchMeetings]);
 
   useEffect(() => {
-<<<<<<< HEAD
-    fetchMeetings();
-  }, [fetchMeetings]);
-=======
     if (map) {
       fetchMeetings();
     }
   }, [selectedCategories, selectedRadius, map, fetchMeetings]);
->>>>>>> 96ab381 (feature:다건조회 api연동(#91))
 
   return { meetings, isLoading, error };
 };

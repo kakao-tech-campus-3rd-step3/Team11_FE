@@ -60,7 +60,7 @@ export const MeetingDetailModal = ({ meeting, onClose, isOpen }: MeetingDetailMo
     }
 
     if (isInRoom) {
-      toast.error('이미 다른 모임에 참여 중입니다.');
+      toast.error('이미 모임에 참여 중입니다.');
       return;
     }
 
