@@ -2,9 +2,11 @@ import styled from '@emotion/styled';
 import ThumbUpSVG from '@/assets/participant_evaluation_page/thumb_up.svg?react';
 import ThumbDownSVG from '@/assets/participant_evaluation_page/thumb_down.svg?react';
 import { useState } from 'react';
+import type { EvaluableUserDTO, EvaluationItemDTO } from '@/api/types/evaluation.dto';
 
 interface ParticipantProps {
-  name: string;
+  info: EvaluableUserDTO;
+  setEvaluations: React.Dispatch<React.SetStateAction<EvaluationItemDTO[]>>;
 }
 
 const Container = styled.div`
@@ -20,13 +22,16 @@ const Container = styled.div`
   box-sizing: border-box;
 `;
 
-const Avatar = styled.div`
+const Avatar = styled.div<{ imageUrl: string }>`
   position: absolute;
   left: 1rem;
   height: 3rem;
   aspect-ratio: 1/1;
   border-radius: 1.5rem;
   border: 1px solid black;
+  background-image: url(${(props) => props.imageUrl});
+  background-size: cover;
+  background-position: center;
 `;
 
 const Name = styled.div`
@@ -54,26 +59,46 @@ const ThumbDown = styled(ThumbDownSVG)<{ isClicked: boolean }>`
   fill: ${(props) => (props.isClicked ? 'black' : '#aeaeb2')};
 `;
 
-export const Participant = ({ name }: ParticipantProps) => {
+export const Participant = ({ info, setEvaluations }: ParticipantProps) => {
   const [isThumbUpClicked, setIsThumbUpClicked] = useState(false);
   const [isThumbDownClicked, setIsThumbDownClicked] = useState(false);
 
+  const handleEvaluation = (rating: 'LIKE' | 'DISLIKE' | null) => {
+    setEvaluations((prev) => {
+      const existing = prev.find((item) => item.targetProfileId === info.profileId);
+      if (rating === null) {
+        return prev.filter((item) => item.targetProfileId !== info.profileId);
+      }
+      if (existing) {
+        return prev.map((item) =>
+          item.targetProfileId === info.profileId ? { ...item, rating } : item,
+        );
+      } else {
+        return [...prev, { targetProfileId: info.profileId, rating }];
+      }
+    });
+  };
+
   return (
     <Container>
-      <Avatar />
-      <Name>{name}</Name>
+      <Avatar imageUrl={info.imageUrl} />
+      <Name>{info.nickname}</Name>
       <ThumbUp
         isClicked={isThumbUpClicked}
         onClick={() => {
-          setIsThumbUpClicked(!isThumbUpClicked);
+          const value = !isThumbUpClicked;
+          setIsThumbUpClicked(value);
           setIsThumbDownClicked(false);
+          handleEvaluation(value ? 'LIKE' : null);
         }}
       />
       <ThumbDown
         isClicked={isThumbDownClicked}
         onClick={() => {
-          setIsThumbDownClicked(!isThumbDownClicked);
+          const value = !isThumbDownClicked;
+          setIsThumbDownClicked(value);
           setIsThumbUpClicked(false);
+          handleEvaluation(value ? 'DISLIKE' : null);
         }}
       />
     </Container>

@@ -1,6 +1,12 @@
 import styled from '@emotion/styled';
 import { Participant } from './Participant';
-import { mockParticipants } from './mockData';
+import type { EvaluableUserDTO, EvaluationItemDTO } from '@/api/types/evaluation.dto';
+import type React from 'react';
+
+interface ParticipantListProps {
+  participants: EvaluableUserDTO[] | undefined;
+  setEvaluations: React.Dispatch<React.SetStateAction<EvaluationItemDTO[]>>;
+}
 
 const Container = styled.div`
   position: absolute;
@@ -36,13 +42,17 @@ const List = styled.div`
   }
 `;
 
-export const ParticipantList = () => {
+export const ParticipantList = ({ participants, setEvaluations }: ParticipantListProps) => {
   return (
     <Container>
       <Title>참여자</Title>
       <List>
-        {mockParticipants.map((participant) => (
-          <Participant key={participant.id} name={participant.name} />
+        {participants?.map((participant) => (
+          <Participant
+            key={participant.profileId}
+            info={participant}
+            setEvaluations={setEvaluations}
+          />
         ))}
       </List>
     </Container>
