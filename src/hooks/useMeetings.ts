@@ -1,19 +1,23 @@
+// src/hooks/useMeetings.ts
 import { useState, useEffect, useCallback } from 'react';
 import type { Meeting } from '@/types/meeting';
 import { ERROR_MESSAGES } from '@/constants/messages';
 import api from '@/api/clients/axiosInstance';
 import { categoryMap } from '@/utils/categoryMapper';
+
 interface ApiMeetingsParams {
   latitude: number;
   longitude: number;
+  name?: string;
   category?: string;
   radius?: number;
 }
 
 export const useMeetings = (
   map: any,
-  selectedCategories: string[], //
+  selectedCategories: string[],
   selectedRadius: string | null,
+  query: string | null,
 ) => {
   const [meetings, setMeetings] = useState<Meeting[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -31,11 +35,22 @@ export const useMeetings = (
         longitude: center.getLng(),
       };
 
+      if (query) {
+        params.name = query;
+      }
+
       if (selectedCategories.length > 0) {
-        const apiCategories = selectedCategories.map(
-          (korCategory) => categoryMap[korCategory] || korCategory,
-        );
-        params.category = apiCategories.join(',');
+        // --- 여기가 수정되었습니다 ---
+        // 1. 한국어 카테고리를 영어 API 키로 매핑합니다.
+        const apiCategories = selectedCategories
+          .map((korCategory) => categoryMap[korCategory])
+          .filter(Boolean); // 2. 매핑되지 않은 값(undefined)을 제거합니다.
+
+        // 3. 유효한 카테고리가 하나라도 있을 때만 파라미터에 추가합니다.
+        if (apiCategories.length > 0) {
+          params.category = apiCategories.join(',');
+        }
+        // --- 수정 끝 ---
       }
 
       if (selectedRadius) {
@@ -61,11 +76,10 @@ export const useMeetings = (
     } finally {
       setIsLoading(false);
     }
-  }, [map, selectedCategories, selectedRadius]);
+  }, [map, selectedCategories, selectedRadius, query]);
 
   useEffect(() => {
     if (map) {
-      fetchMeetings();
       const listener = window.kakao.maps.event.addListener(map, 'idle', fetchMeetings);
       return () => {
         window.kakao.maps.event.removeListener(map, 'idle', listener);

@@ -1,3 +1,4 @@
+// src/pages/SearchRoom.tsx
 import { useState, useEffect, useMemo } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import styled, { keyframes } from 'styled-components';
@@ -9,6 +10,7 @@ import { SearchResultList } from '@/components/search_page/SearchResultList';
 import { useMeetingsSearch } from '@/hooks/useMeetingsSearch';
 import { MeetingDetailModal } from '@/components/home_page/MeetingDetailModal';
 import type { Meeting } from '@/types/meeting';
+import { colors } from '@/style/themes';
 
 interface LocationData {
   lat: number;
@@ -45,6 +47,32 @@ const SearchStatusText = styled.p`
   text-align: center;
   margin-top: 2rem;
   color: #6b7280;
+`;
+
+const ViewOnMapButton = styled.button`
+  width: 90%;
+  padding: 14px;
+  margin-top: 8px;
+  margin-bottom: 16px;
+  background-color: ${colors.primary400};
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  order: 3;
+
+  &:hover {
+    background-color: ${colors.primary500};
+  }
+`;
+
+const ResultsContainer = styled.div`
+  order: 4;
+  width: 100%;
+  overflow-y: auto;
+  flex: 1;
 `;
 
 const BUSAN_UNIVERSITY_LOCATION: LocationData = {
@@ -112,6 +140,19 @@ const SearchRoom = () => {
     setSelectedMeeting(null);
   };
 
+  const handleViewOnMapClick = () => {
+    navigate('/home', {
+      // <-- 경로 수정
+      state: {
+        searchFilters: {
+          query: searchQuery,
+          categories: selectedCategories,
+          radius: selectedRadius,
+        },
+      },
+    });
+  };
+
   useEffect(() => {
     if (isClosing) {
       const timer = setTimeout(() => navigate(-1), 400);
@@ -129,17 +170,23 @@ const SearchRoom = () => {
         onCategoryClick={handleCategoryClick}
         onRadiusClick={handleRadiusClick}
       />
-      {isLoading && <SearchStatusText>검색 중...</SearchStatusText>}
-      {error && <SearchStatusText style={{ color: 'red' }}>{error}</SearchStatusText>}
-      {!isLoading && !error && (
-        <SearchResultList
-          results={results.map((meeting) => ({
-            ...meeting,
-            location: meeting.address,
-          }))}
-          onItemClick={handleItemClick}
-        />
-      )}
+      <ViewOnMapButton onClick={handleViewOnMapClick}>지도에서 보기</ViewOnMapButton>
+
+      <ResultsContainer>
+        {isLoading && <SearchStatusText>검색 중...</SearchStatusText>}
+        {error && <SearchStatusText style={{ color: 'red' }}>{error}</SearchStatusText>}
+        {!isLoading && !error && (
+          <SearchResultList
+            results={results.map((meeting) => ({
+              ...meeting,
+              location: meeting.address,
+              title: meeting.name,
+            }))}
+            onItemClick={handleItemClick}
+          />
+        )}
+      </ResultsContainer>
+
       {selectedMeeting && (
         <MeetingDetailModal
           meeting={selectedMeeting}

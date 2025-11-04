@@ -1,5 +1,6 @@
+// src/pages/Home.tsx
 import { useRef, useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import styled, { createGlobalStyle } from 'styled-components';
 import GlobalStyle from '@/style/GlobalStyle';
 import { colors } from '@/style/themes';
@@ -18,11 +19,9 @@ import { useUserLocation } from '@/hooks/useUserLocation';
 import { useMeetings } from '@/hooks/useMeetings';
 import { useMeetingMarkers } from '@/hooks/useMeetingMarkers';
 import { categoryMap } from '@/utils/categoryMapper';
-declare global {
-  interface Window {
-    kakao: any;
-  }
-}
+
+// ... (KakaoMapCssFix, MarkerStyles, HomePageContainer, MapArea, MapContainer, MessageOverlay, CancelSearchButton 선언) ...
+// (기존 코드와 동일)
 
 const KakaoMapCssFix = createGlobalStyle`
   #kakaoMap img { max-width: none !important; }
@@ -89,9 +88,27 @@ const MessageOverlay = styled.div`
   max-width: calc(100% - 40px);
 `;
 
+const CancelSearchButton = styled.button`
+  position: absolute;
+  top: 500px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 5;
+  background-color: ${colors.primary500};
+  color: white;
+  border: none;
+  border-radius: 20px;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+`;
+
 interface MapFiltersState {
   categories: string[];
   radius: string | null;
+  query: string | null;
 }
 
 const Home = () => {
@@ -101,14 +118,39 @@ const Home = () => {
   const [filters, setFilters] = useState<MapFiltersState>({
     categories: [],
     radius: null,
+    query: null,
   });
+
+  // SearchRoom에서 넘어왔는지 확인하는 상태 추가
+  const [isFilteredFromSearch, setIsFilteredFromSearch] = useState(false);
+
   const navigate = useNavigate();
+  const location = useLocation();
 
   const APP_KEY = (import.meta.env.VITE_KAKAO_MAP_KEY as string) || (apikey?.kakaoMapKey as string);
   const map = useKakaoMap({ mapRef, appKey: APP_KEY });
   const userLocation = useUserLocation();
 
-  const { meetings, isLoading, error } = useMeetings(map, filters.categories, filters.radius);
+  useEffect(() => {
+    const searchState = location.state?.searchFilters;
+    if (searchState) {
+      setFilters({
+        categories: searchState.categories || [],
+        radius: searchState.radius || null,
+        query: searchState.query || null,
+      });
+      // SearchRoom에서 넘어온 필터임을 표시
+      setIsFilteredFromSearch(true);
+      window.history.replaceState({}, document.title);
+    }
+  }, [location.state]);
+
+  const { meetings, isLoading, error } = useMeetings(
+    map,
+    filters.categories,
+    filters.radius,
+    filters.query,
+  );
 
   const handleMarkerClick = (meeting: Meeting) => {
     setSelectedMeeting(meeting);
@@ -117,11 +159,11 @@ const Home = () => {
   useMeetingMarkers(map, meetings, handleMarkerClick);
 
   useEffect(() => {
-    if (map && userLocation) {
+    if (map && userLocation && !location.state?.searchFilters) {
       const userLatLng = new window.kakao.maps.LatLng(userLocation.lat, userLocation.lng);
       map.setCenter(userLatLng);
     }
-  }, [map, userLocation]);
+  }, [map, userLocation, location.state]);
 
   const handleSearchClick = () => {
     setIsSearchOpen(true);
@@ -155,6 +197,16 @@ const Home = () => {
     }));
   };
 
+  const handleCancelSearch = () => {
+    setFilters({
+      categories: [],
+      radius: null,
+      query: null,
+    });
+    // 검색 모드 상태 해제
+    setIsFilteredFromSearch(false);
+  };
+
   const renderMeetingMessage = () => {
     if (isLoading) return <MessageOverlay>{INFO_MESSAGES.LOADING_MEETINGS}</MessageOverlay>;
     if (error) return <MessageOverlay>{error}</MessageOverlay>;
@@ -162,6 +214,10 @@ const Home = () => {
       return <MessageOverlay>{INFO_MESSAGES.NO_MEETINGS_FOUND}</MessageOverlay>;
     return null;
   };
+
+  // SearchRoom에서 적용된 필터가 있는지, 또는 사용자가 직접 필터를 적용했는지 확인
+  const hasActiveFilters =
+    isFilteredFromSearch || filters.query || filters.categories.length > 0 || filters.radius;
 
   return (
     <>
@@ -173,12 +229,24 @@ const Home = () => {
           <MapContainer ref={mapRef} />
           {map ? (
             <>
+              {/* 활성 필터가 있을 때만 "취소" 버튼 표시 */}
+              {hasActiveFilters && (
+                <CancelSearchButton onClick={handleCancelSearch}>검색/필터 취소</CancelSearchButton>
+              )}
+
               <SearchButton onClick={handleSearchClick} />
-              <RadiusFilter selectedRadius={filters.radius} onRadiusClick={handleRadiusClick} />
-              <MapFilters
-                selectedCategories={filters.categories}
-                onCategoryClick={handleCategoryClick}
-              />
+
+              {/* SearchRoom에서 넘어오지 않았을 때만 (일반 모드일 때만) 필터 UI 표시 */}
+              {!isFilteredFromSearch && (
+                <>
+                  <RadiusFilter selectedRadius={filters.radius} onRadiusClick={handleRadiusClick} />
+                  <MapFilters
+                    selectedCategories={filters.categories}
+                    onCategoryClick={handleCategoryClick}
+                  />
+                </>
+              )}
+
               {renderMeetingMessage()}
             </>
           ) : (

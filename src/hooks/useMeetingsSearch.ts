@@ -1,9 +1,11 @@
+// src/hooks/useMeetingsSearch.ts
 import { useState, useEffect } from 'react';
 
 import type { Meeting } from '@/types/meeting';
 import { getMeetings, type GetMeetingsParams } from '@/api/services/meetup.service';
+import { categoryMap } from '@/utils/categoryMapper'; // categoryMap 임포트
 
-const USE_MOCK_DATA = true;
+const USE_MOCK_DATA = false; // <-- 여기를 false로 변경했습니다.
 
 interface LocationData {
   lat: number;
@@ -43,6 +45,7 @@ export const useMeetingsSearch = ({
   const debouncedQuery = useDebounceValue(query, 500);
 
   useEffect(() => {
+    // searchCenter가 있는데 radius가 없으면 검색하지 않음 (기존 로직 유지)
     if (searchCenter && !radius) {
       setMeetings([]);
       return;
@@ -50,6 +53,7 @@ export const useMeetingsSearch = ({
 
     const locationForApi = searchCenter || userLocation;
     if (!locationForApi) {
+      // 위치 정보가 없으면 API 호출 방지
       return;
     }
 
@@ -58,23 +62,30 @@ export const useMeetingsSearch = ({
       setError(null);
 
       if (USE_MOCK_DATA) {
+        // 이 부분은 이제 실행되지 않습니다.
         setTimeout(() => {
-          let data = mockMeetings;
-          if (debouncedQuery) {
-            data = data.filter((m) => m.title.toLowerCase().includes(debouncedQuery.toLowerCase()));
-          }
-          if (categories.length > 0) {
-            data = data.filter((m) => categories.includes(m.category));
-          }
-          setMeetings(data);
+          // let data = mockMeetings;
+          // ...
+          setMeetings([]);
           setIsLoading(false);
         }, 500);
       } else {
+        // 실제 API 호출 로직
         try {
           const params: GetMeetingsParams = {};
 
           if (debouncedQuery) params.name = debouncedQuery;
-          if (categories.length > 0) params.category = categories.join(',');
+
+          // 카테고리 매핑 및 콤마(,)로
+          if (categories.length > 0) {
+            const apiCategories = categories
+              .map((korCategory) => categoryMap[korCategory])
+              .filter(Boolean); // 유효한 카테고리만 필터링
+
+            if (apiCategories.length > 0) {
+              params.category = apiCategories.join(',');
+            }
+          }
 
           params.latitude = locationForApi.lat;
           params.longitude = locationForApi.lng;

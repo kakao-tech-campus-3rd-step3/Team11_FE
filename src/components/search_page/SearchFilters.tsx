@@ -1,3 +1,4 @@
+// src/components/search_page/SearchFilters.tsx
 import styled from '@emotion/styled';
 import { colors } from '@/style/themes';
 import { CATEGORIES, RADII } from '@/constants/filters';
@@ -9,6 +10,7 @@ const FiltersContainer = styled.div`
   border: 1px dashed ${colors.secondary300};
   border-radius: 8px;
   box-sizing: border-box;
+  order: 2;
 `;
 
 const FilterSection = styled.div`
@@ -51,6 +53,7 @@ interface SearchFiltersProps {
   selectedRadius: string | null;
   onCategoryClick: (category: string) => void;
   onRadiusClick: (radius: string) => void;
+  className?: string;
 }
 
 export const SearchFilters = ({
@@ -58,9 +61,10 @@ export const SearchFilters = ({
   selectedRadius,
   onCategoryClick,
   onRadiusClick,
+  className,
 }: SearchFiltersProps) => {
   return (
-    <FiltersContainer>
+    <FiltersContainer className={className}>
       <FilterSection>
         <FilterTitle>카테고리</FilterTitle>
         <FilterOptions>
