@@ -48,6 +48,7 @@ const Login = () => {
     }
 
     const REST_API_KEY = apikey.kakaoRestApiKey;
+    // 백엔드가 사용하는 redirectUri와 일치시킴
     const REDIRECT_URI = `${window.location.origin}/kakaoLogin`;
     const kakaoAuthURL = `https://kauth.kakao.com/oauth/authorize?client_id=${REST_API_KEY}&redirect_uri=${REDIRECT_URI}&response_type=code`;
 

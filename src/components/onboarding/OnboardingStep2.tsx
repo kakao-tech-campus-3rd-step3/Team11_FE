@@ -27,8 +27,6 @@ const OnboardingStep2 = ({ data, onNext, onPrev }: OnboardingStepProps) => {
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      // 실제로는 파일을 서버에 업로드하고 URL을 받아와야 함
-      // 여기서는 임시로 로컬 URL을 생성
       const reader = new FileReader();
       reader.onload = (e) => {
         const result = e.target?.result as string;
@@ -71,7 +69,7 @@ const OnboardingStep2 = ({ data, onNext, onPrev }: OnboardingStepProps) => {
             type="file"
             accept="image/*"
             onChange={handleImageUpload}
-            style={{ display: 'none' }}
+            style={{ display: 'none' }} // 숨겨놓은 진짜 input, 기본 파일 인풋은 못생겨서 여기 숨겨놓고 위에 있는 getElementById로 가져와서 클릭시 파일 선택 가능 로 가져온다
             id="profile-image-upload"
           />
         </FormField>
