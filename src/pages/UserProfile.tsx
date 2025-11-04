@@ -270,19 +270,17 @@ const UserProfile = () => {
         </SectionCard>
 
         {/* 신고 및 차단 버튼 */}
-        <SectionCard>
-          <ReportButtonContainer>
-            <ReportButton onClick={() => setIsReportModalOpen(true)}>
-              사용자 신고
-            </ReportButton>
-            <ReportButton 
-              onClick={() => setIsBlockModalOpen(true)}
-              style={{ marginTop: '12px', backgroundColor: '#6b7280' }}
-            >
-              사용자 차단
-            </ReportButton>
-          </ReportButtonContainer>
-        </SectionCard>
+        <ReportButtonContainer>
+          <ReportButton onClick={() => setIsReportModalOpen(true)}>
+            사용자 신고
+          </ReportButton>
+          <ReportButton 
+            onClick={() => setIsBlockModalOpen(true)}
+            style={{ backgroundColor: '#6b7280' }}
+          >
+            사용자 차단
+          </ReportButton>
+        </ReportButtonContainer>
 
         <BottomNav />
       </ContentContanier>
