@@ -149,6 +149,7 @@ export const ChatBox = ({
               <Message
                 key={message.id}
                 isHost={isHost}
+                myId={myId}
                 meetUpId={meetUpId}
                 senderType={message.senderType}
                 content={message.content}

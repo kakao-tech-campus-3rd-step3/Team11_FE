@@ -5,7 +5,7 @@ export interface MeetingLocation {
 }
 
 export interface Meeting {
-  id: string;
+  id: number;
   name: string;
   category: string;
   hashTags: string[];
