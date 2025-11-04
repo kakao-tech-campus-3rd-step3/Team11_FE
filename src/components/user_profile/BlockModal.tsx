@@ -130,7 +130,7 @@ const BlockModal = ({ isOpen, onClose, onConfirm, isLoading = false, userName }:
             {userName ? `${userName}님을 ` : '이 사용자를 '}차단하시겠습니까?
           </Message>
           <WarningMessage>
-            차단된 사용자는 더 이상 메시지를 보낼 수 없습니다.
+            차단된 사용자가 속한 모임이 보이지 않게 됩니다.
           </WarningMessage>
         </ModalBody>
 
