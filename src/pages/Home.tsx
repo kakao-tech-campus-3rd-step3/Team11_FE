@@ -17,7 +17,7 @@ import { RadiusFilter } from '@/components/home_page/RadiusFilter';
 import { useUserLocation } from '@/hooks/useUserLocation';
 import { useMeetings } from '@/hooks/useMeetings';
 import { useMeetingMarkers } from '@/hooks/useMeetingMarkers';
-
+import { categoryMap } from '@/utils/categoryMapper';
 declare global {
   interface Window {
     kakao: any;

@@ -2,25 +2,13 @@ import { useState, useEffect, useCallback } from 'react';
 import type { Meeting } from '@/types/meeting';
 import { ERROR_MESSAGES } from '@/constants/messages';
 import api from '@/api/clients/axiosInstance';
-
+import { categoryMap } from '@/utils/categoryMapper';
 interface ApiMeetingsParams {
   latitude: number;
   longitude: number;
   category?: string;
   radius?: number;
 }
-
-//
-//
-//
-const CATEGORY_API_MAP: { [key: string]: string } = {
-  스터디: 'STUDY',
-  운동: 'SPORTS',
-  게임: 'GAME',
-  맛집탐방: 'MUKBANG',
-  영화: 'MOVIE',
-};
-//
 
 export const useMeetings = (
   map: any,
@@ -45,7 +33,7 @@ export const useMeetings = (
 
       if (selectedCategories.length > 0) {
         const apiCategories = selectedCategories.map(
-          (korCategory) => CATEGORY_API_MAP[korCategory] || korCategory,
+          (korCategory) => categoryMap[korCategory] || korCategory,
         );
         params.category = apiCategories.join(',');
       }
