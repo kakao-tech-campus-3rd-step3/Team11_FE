@@ -14,10 +14,23 @@ export const useMeetingMarkers = (
     markersRef.current.forEach((marker) => marker.setMap(null));
     //markersRef.current = [];
 
-    if (!map || !window.kakao || !Array.isArray(meetings)) return;
+    if (!map || !window.kakao || !Array.isArray(meetings) || meetings.length === 0) {
+      return;
+    }
 
     const newMarkers = meetings.map((meeting) => {
-      const position = new window.kakao.maps.LatLng(meeting.latitude, meeting.longitude);
+      //
+      if (!meeting.location || !meeting.location.latitude || !meeting.location.longitude) {
+        console.warn('경고: 모임 데이터에 위치(location) 정보가 없습니다.', meeting);
+        return null;
+      }
+
+      //
+      const position = new window.kakao.maps.LatLng(
+        meeting.location.latitude,
+        meeting.location.longitude,
+      );
+
       const markerContainer = document.createElement('div');
       markerContainer.className = 'custom-div-icon';
       markerContainer.style.cursor = 'pointer';
@@ -38,11 +51,12 @@ export const useMeetingMarkers = (
         position: position,
         content: markerContainer,
         yAnchor: 1,
+        zIndex: 10,
       });
       customOverlay.setMap(map);
       return customOverlay;
     });
 
-    markersRef.current = newMarkers;
+    markersRef.current = newMarkers.filter((marker) => marker !== null);
   }, [map, meetings, onMarkerClick]);
 };

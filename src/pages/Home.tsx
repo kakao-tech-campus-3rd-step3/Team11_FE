@@ -187,7 +187,11 @@ const Home = () => {
 
           {isSearchOpen && <Overlay />}
           {selectedMeeting && (
-            <MeetingDetailModal meeting={selectedMeeting} onClose={handleCloseModal} />
+            <MeetingDetailModal
+              meeting={selectedMeeting}
+              onClose={handleCloseModal}
+              isOpen={true}
+            />
           )}
         </MapArea>
         <BottomNav />

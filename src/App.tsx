@@ -14,7 +14,6 @@ import LocationPicker from '@/pages/LocationPicker';
 import ParticipantEvaluation from './pages/ParticipantEvaluation';
 import My from './pages/My';
 import UserProfile from './pages/UserProfile';
-import EmailVerification from './pages/EmailVerification';
 import ProtectedRoute from '@/components/common/ProtectedRoute';
 import { ToastContainer } from 'react-toastify';
 
@@ -27,11 +26,8 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/kakaoLogin" element={<KakaoLogin />} />
-        <Route path="/email-verification" element={<EmailVerification />} />
-
-        {/* 로그인 필요*/}
+        <Route path="/onboarding" element={<Onboarding />} />
         <Route element={<ProtectedRoute />}>
-          <Route path="/onboarding" element={<Onboarding />} />
           <Route path="/home" element={<Home />} />
           <Route path="/my" element={<My />} />
           <Route path="/user/:userId" element={<UserProfile />} />
@@ -39,6 +35,8 @@ function App() {
           <Route path="/create-room/location" element={<LocationPicker />} />
           <Route path="/search-room" element={<SearchRoom />} />
           <Route path="/meeting-room" element={<MeetingRoom />} />
+          <Route path="/meeting-room/:roomId" element={<MeetingRoom />} />
+
           <Route path="/participant-evaluation" element={<ParticipantEvaluation />} />
         </Route>
       </Routes>

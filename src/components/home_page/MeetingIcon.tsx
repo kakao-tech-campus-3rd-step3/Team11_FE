@@ -29,8 +29,20 @@ interface MeetingIconProps {
 }
 
 const MeetingIcon = ({ category, className }: MeetingIconProps) => {
-  const iconKey = categoryMap[category];
-  const IconComponent = iconComponents[iconKey] || DefaultIcon;
+  const directKey = category.trim().toUpperCase() as MeetingCategory;
+
+  const mappedKey = categoryMap[category.trim()];
+
+  let IconComponent = iconComponents[directKey];
+
+  if (!IconComponent) {
+    IconComponent = iconComponents[mappedKey];
+  }
+
+  if (!IconComponent) {
+    IconComponent = DefaultIcon;
+  }
+
   return <IconComponent className={className} />;
 };
 
