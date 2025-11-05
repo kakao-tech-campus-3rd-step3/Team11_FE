@@ -1,4 +1,3 @@
-// src/pages/SearchRoom.tsx
 import { useState, useEffect, useMemo } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import styled, { keyframes } from 'styled-components';
@@ -142,13 +141,13 @@ const SearchRoom = () => {
 
   const handleViewOnMapClick = () => {
     navigate('/home', {
-      // <-- 경로 수정
       state: {
         searchFilters: {
           query: searchQuery,
           categories: selectedCategories,
           radius: selectedRadius,
         },
+        searchLocation: searchCenter || userLocation,
       },
     });
   };
@@ -181,6 +180,10 @@ const SearchRoom = () => {
               ...meeting,
               location: meeting.address,
               title: meeting.name,
+              hashtags: meeting.hashtags,
+              capacity: meeting.capacity,
+              currentParticipants: meeting.currentParticipants,
+              scoreLimit: meeting.scoreLimit,
             }))}
             onItemClick={handleItemClick}
           />

@@ -20,6 +20,12 @@ import { useMeetings } from '@/hooks/useMeetings';
 import { useMeetingMarkers } from '@/hooks/useMeetingMarkers';
 import { categoryMap } from '@/utils/categoryMapper';
 
+// LocationData 인터페이스 추가
+interface LocationData {
+  lat: number;
+  lng: number;
+}
+
 const KakaoMapCssFix = createGlobalStyle`
   #kakaoMap img { max-width: none !important; }
 `;
@@ -119,6 +125,8 @@ const Home = () => {
   });
 
   const [isFilteredFromSearch, setIsFilteredFromSearch] = useState(false);
+  // 고정된 검색 위치를 저장할 state
+  const [filteredSearchCenter, setFilteredSearchCenter] = useState<LocationData | null>(null);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -129,22 +137,40 @@ const Home = () => {
 
   useEffect(() => {
     const searchState = location.state?.searchFilters;
+    const centerFromSearch = location.state?.searchLocation; // 검색 위치 받기
+
     if (searchState) {
       setFilters({
         categories: searchState.categories || [],
         radius: searchState.radius || null,
         query: searchState.query || null,
       });
+
+      if (centerFromSearch) {
+        setFilteredSearchCenter(centerFromSearch);
+        // 지도가 준비되면 해당 위치로 이동
+        if (map) {
+          const searchLatLng = new window.kakao.maps.LatLng(
+            centerFromSearch.lat,
+            centerFromSearch.lng,
+          );
+          map.setCenter(searchLatLng);
+        }
+      }
+
       setIsFilteredFromSearch(true);
       window.history.replaceState({}, document.title);
     }
-  }, [location.state]);
+  }, [location.state, map]); // map을 의존성에 추가
 
+  // useMeetings 훅 호출 시 5개 인자 전달
   const { meetings, isLoading, error } = useMeetings(
     map,
     filters.categories,
     filters.radius,
     filters.query,
+    isFilteredFromSearch,
+    filteredSearchCenter,
   );
 
   const handleMarkerClick = (meeting: Meeting) => {
@@ -154,11 +180,12 @@ const Home = () => {
   useMeetingMarkers(map, meetings, handleMarkerClick);
 
   useEffect(() => {
-    if (map && userLocation && !location.state?.searchFilters) {
+    // 최초 로드 시 (검색 모드가 아닐 때) 사용자 위치로 이동
+    if (map && userLocation && !location.state?.searchFilters && !filteredSearchCenter) {
       const userLatLng = new window.kakao.maps.LatLng(userLocation.lat, userLocation.lng);
       map.setCenter(userLatLng);
     }
-  }, [map, userLocation, location.state]);
+  }, [map, userLocation, location.state, filteredSearchCenter]);
 
   const handleSearchClick = () => {
     setIsSearchOpen(true);
@@ -192,7 +219,6 @@ const Home = () => {
     }));
   };
 
-  // --- 여기가 수정되었습니다 ---
   const handleCancelSearch = () => {
     setFilters({
       categories: [],
@@ -200,14 +226,13 @@ const Home = () => {
       query: null,
     });
     setIsFilteredFromSearch(false);
+    setFilteredSearchCenter(null); // 고정 위치 초기화
 
-    // 지도를 사용자의 현재 위치로 되돌립니다.
     if (map && userLocation) {
       const userLatLng = new window.kakao.maps.LatLng(userLocation.lat, userLocation.lng);
       map.setCenter(userLatLng);
     }
   };
-  // --- 수정 끝 ---
 
   const renderMeetingMessage = () => {
     if (isLoading) return <MessageOverlay>{INFO_MESSAGES.LOADING_MEETINGS}</MessageOverlay>;

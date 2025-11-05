@@ -52,7 +52,6 @@ const FilterButton = styled.button`
 const categories = [
   '스포츠',
   '맛집탐방',
-  '영화',
   '문화/예술',
   '스터디',
   '여행',
