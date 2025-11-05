@@ -18,7 +18,6 @@ import { RadiusFilter } from '@/components/home_page/RadiusFilter';
 import { useUserLocation } from '@/hooks/useUserLocation';
 import { useMeetings } from '@/hooks/useMeetings';
 import { useMeetingMarkers } from '@/hooks/useMeetingMarkers';
-import { categoryMap } from '@/utils/categoryMapper';
 
 // LocationData 인터페이스 추가
 interface LocationData {
