@@ -22,7 +22,7 @@ export const ModalContainer = styled.div<{ $isVisible: boolean }>`
   width: 100%;
   max-width: 720px;
   /* max-height: 80vh; */
-  height: 60vh;
+  height: 55vh;
   background-color: white;
   border-top-left-radius: 20px;
   border-top-right-radius: 20px;
