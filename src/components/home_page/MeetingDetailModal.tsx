@@ -76,7 +76,7 @@ export const MeetingDetailModal = ({ meeting, onClose, isOpen }: MeetingDetailMo
     setJoinError(null);
     try {
       await joinMeetUp(String(meeting.id));
-      toast.success(`${meeting.name} 방에 성공적으로 입장했습니다!`);
+      toast.success(`${meeting.name} 방에 입장했습니다.`);
       await refetchMyMeeting();
 
       handleClose();
