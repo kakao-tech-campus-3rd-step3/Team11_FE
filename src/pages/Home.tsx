@@ -20,9 +20,6 @@ import { useMeetings } from '@/hooks/useMeetings';
 import { useMeetingMarkers } from '@/hooks/useMeetingMarkers';
 import { categoryMap } from '@/utils/categoryMapper';
 
-// ... (KakaoMapCssFix, MarkerStyles, HomePageContainer, MapArea, MapContainer, MessageOverlay, CancelSearchButton 선언) ...
-// (기존 코드와 동일)
-
 const KakaoMapCssFix = createGlobalStyle`
   #kakaoMap img { max-width: none !important; }
 `;
@@ -121,7 +118,6 @@ const Home = () => {
     query: null,
   });
 
-  // SearchRoom에서 넘어왔는지 확인하는 상태 추가
   const [isFilteredFromSearch, setIsFilteredFromSearch] = useState(false);
 
   const navigate = useNavigate();
@@ -139,7 +135,6 @@ const Home = () => {
         radius: searchState.radius || null,
         query: searchState.query || null,
       });
-      // SearchRoom에서 넘어온 필터임을 표시
       setIsFilteredFromSearch(true);
       window.history.replaceState({}, document.title);
     }
@@ -197,15 +192,22 @@ const Home = () => {
     }));
   };
 
+  // --- 여기가 수정되었습니다 ---
   const handleCancelSearch = () => {
     setFilters({
       categories: [],
       radius: null,
       query: null,
     });
-    // 검색 모드 상태 해제
     setIsFilteredFromSearch(false);
+
+    // 지도를 사용자의 현재 위치로 되돌립니다.
+    if (map && userLocation) {
+      const userLatLng = new window.kakao.maps.LatLng(userLocation.lat, userLocation.lng);
+      map.setCenter(userLatLng);
+    }
   };
+  // --- 수정 끝 ---
 
   const renderMeetingMessage = () => {
     if (isLoading) return <MessageOverlay>{INFO_MESSAGES.LOADING_MEETINGS}</MessageOverlay>;
@@ -215,7 +217,6 @@ const Home = () => {
     return null;
   };
 
-  // SearchRoom에서 적용된 필터가 있는지, 또는 사용자가 직접 필터를 적용했는지 확인
   const hasActiveFilters =
     isFilteredFromSearch || filters.query || filters.categories.length > 0 || filters.radius;
 
@@ -229,14 +230,10 @@ const Home = () => {
           <MapContainer ref={mapRef} />
           {map ? (
             <>
-              {/* 활성 필터가 있을 때만 "취소" 버튼 표시 */}
               {hasActiveFilters && (
                 <CancelSearchButton onClick={handleCancelSearch}>검색/필터 취소</CancelSearchButton>
               )}
-
               <SearchButton onClick={handleSearchClick} />
-
-              {/* SearchRoom에서 넘어오지 않았을 때만 (일반 모드일 때만) 필터 UI 표시 */}
               {!isFilteredFromSearch && (
                 <>
                   <RadiusFilter selectedRadius={filters.radius} onRadiusClick={handleRadiusClick} />

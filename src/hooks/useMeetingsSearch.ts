@@ -3,9 +3,9 @@ import { useState, useEffect } from 'react';
 
 import type { Meeting } from '@/types/meeting';
 import { getMeetings, type GetMeetingsParams } from '@/api/services/meetup.service';
-import { categoryMap } from '@/utils/categoryMapper'; // categoryMap 임포트
+import { categoryMap } from '@/utils/categoryMapper';
 
-const USE_MOCK_DATA = false; // <-- 여기를 false로 변경했습니다.
+const USE_MOCK_DATA = false;
 
 interface LocationData {
   lat: number;
@@ -45,15 +45,16 @@ export const useMeetingsSearch = ({
   const debouncedQuery = useDebounceValue(query, 500);
 
   useEffect(() => {
-    // searchCenter가 있는데 radius가 없으면 검색하지 않음 (기존 로직 유지)
-    if (searchCenter && !radius) {
-      setMeetings([]);
-      return;
-    }
+    // --- 여기가 수정되었습니다 ---
+    // if (searchCenter && !radius) {
+    //   setMeetings([]);
+    //   return;
+    // }
+    // "반경" 미선택 시 빈 배열을 반환하던 로직을 삭제했습니다.
+    // --- 수정 끝 ---
 
     const locationForApi = searchCenter || userLocation;
     if (!locationForApi) {
-      // 위치 정보가 없으면 API 호출 방지
       return;
     }
 
@@ -62,25 +63,17 @@ export const useMeetingsSearch = ({
       setError(null);
 
       if (USE_MOCK_DATA) {
-        // 이 부분은 이제 실행되지 않습니다.
-        setTimeout(() => {
-          // let data = mockMeetings;
-          // ...
-          setMeetings([]);
-          setIsLoading(false);
-        }, 500);
+        // ... (실행 안 됨)
       } else {
-        // 실제 API 호출 로직
         try {
           const params: GetMeetingsParams = {};
 
           if (debouncedQuery) params.name = debouncedQuery;
 
-          // 카테고리 매핑 및 콤마(,)로
           if (categories.length > 0) {
             const apiCategories = categories
               .map((korCategory) => categoryMap[korCategory])
-              .filter(Boolean); // 유효한 카테고리만 필터링
+              .filter(Boolean);
 
             if (apiCategories.length > 0) {
               params.category = apiCategories.join(',');
@@ -95,7 +88,15 @@ export const useMeetingsSearch = ({
           }
 
           const data = await getMeetings(params);
-          setMeetings(data);
+
+          // 프론트엔드에서 name으로 한번 더 필터링
+          let filteredData = data;
+          if (debouncedQuery) {
+            filteredData = data.filter((meeting) =>
+              meeting.name.toLowerCase().includes(debouncedQuery.toLowerCase()),
+            );
+          }
+          setMeetings(filteredData);
         } catch (err: any) {
           setError(err.message || '모임을 불러오는 데 실패했습니다.');
         } finally {

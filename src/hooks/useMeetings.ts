@@ -1,4 +1,3 @@
-// src/hooks/useMeetings.ts
 import { useState, useEffect, useCallback } from 'react';
 import type { Meeting } from '@/types/meeting';
 import { ERROR_MESSAGES } from '@/constants/messages';
@@ -40,17 +39,13 @@ export const useMeetings = (
       }
 
       if (selectedCategories.length > 0) {
-        // --- 여기가 수정되었습니다 ---
-        // 1. 한국어 카테고리를 영어 API 키로 매핑합니다.
         const apiCategories = selectedCategories
           .map((korCategory) => categoryMap[korCategory])
-          .filter(Boolean); // 2. 매핑되지 않은 값(undefined)을 제거합니다.
+          .filter(Boolean);
 
-        // 3. 유효한 카테고리가 하나라도 있을 때만 파라미터에 추가합니다.
         if (apiCategories.length > 0) {
           params.category = apiCategories.join(',');
         }
-        // --- 수정 끝 ---
       }
 
       if (selectedRadius) {
@@ -58,10 +53,15 @@ export const useMeetings = (
       }
 
       const response = await api.get('/api/meetups/geo', { params });
-
       const meetingData = response.data;
 
-      setMeetings(Array.isArray(meetingData) ? meetingData : []);
+      let filteredData = Array.isArray(meetingData) ? meetingData : [];
+      if (query) {
+        filteredData = filteredData.filter((meeting) =>
+          meeting.name.toLowerCase().includes(query.toLowerCase()),
+        );
+      }
+      setMeetings(filteredData);
     } catch (err: any) {
       console.error('모임 정보를 불러오는 데 실패했습니다.', err);
 
