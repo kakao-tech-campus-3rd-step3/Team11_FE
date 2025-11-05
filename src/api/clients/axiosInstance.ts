@@ -26,7 +26,7 @@ const refreshAccessToken = async (): Promise<string | null> => {
         headers: {
           'Content-Type': 'application/json',
         },
-      }
+      },
     );
 
     const { accessToken } = response.data;

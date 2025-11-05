@@ -1,4 +1,3 @@
-// src/pages/Home.tsx
 import { useRef, useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import styled, { createGlobalStyle } from 'styled-components';
@@ -19,7 +18,6 @@ import { useUserLocation } from '@/hooks/useUserLocation';
 import { useMeetings } from '@/hooks/useMeetings';
 import { useMeetingMarkers } from '@/hooks/useMeetingMarkers';
 
-// LocationData 인터페이스 추가
 interface LocationData {
   lat: number;
   lng: number;
@@ -124,7 +122,6 @@ const Home = () => {
   });
 
   const [isFilteredFromSearch, setIsFilteredFromSearch] = useState(false);
-  // 고정된 검색 위치를 저장할 state
   const [filteredSearchCenter, setFilteredSearchCenter] = useState<LocationData | null>(null);
 
   const navigate = useNavigate();
@@ -136,7 +133,7 @@ const Home = () => {
 
   useEffect(() => {
     const searchState = location.state?.searchFilters;
-    const centerFromSearch = location.state?.searchLocation; // 검색 위치 받기
+    const centerFromSearch = location.state?.searchLocation;
 
     if (searchState) {
       setFilters({
@@ -147,7 +144,6 @@ const Home = () => {
 
       if (centerFromSearch) {
         setFilteredSearchCenter(centerFromSearch);
-        // 지도가 준비되면 해당 위치로 이동
         if (map) {
           const searchLatLng = new window.kakao.maps.LatLng(
             centerFromSearch.lat,
@@ -160,9 +156,8 @@ const Home = () => {
       setIsFilteredFromSearch(true);
       window.history.replaceState({}, document.title);
     }
-  }, [location.state, map]); // map을 의존성에 추가
+  }, [location.state, map]);
 
-  // useMeetings 훅 호출 시 5개 인자 전달
   const { meetings, isLoading, error } = useMeetings(
     map,
     filters.categories,
@@ -179,7 +174,6 @@ const Home = () => {
   useMeetingMarkers(map, meetings, handleMarkerClick);
 
   useEffect(() => {
-    // 최초 로드 시 (검색 모드가 아닐 때) 사용자 위치로 이동
     if (map && userLocation && !location.state?.searchFilters && !filteredSearchCenter) {
       const userLatLng = new window.kakao.maps.LatLng(userLocation.lat, userLocation.lng);
       map.setCenter(userLatLng);
@@ -205,12 +199,9 @@ const Home = () => {
   const handleCategoryClick = (category: string) => {
     setFilters((prev) => ({
       ...prev,
-      categories: prev.categories.includes(category)
-        ? prev.categories.filter((c) => c !== category)
-        : [...prev.categories, category],
+      categories: prev.categories.includes(category) ? [] : [category],
     }));
   };
-
   const handleRadiusClick = (radius: string) => {
     setFilters((prev) => ({
       ...prev,
@@ -225,7 +216,7 @@ const Home = () => {
       query: null,
     });
     setIsFilteredFromSearch(false);
-    setFilteredSearchCenter(null); // 고정 위치 초기화
+    setFilteredSearchCenter(null);
 
     if (map && userLocation) {
       const userLatLng = new window.kakao.maps.LatLng(userLocation.lat, userLocation.lng);
