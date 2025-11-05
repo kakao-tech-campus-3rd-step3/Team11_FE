@@ -5,7 +5,12 @@ import { Container, ContentContanier } from '@/style/CommonStyle';
 import BackArrow from '@/assets/meeting_room_page/chevron_left.svg?react';
 import type { RootState } from '@/store';
 import { setMyProfile } from '@/store/slices/myProfileSlice';
-import { getMyBadges, getMyProfile, updateProfile, getMyMeetups } from '@/api/services/profile.service';
+import {
+  getMyBadges,
+  getMyProfile,
+  updateProfile,
+  getMyMeetups,
+} from '@/api/services/profile.service';
 import { getReports, deleteReport, type ReportListItem } from '@/api/services/report.service';
 import { useLogin } from '@/hooks/useLogin';
 import { getProfile } from '@/utils/tokenStorage';
@@ -128,7 +133,6 @@ const My = () => {
     imageUrl: myProfile.imageUrl || '',
   });
 
-
   // 페이지 로드 시 프로필 조회
   useEffect(() => {
     const fetchProfile = async () => {
@@ -240,7 +244,6 @@ const My = () => {
     }
   };
 
-
   const handleSave = async () => {
     // 닉네임 검증
     const nicknameError = validateNickname(editData.nickname);
@@ -302,8 +305,10 @@ const My = () => {
       SPORTS: '운동',
       STUDY: '스터디',
       GAME: '게임',
-      MUKBANG: '맛집탐방',
-      MOVIE: '영화',
+      FOOD: '맛집탐방',
+      CULTUR_ARTS: '문화예술',
+      OTAKU: '덕질',
+      TRAVEL: '여행',
       OTHER: '기타',
     };
     return categoryMap[category] || category;
@@ -447,7 +452,7 @@ const My = () => {
                               {meetup.participantCount} / {meetup.capacity}명
                             </MeetupInfoValue>
                           </MeetupInfo>
-                          <MeetupStatus 
+                          <MeetupStatus
                             evaluated={meetup.evaluated}
                             onClick={() => {
                               if (!meetup.evaluated) {
@@ -483,10 +488,22 @@ const My = () => {
                         <ReportItemHeader>
                           <ReportItemContent>
                             <ReportCategory>
-                              신고 카테고리: {report.category === 'SPAM' ? '스팸' : report.category === 'ABUSE' ? '욕설/비방' : report.category === 'INAPPROPRIATE' ? '부적절한 콘텐츠' : '기타'}
+                              신고 카테고리:{' '}
+                              {report.category === 'SPAM'
+                                ? '스팸'
+                                : report.category === 'ABUSE'
+                                  ? '욕설/비방'
+                                  : report.category === 'INAPPROPRIATE'
+                                    ? '부적절한 콘텐츠'
+                                    : '기타'}
                             </ReportCategory>
                             <ReportStatus>
-                              상태: {report.status === 'OPEN' ? '처리중' : report.status === 'CLOSED' ? '처리완료' : report.status}
+                              상태:{' '}
+                              {report.status === 'OPEN'
+                                ? '처리중'
+                                : report.status === 'CLOSED'
+                                  ? '처리완료'
+                                  : report.status}
                             </ReportStatus>
                             <ReportDate>
                               {new Date(report.createdAt).toLocaleDateString('ko-KR', {
@@ -514,7 +531,9 @@ const My = () => {
                                       setReports(data.content);
                                     } catch (error: any) {
                                       console.error('신고 취소 실패:', error);
-                                      showToast(`신고 취소에 실패했습니다: ${error.response?.data?.message || error.message}`);
+                                      showToast(
+                                        `신고 취소에 실패했습니다: ${error.response?.data?.message || error.message}`,
+                                      );
                                     }
                                   },
                                 });
@@ -534,8 +553,16 @@ const My = () => {
             </SectionCard>
 
             {/* 로그아웃 및 회원탈퇴 버튼 */}
-            <ActionButtons style={{ marginTop: '20px', marginBottom: '20px', display: 'flex', gap: '12px', padding: '0 20px' }}>
-              <CancelButton 
+            <ActionButtons
+              style={{
+                marginTop: '20px',
+                marginBottom: '20px',
+                display: 'flex',
+                gap: '12px',
+                padding: '0 20px',
+              }}
+            >
+              <CancelButton
                 onClick={() => {
                   setConfirmModal({
                     isOpen: true,
@@ -545,12 +572,12 @@ const My = () => {
                       handleLogout();
                     },
                   });
-                }} 
+                }}
                 style={{ flex: 1 }}
               >
                 로그아웃
               </CancelButton>
-              <DeleteButton 
+              <DeleteButton
                 onClick={() => {
                   setConfirmModal({
                     isOpen: true,
@@ -560,7 +587,7 @@ const My = () => {
                       handleDeleteAccount();
                     },
                   });
-                }} 
+                }}
                 style={{ flex: 1 }}
               >
                 회원탈퇴
@@ -693,7 +720,9 @@ const My = () => {
                         onSigunguChange={handleSigunguChange}
                         onSigunguFocus={handleSigunguFocus}
                         onSigunguSelect={handleSigunguSelect}
-                        onSigunguBlur={() => setTimeout(() => setShowSigunguSuggestions(false), 100)}
+                        onSigunguBlur={() =>
+                          setTimeout(() => setShowSigunguSuggestions(false), 100)
+                        }
                         sigunguSuggestions={sigunguSuggestions}
                         showSigunguSuggestions={showSigunguSuggestions}
                       />
@@ -701,12 +730,18 @@ const My = () => {
 
                     <ButtonGroup>
                       <CancelButton onClick={handleCancel}>취소</CancelButton>
-                      <SaveButton 
+                      <SaveButton
                         onClick={handleSave}
                         disabled={!editData.nickname.trim() || !isNicknameValid(editData.nickname)}
                         style={{
-                          opacity: (!editData.nickname.trim() || !isNicknameValid(editData.nickname)) ? 0.5 : 1,
-                          cursor: (!editData.nickname.trim() || !isNicknameValid(editData.nickname)) ? 'not-allowed' : 'pointer'
+                          opacity:
+                            !editData.nickname.trim() || !isNicknameValid(editData.nickname)
+                              ? 0.5
+                              : 1,
+                          cursor:
+                            !editData.nickname.trim() || !isNicknameValid(editData.nickname)
+                              ? 'not-allowed'
+                              : 'pointer',
                         }}
                       >
                         저장

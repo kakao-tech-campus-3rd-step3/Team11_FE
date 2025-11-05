@@ -123,9 +123,7 @@ const SearchRoom = () => {
 
   const handleBackButtonClick = () => setIsClosing(true);
   const handleCategoryClick = (category: string) => {
-    setSelectedCategories((prev) =>
-      prev.includes(category) ? prev.filter((c) => c !== category) : [...prev, category],
-    );
+    setSelectedCategories((prev) => (prev.includes(category) ? [] : [category]));
   };
   const handleRadiusClick = (radius: string) => {
     setSelectedRadius((prev) => (prev === radius ? null : radius));
