@@ -72,7 +72,14 @@ export const ProfileOptions = ({
       const response = await blockUser(target.profile.id);
       toast.info('해당 사용자를 차단했습니다.');
       console.log(response);
-    } catch (error) {
+    } catch (error: any) {
+      toast.info(
+        <>
+          {error.message}
+          <br />
+          차단 해제: 나의 프로필 → 차단 목록
+        </>,
+      );
       console.error(error);
     }
     onClose();
