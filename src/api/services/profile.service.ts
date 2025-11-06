@@ -14,11 +14,7 @@ export const getMyProfile = async (): Promise<MyProfileState> => {
 export const saveOnboardingProfile = async (profileData: MyProfileState) => {
   const formData = createProfileFormData(profileData);
 
-  const response = await api.post('/api/profiles', formData, {
-    headers: {
-      'Content-Type': 'multipart/form-data',
-    },
-  });
+  const response = await api.post('/api/profiles', formData);
   return response.data;
 };
 
@@ -26,11 +22,7 @@ export const saveOnboardingProfile = async (profileData: MyProfileState) => {
 export const updateProfile = async (profileData: MyProfileState) => {
   const formData = createProfileFormData(profileData);
 
-  const response = await api.patch('/api/profiles/me', formData, {
-    headers: {
-      'Content-Type': 'multipart/form-data',
-    },
-  });
+  const response = await api.patch('/api/profiles/me', formData);
   return response.data;
 };
 

@@ -32,13 +32,11 @@ export const WhiteBackground = styled.div`
 `;
 
 export const SplashScreen = styled.div`
-  position: fixed;
+  position: absolute;
   top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100vw;
-  height: 100vh;
-  max-width: 720px;
+  left: 0;
+  width: 100%;
+  height: 100%;
   background: linear-gradient(135deg, ${colors.primary300}, ${colors.primary300},${colors.primary200});
   display: flex;
   flex-direction: column;
