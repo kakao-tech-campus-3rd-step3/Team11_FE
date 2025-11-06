@@ -4,6 +4,8 @@ import { StyledSelect } from './StyledComponents';
 const TimePickerContainer = styled.div`
   display: grid;
   grid-template-columns: 1fr;
+  font-size: 0.875rem;
+  margin-bottom: 8px;
   gap: 16px;
 `;
 
@@ -16,7 +18,7 @@ const TimeInputWrapper = styled.div`
 
 const DateInput = styled.input`
   padding: 11px;
-  font-size: 0.9rem;
+  font-size: 0.875rem;
   border: 1px solid #e5e7eb;
   border-radius: 8px;
   background-color: #f9fafb;
