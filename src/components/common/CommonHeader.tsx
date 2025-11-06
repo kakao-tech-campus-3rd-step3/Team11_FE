@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import { colors } from '@/style/themes';
 import React from 'react';
 import BackArrow from '@/assets/meeting_room_page/chevron_left.svg?react';
 
