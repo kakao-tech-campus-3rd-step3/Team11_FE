@@ -44,6 +44,11 @@ const RoomTitle = styled.div`
   top: 1.1rem;
   font-size: 1rem;
   font-weight: 500;
+  max-width: 60%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: center;
 `;
 
 const Button = styled.button`
