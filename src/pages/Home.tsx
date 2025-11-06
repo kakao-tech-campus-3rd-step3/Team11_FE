@@ -158,7 +158,7 @@ const Home = () => {
     }
   }, [location.state, map]);
 
-  const { meetings, isLoading, error } = useMeetings(
+  const { meetings, error } = useMeetings(
     map,
     filters.categories,
     filters.radius,
