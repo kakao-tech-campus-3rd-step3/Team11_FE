@@ -9,7 +9,6 @@ const TimePickerContainer = styled.div`
 
 const TimeInputWrapper = styled.div`
   display: grid;
-  /* 날짜, 시간, 분 필드의 비율을 조정합니다. */
   grid-template-columns: 2.5fr 1.5fr 1.5fr;
   gap: 8px;
   align-items: center;
@@ -40,7 +39,7 @@ interface TimePickerProps {
 }
 
 const hourOptions = Array.from({ length: 24 }, (_, i) => String(i).padStart(2, '0'));
-const minuteOptions = ['00', '30'];
+const minuteOptions = ['00', '10', '20', '30', '40', '50'];
 
 const CustomTimeInput = ({
   name,
@@ -80,9 +79,10 @@ const CustomTimeInput = ({
         onChange={(e) => handleValueChange('date', e.target.value)}
       />
       <StyledSelect
-        value={hourPart || '00'}
+        value={hourPart || ''}
         onChange={(e) => handleValueChange('hour', e.target.value)}
       >
+        <option value="">시</option>
         {hourOptions.map((h) => (
           <option key={h} value={h}>
             {h}시
@@ -90,9 +90,10 @@ const CustomTimeInput = ({
         ))}
       </StyledSelect>
       <StyledSelect
-        value={minutePart || '00'}
+        value={minutePart || ''}
         onChange={(e) => handleValueChange('minute', e.target.value)}
       >
+        <option value="">분</option>
         {minuteOptions.map((m) => (
           <option key={m} value={m}>
             {m}분
@@ -106,10 +107,14 @@ const CustomTimeInput = ({
 export const TimePicker = ({ startTime, endTime, onChange, error }: TimePickerProps) => {
   return (
     <TimePickerContainer>
-      <label>시작 시간</label>
-      <CustomTimeInput name="startTime" value={startTime} onChange={onChange} />
-      <label>종료 시간</label>
-      <CustomTimeInput name="endTime" value={endTime} onChange={onChange} />
+      <div>
+        <label>시작 시간</label>
+        <CustomTimeInput name="startTime" value={startTime} onChange={onChange} />
+      </div>
+      <div>
+        <label>종료 시간</label>
+        <CustomTimeInput name="endTime" value={endTime} onChange={onChange} />
+      </div>
       {error && <ErrorMessage>{error}</ErrorMessage>}
     </TimePickerContainer>
   );

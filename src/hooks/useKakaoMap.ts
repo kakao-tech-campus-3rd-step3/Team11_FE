@@ -11,6 +11,8 @@ type UseKakaoMapParams = {
   appKey: string;
   center?: { lat: number; lng: number };
   level?: number;
+  minLevel?: number; // 🔽 줌인(가까이) 제한 레벨
+  maxLevel?: number; // 🔽 줌아웃(멀리) 제한 레벨
 };
 
 function loadKakaoSDK(appKey: string) {
@@ -30,7 +32,9 @@ function loadKakaoSDK(appKey: string) {
     }
     const script = document.createElement('script');
     script.id = scriptId;
-    script.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${encodeURIComponent(appKey)}&autoload=false`;
+    script.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${encodeURIComponent(
+      appKey,
+    )}&autoload=false`;
     script.async = true;
     script.onload = () => window.kakao.maps.load(() => resolve());
     script.onerror = () => reject(new Error('Kakao Maps SDK load error'));
@@ -43,6 +47,8 @@ export function useKakaoMap({
   appKey,
   center = { lat: 35.2335, lng: 129.081 },
   level = 4,
+  minLevel = 2, // 🔽 추가
+  maxLevel = 8, // 🔽 추가
 }: UseKakaoMapParams) {
   const [mapInstance, setMapInstance] = useState<any>(null);
 
@@ -58,13 +64,33 @@ export function useKakaoMap({
         return;
       }
       let ro: ResizeObserver | null = null;
+      let map: any = null; // 🔽 map 변수 스코프 상향
+
+      // 🔽 줌 변경 핸들러 함수
+      const handleZoomChanged = () => {
+        if (!map) return;
+        const currentLevel = map.getLevel();
+
+        if (minLevel && currentLevel < minLevel) {
+          map.setLevel(minLevel, { animate: false });
+        } else if (maxLevel && currentLevel > maxLevel) {
+          map.setLevel(maxLevel, { animate: false });
+        }
+      };
 
       loadKakaoSDK(APP_KEY)
         .then(() => {
           if (!mapRef.current) return;
           const { kakao } = window as any;
           const centerLatLng = new kakao.maps.LatLng(center.lat, center.lng);
-          const map = new kakao.maps.Map(mapRef.current, { center: centerLatLng, level });
+
+          // 🔽 map 변수 할당
+          map = new kakao.maps.Map(mapRef.current, { center: centerLatLng, level });
+
+          // 🔽 줌 제한 로직 추가
+          if (minLevel || maxLevel) {
+            kakao.maps.event.addListener(map, 'zoom_changed', handleZoomChanged);
+          }
 
           setMapInstance(map);
 
@@ -73,6 +99,10 @@ export function useKakaoMap({
 
           cleanupFunc = () => {
             if (ro && mapRef.current) ro.unobserve(mapRef.current);
+            // 🔽 줌 이벤트 리스너 제거
+            if ((minLevel || maxLevel) && map) {
+              kakao.maps.event.removeListener(map, 'zoom_changed', handleZoomChanged);
+            }
           };
         })
         .catch((error) => {
@@ -88,7 +118,7 @@ export function useKakaoMap({
     return () => {
       if (cleanupFunc) cleanupFunc();
     };
-  }, [appKey, center.lat, center.lng, level, mapRef]);
+  }, [appKey, center.lat, center.lng, level, mapRef, minLevel, maxLevel]); // 🔽 의존성 배열 추가
 
   return mapInstance;
 }
