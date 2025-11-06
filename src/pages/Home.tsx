@@ -90,7 +90,7 @@ const MessageOverlay = styled.div`
 
 const CancelSearchButton = styled.button`
   position: absolute;
-  top: 550px;
+  bottom: 5rem;
   left: 50%;
   transform: translateX(-50%);
   z-index: 5;
