@@ -31,7 +31,7 @@ const refreshAccessToken = async (): Promise<string | null> => {
 
     const { accessToken } = response.data;
     if (accessToken) {
-      // 새 토큰 저장, 재시도
+      // 새 토큰 저장
       localStorage.setItem('accessToken', accessToken);
       return accessToken;
     }
@@ -57,11 +57,9 @@ api.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
-    // 401 에러시, 아직 재시도하지 않은 요청인 경우
     if (error.response?.status === HTTP_STATUS.UNAUTHORIZED && !originalRequest._retry) {
       originalRequest._retry = true;
 
-      // 리프레시 토큰으로 새 액세스 토큰 발급 시도
       const newAccessToken = await refreshAccessToken();
 
       if (newAccessToken) {

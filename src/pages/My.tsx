@@ -12,6 +12,7 @@ import {
   getMyMeetups,
 } from '@/api/services/profile.service';
 import { getReports, deleteReport, type ReportListItem } from '@/api/services/report.service';
+import { getBlockedUsers, unblockUser, type BlockedUser } from '@/api/services/block.service';
 import { useLogin } from '@/hooks/useLogin';
 import { getProfile } from '@/utils/tokenStorage';
 import type { Badge } from '@/types/badge';
@@ -70,6 +71,16 @@ import {
   ReportStatus,
   ReportDate,
   ReportCancelButton,
+  BlockListContainer,
+  BlockItem,
+  BlockItemImage,
+  BlockItemImagePlaceholder,
+  BlockItemContent,
+  BlockItemNickname,
+  BlockItemInfo,
+  BlockItemTemperature,
+  BlockItemDate,
+  BlockUnblockButton,
   MeetupListContainer,
   MeetupItem,
   MeetupItemHeader,
@@ -113,6 +124,7 @@ const My = () => {
   const [badges, setBadges] = useState<Badge[]>([]);
   const [reports, setReports] = useState<ReportListItem[]>([]);
   const [meetups, setMeetups] = useState<Meetup[]>([]);
+  const [blockedUsers, setBlockedUsers] = useState<BlockedUser[]>([]);
   const [confirmModal, setConfirmModal] = useState<{
     isOpen: boolean;
     message: string;
@@ -200,6 +212,21 @@ const My = () => {
     };
 
     fetchMeetups();
+  }, []);
+
+  // 차단 목록 조회
+  useEffect(() => {
+    const fetchBlockedUsers = async () => {
+      try {
+        const data = await getBlockedUsers();
+        setBlockedUsers(data.content);
+        console.log('차단 목록 조회 성공:', data);
+      } catch (error) {
+        console.error('차단 목록 조회 실패:', error);
+      }
+    };
+
+    fetchBlockedUsers();
   }, []);
 
   const handleCancel = () => {
@@ -548,6 +575,77 @@ const My = () => {
                   </ReportListContainer>
                 ) : (
                   <EmptyBadgeMessage>신고 내역이 없습니다</EmptyBadgeMessage>
+                )}
+              </BadgeSection>
+            </SectionCard>
+
+            {/* 차단 목록 섹션 */}
+            <SectionCard>
+              <BadgeSection>
+                <InfoLabel style={{ marginBottom: '12px', display: 'block' }}>
+                  차단한 사용자 ({blockedUsers.length}명)
+                </InfoLabel>
+                {blockedUsers.length > 0 ? (
+                  <BlockListContainer>
+                    {blockedUsers.map((blockedUser) => (
+                      <BlockItem key={blockedUser.profileId}>
+                        {blockedUser.imageUrl ? (
+                          <BlockItemImage src={blockedUser.imageUrl} alt={blockedUser.nickname} />
+                        ) : (
+                          <BlockItemImagePlaceholder>
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                              <path
+                                d="M20 21V19C20 17.9391 19.5786 16.9217 18.8284 16.1716C18.0783 15.4214 17.0609 15 16 15H8C6.93913 15 5.92172 15.4214 5.17157 16.1716C4.42143 16.9217 4 17.9391 4 19V21"
+                                stroke="#9ca3af"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              />
+                              <circle cx="12" cy="7" r="4" stroke="#9ca3af" strokeWidth="2" />
+                            </svg>
+                          </BlockItemImagePlaceholder>
+                        )}
+                        <BlockItemContent>
+                          <BlockItemNickname>{blockedUser.nickname}</BlockItemNickname>
+                          <BlockItemInfo>
+                            <BlockItemTemperature>온도: {blockedUser.temperature}°C</BlockItemTemperature>
+                            <BlockItemDate>
+                              차단일: {new Date(blockedUser.blockedAt).toLocaleDateString('ko-KR', {
+                                year: 'numeric',
+                                month: 'long',
+                                day: 'numeric',
+                              })}
+                            </BlockItemDate>
+                          </BlockItemInfo>
+                        </BlockItemContent>
+                        <BlockUnblockButton
+                          onClick={() => {
+                            setConfirmModal({
+                              isOpen: true,
+                              message: `${blockedUser.nickname}님의 차단을 해제하시겠습니까?`,
+                              onConfirm: async () => {
+                                setConfirmModal({ ...confirmModal, isOpen: false });
+                                try {
+                                  await unblockUser(blockedUser.profileId);
+                                  showToast('차단이 해제되었습니다.');
+                                  // 목록 새로고침
+                                  const data = await getBlockedUsers();
+                                  setBlockedUsers(data.content);
+                                } catch (error: any) {
+                                  console.error('차단 해제 실패:', error);
+                                  showToast(`차단 해제에 실패했습니다: ${error.response?.data?.message || error.message}`);
+                                }
+                              },
+                            });
+                          }}
+                        >
+                          차단 해제
+                        </BlockUnblockButton>
+                      </BlockItem>
+                    ))}
+                  </BlockListContainer>
+                ) : (
+                  <EmptyBadgeMessage>차단한 사용자가 없습니다</EmptyBadgeMessage>
                 )}
               </BadgeSection>
             </SectionCard>

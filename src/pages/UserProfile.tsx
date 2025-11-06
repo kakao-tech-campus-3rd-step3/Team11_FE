@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Container, ContentContanier } from '@/style/CommonStyle';
 import { getUserBadges, getUserProfile } from '@/api/services/profile.service';
+import { blockUser } from '@/api/services/block.service';
 import type { MyProfileState } from '@/store/slices/myProfileSlice';
 import type { Badge } from '@/types/badge';
 import {
@@ -43,6 +44,7 @@ import BottomNav from '@/components/common/BottomNav';
 import { useToast } from '@/hooks/useToast';
 import { Toast } from '@/components/common/Toast';
 import ReportModal from '@/components/user_profile/ReportModal';
+import BlockModal from '@/components/user_profile/BlockModal';
 
 const UserProfile = () => {
   const { userId } = useParams<{ userId: string }>();
@@ -52,6 +54,8 @@ const UserProfile = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [badges, setBadges] = useState<Badge[]>([]);
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
+  const [isBlockModalOpen, setIsBlockModalOpen] = useState(false);
+  const [isBlocking, setIsBlocking] = useState(false);
 
   // 페이지 로드 시 프로필 조회
   useEffect(() => {
@@ -96,6 +100,25 @@ const UserProfile = () => {
 
   const handleBack = () => {
     navigate(-1);
+  };
+
+  const handleBlockUser = async () => {
+    if (!userId) return;
+
+    setIsBlocking(true);
+    try {
+      await blockUser(userId);
+      showToast('사용자가 차단되었습니다.');
+      setIsBlockModalOpen(false);
+      setTimeout(() => {
+        navigate(-1);
+      }, 1500);
+    } catch (error: any) {
+      console.error('사용자 차단 실패:', error);
+      showToast(error.message || '사용자 차단에 실패했습니다.');
+    } finally {
+      setIsBlocking(false);
+    }
   };
 
   if (isLoading) {
@@ -246,27 +269,40 @@ const UserProfile = () => {
           </BadgeSection>
         </SectionCard>
 
-        {/* 신고 버튼 */}
-        <SectionCard>
-          <ReportButtonContainer>
-            <ReportButton onClick={() => setIsReportModalOpen(true)}>
-              사용자 신고
-            </ReportButton>
-          </ReportButtonContainer>
-        </SectionCard>
+        {/* 신고 및 차단 버튼 */}
+        <ReportButtonContainer>
+          <ReportButton onClick={() => setIsReportModalOpen(true)}>
+            사용자 신고
+          </ReportButton>
+          <ReportButton 
+            onClick={() => setIsBlockModalOpen(true)}
+            style={{ backgroundColor: '#6b7280' }}
+          >
+            사용자 차단
+          </ReportButton>
+        </ReportButtonContainer>
 
         <BottomNav />
       </ContentContanier>
       {toast.visible && <Toast message={toast.message} onClose={hideToast} />}
       {userId && (
-        <ReportModal
-          isOpen={isReportModalOpen}
-          onClose={() => setIsReportModalOpen(false)}
-          targetProfileId={userId}
-          onSuccess={() => {
-            showToast('신고가 성공적으로 제출되었습니다.');
-          }}
-        />
+        <>
+          <ReportModal
+            isOpen={isReportModalOpen}
+            onClose={() => setIsReportModalOpen(false)}
+            targetProfileId={userId}
+            onSuccess={() => {
+              showToast('신고가 성공적으로 제출되었습니다.');
+            }}
+          />
+          <BlockModal
+            isOpen={isBlockModalOpen}
+            onClose={() => setIsBlockModalOpen(false)}
+            onConfirm={handleBlockUser}
+            isLoading={isBlocking}
+            userName={userProfile?.nickname || undefined}
+          />
+        </>
       )}
     </Container>
   );

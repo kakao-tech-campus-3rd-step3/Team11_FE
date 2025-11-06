@@ -1,8 +1,9 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useLogin } from '@/hooks/useLogin';
 import { useToast } from '@/hooks/useToast';
 import { Toast } from '@/components/common/Toast';
+import { getAccessToken } from '@/utils/tokenStorage';
 
 import { Container, ContentContanier, Spacer } from '@/style/CommonStyle';
 import LogoImg from '@/assets/momeetLogo.svg';
@@ -18,12 +19,30 @@ import {
 import apikey from '@/config/apikey';
 
 const Login = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
   const { handleEmailLogin } = useLogin();
   const { showToast, hideToast, toast } = useToast();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState<{ [key: string]: string[] | string }>({});
+
+  // 로그인 상태 확인
+  useEffect(() => {
+    const accessToken = getAccessToken();
+    if (accessToken) {
+      navigate('/home', { replace: true });
+    }
+  }, [navigate]);
+
+  // 로그인이 필요한 페이지 접근시
+  useEffect(() => {
+    if (location.state?.fromProtected) {
+      showToast('로그인이 필요합니다.');
+      window.history.replaceState({}, document.title);
+    }
+  }, [location.state, showToast]);
 
   // 로그인 핸들러
   const handleLogin = async () => {
@@ -48,6 +67,7 @@ const Login = () => {
     }
 
     const REST_API_KEY = apikey.kakaoRestApiKey;
+    // 백엔드가 사용하는 redirectUri와 일치시킴
     const REDIRECT_URI = `${window.location.origin}/kakaoLogin`;
     const kakaoAuthURL = `https://kauth.kakao.com/oauth/authorize?client_id=${REST_API_KEY}&redirect_uri=${REDIRECT_URI}&response_type=code`;
 

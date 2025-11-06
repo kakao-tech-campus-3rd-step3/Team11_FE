@@ -321,7 +321,7 @@ export const FixedHeaderContainer = styled.div`
 
 export const FixedFooterContainer = styled.div`
   position: fixed;
-  bottom: 0;
+  bottom: 40px;
   left: 0;
   right: 0;
   width: 100%;
@@ -330,6 +330,11 @@ export const FixedFooterContainer = styled.div`
   z-index: 100;
   background: white;
   padding: 20px;
+  padding-bottom: max(20px, env(safe-area-inset-bottom));
   text-align: center;
   box-sizing: border-box;
+
+  @media (max-width: 768px) {
+    bottom: 60px;
+  }
 `;

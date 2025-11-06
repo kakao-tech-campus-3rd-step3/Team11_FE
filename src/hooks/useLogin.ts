@@ -13,6 +13,7 @@ const hasCompleteProfile = (profile: any): boolean => {
   return profile && profile.nickname;
 };
 
+
 export const useLogin = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -84,8 +85,28 @@ export const useLogin = () => {
   // 카카오 로그인
   const handleKakaoLogin = useCallback(
     async (code: string) => {
-      const result = await kakaoLogin(code);
-      handleLoginSuccess(result);
+      try {
+        const result = await kakaoLogin(code);
+        await handleLoginSuccess(result);
+      } catch (error: any) {
+        console.error('카카오 로그인 에러:', error);
+        
+        // 500 에러 또는 트랜잭션 관련 에러 처리
+        if (error.response?.status === 500) {
+          const detail = error.response?.data?.detail || '';
+          if (detail.includes('Transaction') || detail.includes('rollback')) {
+            throw new Error('서버에 일시적인 문제가 발생했습니다. 잠시 후 다시 시도해주세요.');
+          }
+          throw new Error('서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
+        }
+        
+        const errorMessage =
+          error.response?.data?.detail ||
+          error.response?.data?.message ||
+          error.message ||
+          '카카오 로그인에 실패했습니다. 잠시 후 다시 시도해주세요.';
+        throw new Error(errorMessage);
+      }
     },
     [handleLoginSuccess],
   );

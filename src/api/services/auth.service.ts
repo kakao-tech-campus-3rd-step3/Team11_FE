@@ -9,8 +9,29 @@ export const login = async (email: string, password: string) => {
 
 // 카카오 로그인
 export const kakaoLogin = async (code: string) => {
-  const response = await api.post('/api/auth/kakao', { code });
-  return response.data;
+  const redirectUri = `${window.location.origin}/kakaoLogin`;
+  const requestBody = {
+    code,
+    redirectUri,
+  };
+  
+  console.log('=== 카카오 로그인 요청 ===');
+  console.log('요청 URL:', '/api/auth/kakao');
+  console.log('요청 본문:', JSON.stringify(requestBody, null, 2));
+  console.log('현재 origin:', window.location.origin);
+  
+  try {
+    const response = await api.post('/api/auth/kakao', requestBody);
+    console.log('카카오 로그인 성공:', response.data);
+    return response.data;
+  } catch (error: any) {
+    console.error('=== 카카오 로그인 요청 실패 ===');
+    console.error('에러 상태:', error.response?.status);
+    console.error('에러 응답:', error.response?.data);
+    console.error('에러 메시지:', error.message);
+    console.error('요청 본문:', JSON.stringify(requestBody, null, 2));
+    throw error;
+  }
 };
 
 // 회원가입

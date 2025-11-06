@@ -149,6 +149,7 @@ export const ProfileImage = styled.img`
   object-fit: cover;
   border: 3px solid white;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+  background-color: white;
 `;
 
 export const ProfileImagePlaceholder = styled.div`
@@ -536,6 +537,88 @@ export const ReportCancelButton = styled(DangerButtonBase)`
   font-size: 12px;
 `;
 
+export const BlockListContainer = styled(SectionBase)`
+  padding: 0 20px;
+`;
+
+export const BlockItem = styled.div`
+  padding: 16px;
+  margin-bottom: 12px;
+  background-color: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+`;
+
+export const BlockItemImage = styled.img`
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #e5e7eb;
+`;
+
+export const BlockItemImagePlaceholder = styled.div`
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background-color: #e9ecef;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 2px solid #e5e7eb;
+`;
+
+export const BlockItemContent = styled.div`
+  flex: 1;
+  min-width: 0;
+`;
+
+export const BlockItemNickname = styled.div`
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 4px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+`;
+
+export const BlockItemInfo = styled.div`
+  display: flex;
+  gap: 12px;
+  font-size: 12px;
+  color: #666;
+`;
+
+export const BlockItemTemperature = styled.span`
+  color: #666;
+`;
+
+export const BlockItemDate = styled.span`
+  color: #999;
+`;
+
+export const BlockUnblockButton = styled.button`
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  background: #f8f9fa;
+  color: #666;
+  border: 1px solid #e5e7eb;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+
+  &:hover {
+    background: #e9ecef;
+    border-color: #d1d5db;
+  }
+`;
+
 // 유저 프로필 페이지 스타일
 export const CenterMessage = styled.div`
   text-align: center;
@@ -553,10 +636,12 @@ export const BadgeLabel = styled(InfoLabel)`
 export const ReportButtonContainer = styled.div`
   padding: 20px;
   margin-top: 24px;
+  display: flex;
+  gap: 12px;
 `;
 
 export const ReportButton = styled(DangerButtonBase)`
-  width: 100%;
+  flex: 1;
   padding: 12px;
   border-radius: 4px;
   font-size: 16px;
