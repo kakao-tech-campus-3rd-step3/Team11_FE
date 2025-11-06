@@ -90,7 +90,7 @@ const MessageOverlay = styled.div`
 
 const CancelSearchButton = styled.button`
   position: absolute;
-  top: 500px;
+  top: 550px;
   left: 50%;
   transform: translateX(-50%);
   z-index: 5;
@@ -246,7 +246,7 @@ const Home = () => {
           {map ? (
             <>
               {hasActiveFilters && (
-                <CancelSearchButton onClick={handleCancelSearch}>검색/필터 취소</CancelSearchButton>
+                <CancelSearchButton onClick={handleCancelSearch}>필터 취소</CancelSearchButton>
               )}
               <SearchButton onClick={handleSearchClick} />
               {!isFilteredFromSearch && (
