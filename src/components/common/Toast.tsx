@@ -20,7 +20,7 @@ const slideDown = keyframes`
 `;
 
 const ToastContainer = styled.div`
-  position: absolute;
+  position: fixed;
   top: 130px;
   left: 50%;
   transform: translateX(-50%);
@@ -28,12 +28,13 @@ const ToastContainer = styled.div`
   color: white;
   padding: 10px 20px;
   border-radius: 20px;
-  z-index: 105;
+  z-index: 2000; 
   font-size: 14px;
   text-align: center;
   max-width: calc(100% - 40px);
   animation: ${slideDown} 0.3s ease-out;
   word-break: keep-all;
+  pointer-events: none; 
 `;
 
 export const Toast = ({ message, duration = 3000, onClose }: ToastProps) => {
