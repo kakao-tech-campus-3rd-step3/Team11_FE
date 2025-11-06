@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Container, ContentContanier } from '@/style/CommonStyle';
+import BackArrow from '@/assets/meeting_room_page/chevron_left.svg?react';
 import { getUserBadges, getUserProfile } from '@/api/services/profile.service';
 import { blockUser } from '@/api/services/block.service';
 import type { MyProfileState } from '@/store/slices/myProfileSlice';
@@ -15,14 +16,19 @@ import {
   ProfileImagePlaceholder,
   MainContentCard,
   UserInfo,
-  UserBasicInfo,
   UserName,
-  UserAge,
-  UserGender,
+  UserDetailInfo,
+  UserDetailItem,
+  UserDetailLabel,
+  UserDetailValue,
   ProfileInfoSection,
-  ProfileInfoItem,
   InfoLabel,
-  InfoValue,
+  TemperatureCard,
+  TemperatureHeader,
+  TemperatureLabel,
+  TemperatureValue,
+  TemperatureBarContainer,
+  TemperatureBar,
   SelfIntroItem,
   SelfIntroContent,
   SelfIntroText,
@@ -35,7 +41,6 @@ import {
   EmptyBadgeMessage,
   LoadingMessage,
   ErrorMessage,
-  BadgeLabel,
   ReportButtonContainer,
   ReportButton,
   SectionCard,
@@ -121,23 +126,15 @@ const UserProfile = () => {
 
   if (isLoading) {
     return (
-      <Container>
+      <Container style={{ backgroundColor: 'rgb(249, 250, 251)' }}>
         <HeaderSection />
         <TitleContainer>
           <BackButton onClick={handleBack}>
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-              <path
-                d="M19 12H5M12 19L5 12L12 5"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
+            <BackArrow width="24" height="24" fill="currentColor" />
           </BackButton>
           <HeaderTitle>프로필</HeaderTitle>
         </TitleContainer>
-        <ContentContanier>
+        <ContentContanier style={{ position: 'relative', zIndex: 10, paddingTop: '120px' }}>
           <LoadingMessage>프로필 정보를 불러오는 중...</LoadingMessage>
         </ContentContanier>
       </Container>
@@ -146,23 +143,15 @@ const UserProfile = () => {
 
   if (!userProfile) {
     return (
-      <Container>
+      <Container style={{ backgroundColor: 'rgb(249, 250, 251)' }}>
         <HeaderSection />
         <TitleContainer>
           <BackButton onClick={handleBack}>
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-              <path
-                d="M19 12H5M12 19L5 12L12 5"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
+            <BackArrow width="24" height="24" fill="currentColor" />
           </BackButton>
           <HeaderTitle>프로필</HeaderTitle>
         </TitleContainer>
-        <ContentContanier>
+        <ContentContanier style={{ position: 'relative', zIndex: 10, paddingTop: '120px' }}>
           <ErrorMessage>프로필을 찾을 수 없습니다.</ErrorMessage>
         </ContentContanier>
       </Container>
@@ -170,68 +159,75 @@ const UserProfile = () => {
   }
 
   return (
-    <Container>
+    <Container style={{ backgroundColor: 'rgb(249, 250, 251)' }}>
       <HeaderSection />
       <TitleContainer>
         <BackButton onClick={handleBack}>
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-            <path
-              d="M19 12H5M12 19L5 12L12 5"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
+          <BackArrow width="24" height="24" fill="currentColor" />
         </BackButton>
         <HeaderTitle>프로필</HeaderTitle>
       </TitleContainer>
-      <ContentContanier>
+      <ContentContanier style={{ position: 'relative', zIndex: 10, paddingTop: '120px' }}>
+        <ProfileImageContainer>
+          {userProfile.imageUrl ? (
+            <ProfileImage src={userProfile.imageUrl} alt="프로필 이미지" />
+          ) : (
+            <ProfileImagePlaceholder>
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
+                <path
+                  d="M20 21V19C20 17.9391 19.5786 16.9217 18.8284 16.1716C18.0783 15.4214 17.0609 15 16 15H8C6.93913 15 5.92172 15.4214 5.17157 16.1716C4.42143 16.9217 4 17.9391 4 19V21"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <circle cx="12" cy="7" r="4" stroke="currentColor" strokeWidth="2" />
+              </svg>
+            </ProfileImagePlaceholder>
+          )}
+        </ProfileImageContainer>
+        <UserInfo>
+          <UserName>{userProfile.nickname || '닉네임 없음'}</UserName>
+        </UserInfo>
+        <UserDetailInfo>
+          <UserDetailItem>
+            <UserDetailLabel>나이</UserDetailLabel>
+            <UserDetailValue>{userProfile.age ? `${userProfile.age}세` : '-'}</UserDetailValue>
+          </UserDetailItem>
+          <UserDetailItem>
+            <UserDetailLabel>성별</UserDetailLabel>
+            <UserDetailValue>
+              {userProfile.gender === 'MALE' ? '남' : userProfile.gender === 'FEMALE' ? '여' : '-'}
+            </UserDetailValue>
+          </UserDetailItem>
+          <UserDetailItem>
+            <UserDetailLabel>위치</UserDetailLabel>
+            <UserDetailValue>
+              {userProfile.baseLocation
+                ? typeof userProfile.baseLocation === 'string'
+                  ? userProfile.baseLocation
+                  : `${(userProfile.baseLocation as { sidoName: string; sigunguName: string }).sidoName} ${(userProfile.baseLocation as { sidoName: string; sigunguName: string }).sigunguName}`
+                : '-'}
+            </UserDetailValue>
+          </UserDetailItem>
+        </UserDetailInfo>
         <MainContentCard>
-          <ProfileImageContainer>
-            {userProfile.imageUrl ? (
-              <ProfileImage src={userProfile.imageUrl} alt="프로필 이미지" />
-            ) : (
-              <ProfileImagePlaceholder>
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
-                  <path
-                    d="M20 21V19C20 17.9391 19.5786 16.9217 18.8284 16.1716C18.0783 15.4214 17.0609 15 16 15H8C6.93913 15 5.92172 15.4214 5.17157 16.1716C4.42143 16.9217 4 17.9391 4 19V21"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                  <circle cx="12" cy="7" r="4" stroke="currentColor" strokeWidth="2" />
-                </svg>
-              </ProfileImagePlaceholder>
-            )}
-          </ProfileImageContainer>
-          <UserInfo>
-            <UserBasicInfo>
-              <UserName>{userProfile.nickname || '닉네임 없음'}</UserName>
-              <UserAge>{userProfile.age ? `${userProfile.age}세` : '-'}</UserAge>
-              <UserGender>{userProfile.gender || '-'}</UserGender>
-            </UserBasicInfo>
-          </UserInfo>
-
           <ProfileInfoSection>
-            <ProfileInfoItem>
-              <InfoLabel>온도</InfoLabel>
-              <InfoValue>
-                {userProfile.temperature ? `${userProfile.temperature}°C` : '-'}
-              </InfoValue>
-            </ProfileInfoItem>
-
-            <ProfileInfoItem>
-              <InfoLabel>위치</InfoLabel>
-              <InfoValue>
-                {userProfile.baseLocation
-                  ? typeof userProfile.baseLocation === 'string'
-                    ? userProfile.baseLocation
-                    : `${(userProfile.baseLocation as { sidoName: string; sigunguName: string }).sidoName} ${(userProfile.baseLocation as { sidoName: string; sigunguName: string }).sigunguName}`
-                  : '-'}
-              </InfoValue>
-            </ProfileInfoItem>
+            <TemperatureCard>
+              <TemperatureHeader>
+                <TemperatureLabel>매너 온도</TemperatureLabel>
+                <TemperatureValue>
+                  {userProfile.temperature ? `${userProfile.temperature}°C` : '-'}
+                </TemperatureValue>
+              </TemperatureHeader>
+              <TemperatureBarContainer>
+                <TemperatureBar
+                  percentage={
+                    userProfile.temperature ? Math.min(userProfile.temperature, 100) : 0
+                  }
+                />
+              </TemperatureBarContainer>
+            </TemperatureCard>
 
             <SelfIntroItem>
               <InfoLabel>한 줄 소개</InfoLabel>
@@ -249,7 +245,12 @@ const UserProfile = () => {
         {/* 뱃지 섹션 */}
         <SectionCard>
           <BadgeSection>
-            <BadgeLabel>획득한 뱃지 ({badges.length}개)</BadgeLabel>
+            <TemperatureHeader style={{ marginBottom: '1rem' }}>
+              <TemperatureLabel>획득한 뱃지</TemperatureLabel>
+              <TemperatureValue style={{ fontSize: '1.25rem', lineHeight: '1.75rem' }}>
+                {badges.length}개
+              </TemperatureValue>
+            </TemperatureHeader>
             <BadgeContainer>
               {badges.length > 0 ? (
                 badges.map((badge) => (

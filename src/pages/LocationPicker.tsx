@@ -4,6 +4,7 @@ import styled, { createGlobalStyle } from 'styled-components';
 import GlobalStyle from '@/style/GlobalStyle';
 import apikey from '@/config/apikey';
 import { CommonHeader } from '@/components/common/CommonHeader';
+import { colors } from '@/style/themes';
 
 declare global {
   interface Window {
@@ -52,17 +53,13 @@ const ConfirmButton = styled.button`
   padding: 1rem;
   border-radius: 12px;
   border: none;
-  background-color: #4f46e5;
+  background-color: ${(props) => (props.disabled ? '#ccc' : colors.primary)};
   color: white;
   font-size: 1.1rem;
   font-weight: bold;
-  cursor: pointer;
+  cursor: ${(props) => (props.disabled ? 'not-allowed' : 'pointer')};
   z-index: 10;
-
-  &:disabled {
-    background-color: #ccc;
-    cursor: not-allowed;
-  }
+  transition: background-color 0.2s ease;
 `;
 
 const LocationInfo = styled.div`
