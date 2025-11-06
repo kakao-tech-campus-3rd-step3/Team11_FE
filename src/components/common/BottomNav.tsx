@@ -9,7 +9,7 @@ import {
 import { colors } from '@/style/themes';
 import { useEffect, useState } from 'react';
 import { getMyJoinedMeetup } from '@/api/services/meetup_room.service';
-
+import { toast } from 'react-toastify';
 const NavContainer = styled.nav`
   position: fixed;
   bottom: 0;
@@ -52,13 +52,13 @@ const BottomNav = () => {
     if (userIsInGroup) {
       navigate('/meeting-room');
     } else {
-      alert('속한 모임이 없습니다.');
+      toast.error('속한 모임이 없습니다.');
     }
   };
 
   const handleCreateRoomClick = () => {
     if (userIsInGroup) {
-      alert('이미 모임에 소속되어 있습니다.');
+      toast.error('이미 모임에 소속되어 있습니다.');
     } else {
       navigate('/create-room');
     }
