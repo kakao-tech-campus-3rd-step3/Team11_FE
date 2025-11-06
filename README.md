@@ -78,5 +78,17 @@
 <img width="392" height="851" alt="스크린샷 2025-11-07 오전 1 48 17" src="https://github.com/user-attachments/assets/47808dc4-39bf-4b7e-8979-b3a48abb5ea1" />
 <img width="394" height="852" alt="스크린샷 2025-11-07 오전 1 49 59" src="https://github.com/user-attachments/assets/3653127c-833f-42c5-ac4e-fd2f34e4051c" />
 
+### 🛠️ 기술 스택�️
 
+![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=Node.js&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=TypeScript&logoColor=white)
+![React](https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=React&logoColor=black)
+![Emotion](https://img.shields.io/badge/Emotion-DB7093?style=for-the-badge&logo=emotion&logoColor=white)
+![Spring](https://img.shields.io/badge/Spring-6DB33F?style=for-the-badge&logo=Spring&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?style=for-the-badge&logo=PostgreSQL&logoColor=white)
+![Redis](https://img.shields.io/badge/Redis-DC382D?style=for-the-badge&logo=redis&logoColor=white)
+![AWS](https://img.shields.io/badge/AWS-232F3E?style=for-the-badge&logo=amazon-aws&logoColor=FF9900)
 
+### 🛠️ 기능 명세서
+
+> https://phase-bird-e06.notion.site/0c8bbac744cc46b296ee2e5bf4bb100b?v=f4aed284cef748e699e181f2a2253be7
