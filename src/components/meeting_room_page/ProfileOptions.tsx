@@ -69,7 +69,7 @@ export const ProfileOptions = ({
     if (!target.profile.id) return;
 
     try {
-      const response = await blockUser(target.profile.id);
+      await blockUser(target.profile.id);
       toast.info('해당 사용자를 차단했습니다.');
     } catch (error: any) {
       toast.info(
@@ -90,7 +90,7 @@ export const ProfileOptions = ({
 
   const handleKick = async () => {
     try {
-      const response = await kickUser(meetUpId, target.id);
+      await kickUser(meetUpId, target.id);
     } catch (error) {
       console.error(error);
     }

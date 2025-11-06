@@ -164,10 +164,10 @@ const RoomCreate = () => {
 
       try {
         if (!update) {
-          const response = await createMeetUp(finalFormState);
+          await createMeetUp(finalFormState);
           toast.success('모임방이 성공적으로 생성되었습니다!');
         } else {
-          const response = await updateMeetUp(finalFormState);
+          await updateMeetUp(finalFormState);
           toast.success('모임방이 성공적으로 수정되었습니다!');
         }
         navigate('/meeting-room');
