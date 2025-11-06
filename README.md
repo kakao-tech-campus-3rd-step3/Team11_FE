@@ -16,8 +16,9 @@
 > 이메일을 통해 회원가입을 진행해 주세요. 입력하신 이메일 주소로 인증 링크를 보내드립니다. <br>
 카카오 계정으로도 간편하게 가입/로그인이 가능합니다.
 
-https://github.com/user-attachments/assets/b65c5e15-4e70-4c84-88d4-5b09ff1a4baa
-
+<img width="392" height="850" alt="스크린샷 2025-11-07 오전 12 51 09" src="https://github.com/user-attachments/assets/32c4dcc3-0995-45a7-8472-fcc2c0d236ad" />
+<img width="393" height="851" alt="스크린샷 2025-11-07 오전 12 57 22" src="https://github.com/user-attachments/assets/4f26a0fd-d438-4a34-a68d-ce23063e8ba4" />
+<img width="512" height="182" alt="스크린샷 2025-11-07 오전 12 55 42" src="https://github.com/user-attachments/assets/456e6fcb-6036-4a01-a89f-17e23dc8a4eb" />
 <img width="620" height="371" alt="스크린샷 2025-11-06 오후 6 05 39" src="https://github.com/user-attachments/assets/ea0b2073-a58c-42ed-b3d2-a975c1dedf0e" />
 
 #### 2. 프로필 설정
@@ -34,9 +35,48 @@ https://github.com/user-attachments/assets/b65c5e15-4e70-4c84-88d4-5b09ff1a4baa
 
 > 현재 모집 중인 모임을 확인하고 찾아 보세요.
 
-<img width="393" height="851" alt="스크린샷 2025-11-06 오후 6 46 55" src="https://github.com/user-attachments/assets/1516a416-bf7f-4218-a6b4-c8b99a83be2f" />
+<img width="394" height="852" alt="스크린샷 2025-11-07 오전 12 43 59" src="https://github.com/user-attachments/assets/ea08a23e-963a-4414-8a7f-f79684ed78e6" />
 <img width="393" height="851" alt="스크린샷 2025-11-06 오후 6 48 40" src="https://github.com/user-attachments/assets/4ee15de9-2bcf-4ab6-af8b-619a70b08ffe" />
 
 #### 4. 모임 참여
 
 > 원하는 모임에 참여 하세요.
+
+<img width="393" height="851" alt="스크린샷 2025-11-07 오전 1 07 45" src="https://github.com/user-attachments/assets/d07b0fbb-ae0d-419d-8d29-33630511aa4a" />
+<img width="393" height="852" alt="스크린샷 2025-11-07 오전 1 04 31" src="https://github.com/user-attachments/assets/defdf59b-fe18-4e4b-beca-0737a03b8c57" />
+
+#### 5. 모임 시작
+
+> 방장은 모임을 시작할 수 있습니다.
+
+<img width="391" height="850" alt="스크린샷 2025-11-07 오전 1 16 37" src="https://github.com/user-attachments/assets/2ed4f486-672b-490a-9ec9-0eae2f182104" />
+<img width="392" height="850" alt="스크린샷 2025-11-07 오전 1 20 48" src="https://github.com/user-attachments/assets/2b4b9829-c786-4e02-8fb3-684ff7d64978" />
+
+#### 6. 프로필 옵션
+
+> 현재 참여 중인 사용자들의 프로필 조희/신고/차단이 가능합니다. <br>
+방장은 필요 시 참여자를 강제 퇴장시킬 수 있어요.
+
+<img width="392" height="202" alt="스크린샷 2025-11-07 오전 1 25 23" src="https://github.com/user-attachments/assets/137a13bc-fbaf-43ff-9345-470eef2aebfd" /> <br>
+<img width="391" height="850" alt="스크린샷 2025-11-07 오전 1 26 55" src="https://github.com/user-attachments/assets/eadf6a59-e793-48b6-a12a-c7844be6ec70" />
+<img width="393" height="851" alt="스크린샷 2025-11-07 오전 1 25 56" src="https://github.com/user-attachments/assets/e209a464-8ade-4e42-a1ea-ceca38aee585" />
+<img width="392" height="850" alt="스크린샷 2025-11-07 오전 1 27 16" src="https://github.com/user-attachments/assets/0be9dea0-d9f7-4997-b0df-e66916e59ded" />
+
+#### 7. 모임 종료
+
+> 방장이 모임을 종료하고 나면, 참여자들에 대한 평가를 진행해 주세요.
+
+<img width="394" height="851" alt="스크린샷 2025-11-07 오전 1 43 34" src="https://github.com/user-attachments/assets/f372727a-edb1-4d95-b834-d35194d0a5c4" />
+<img width="394" height="852" alt="스크린샷 2025-11-07 오전 1 50 28" src="https://github.com/user-attachments/assets/3bfceacc-8f4c-47f6-9149-37749ed21f92" />
+
+#### 8. 마이페이지
+
+> 마이페이지에서 나의 프로필 수정/뱃지 조회/이전 모임 조회/신고 및 차단 목록 조회/로그 아웃/회원 탈퇴가 가능해요.
+
+<img width="392" height="850" alt="스크린샷 2025-11-07 오전 1 47 00" src="https://github.com/user-attachments/assets/9b56023c-a062-4739-8ccd-179b658726ee" />
+<img width="393" height="850" alt="스크린샷 2025-11-07 오전 1 47 30" src="https://github.com/user-attachments/assets/7967cbf6-d0ee-46b4-9a3f-803babce63f6" />
+<img width="392" height="851" alt="스크린샷 2025-11-07 오전 1 48 17" src="https://github.com/user-attachments/assets/47808dc4-39bf-4b7e-8979-b3a48abb5ea1" />
+<img width="394" height="852" alt="스크린샷 2025-11-07 오전 1 49 59" src="https://github.com/user-attachments/assets/3653127c-833f-42c5-ac4e-fd2f34e4051c" />
+
+
+
