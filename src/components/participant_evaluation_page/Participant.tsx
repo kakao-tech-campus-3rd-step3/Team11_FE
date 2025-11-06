@@ -22,8 +22,11 @@ const Container = styled.div`
   box-sizing: border-box;
 `;
 
-const Avatar = styled.div<{ imageUrl: string }>`
+const Avatar = styled.div<{ imageUrl?: string }>`
+  display: flex;
   position: absolute;
+  justify-content: center;
+  align-items: center;
   left: 1rem;
   height: 3rem;
   aspect-ratio: 1/1;
@@ -81,7 +84,22 @@ export const Participant = ({ info, setEvaluations }: ParticipantProps) => {
 
   return (
     <Container>
-      <Avatar imageUrl={info.imageUrl} />
+      {info.imageUrl ? (
+        <Avatar imageUrl={info.imageUrl} />
+      ) : (
+        <Avatar>
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
+            <path
+              d="M20 21V19C20 17.9391 19.5786 16.9217 18.8284 16.1716C18.0783 15.4214 17.0609 15 16 15H8C6.93913 15 5.92172 15.4214 5.17157 16.1716C4.42143 16.9217 4 17.9391 4 19V21"
+              stroke="currentColor"
+              strokeWidth="1"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <circle cx="12" cy="7" r="4" stroke="currentColor" strokeWidth="1" />
+          </svg>
+        </Avatar>
+      )}
       <Name>{info.nickname}</Name>
       <ThumbUp
         isClicked={isThumbUpClicked}
