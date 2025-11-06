@@ -60,7 +60,8 @@ export const ProfileOptions = ({
   }, [onClose, isReportOpen]);
 
   const handleViewProfile = () => {
-    navigate(`/user/${target.profile.id}`);
+    if (myId !== target.id) navigate(`/user/${target.profile.id}`);
+    else navigate('/my');
     onClose();
   };
 
