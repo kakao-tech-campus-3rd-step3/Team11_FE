@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { StyledInput } from './StyledComponents';
+import { colors } from '@/style/themes';
 
 const MaxTextLength = 7;
 const MaxHashtags = 3;
@@ -8,16 +9,18 @@ const HashtagContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 8px;
-  margin-top: 8px;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
 `;
 
 const Hashtag = styled.span`
-  background-color: #eef2ff;
-  color: #4f46e5;
-  padding: 4px 8px;
-  border-radius: 12px;
+  background-color: ${colors.primary100};
+  color: ${colors.primary};
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.75rem;
   font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.25rem;
   display: flex;
   align-items: center;
 `;

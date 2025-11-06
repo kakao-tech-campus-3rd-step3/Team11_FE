@@ -26,7 +26,7 @@ const HeaderContent = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  border-bottom: 1px solid ${colors.secondary300};
+  border-bottom: 0.5px solid #e5e7eb;
 `;
 
 const BackButton = styled.button`
@@ -40,8 +40,10 @@ const BackButton = styled.button`
 `;
 
 const Title = styled.h1`
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: 600;
+  line-height: 1.5rem;
+  color: #374151;
   margin: 0;
 `;
 
@@ -66,7 +68,7 @@ export const CommonHeader = ({ title, onBackButtonClick, children }: CommonHeade
       <HeaderContent>
         {onBackButtonClick && (
           <BackButton onClick={onBackButtonClick}>
-            <BackArrow width={BACKARROW_SVG_SIZE} height={MENU_SVG_SIZE} />
+            <BackArrow width={BACKARROW_SVG_SIZE} height={MENU_SVG_SIZE} fill="#6b7280" />
           </BackButton>
         )}
         <Title>{title}</Title>

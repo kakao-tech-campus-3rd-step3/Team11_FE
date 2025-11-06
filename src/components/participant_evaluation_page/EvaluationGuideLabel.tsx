@@ -19,6 +19,9 @@ const Label = styled.div`
   box-sizing: border-box;
   opacity: 0;
   animation: ${fadeIn} 2s ease-in-out 1s forwards;
+  font-size: 0.875rem;
+  font-weight: 400;
+  color: #6b7280;
 `;
 
 export const EvaluationGuideLabel = () => {

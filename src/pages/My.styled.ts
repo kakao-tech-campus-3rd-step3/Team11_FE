@@ -155,10 +155,10 @@ export const ProfileImagePlaceholder = styled.div`
 
 export const MainContentCard = styled.div`
   background: white;
-  border-radius: 8px 8px 2px 2px;
+  border-radius: 0.75rem 0.75rem 0.5rem 0.5rem;
   padding: 40px 1.5rem 1.5rem 1.5rem;
   margin-top: 40px;
-  margin-bottom: 2px;
+  margin-bottom: 10px;
 
   position: relative;
   z-index: 100;
@@ -168,9 +168,9 @@ export const MainContentCard = styled.div`
 
 export const SectionCard = styled.div`
   background: white;
-  border-radius: 2px;
+  border-radius: 0.5rem;
   padding: 1.5rem;
-  margin-bottom: 2px;
+  margin-bottom: 10px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   position: relative;
   z-index: 100;

@@ -28,6 +28,7 @@ const Title = styled.div`
   left: 2rem;
   font-size: 1rem;
   font-weight: 500;
+  color: #374151;
 `;
 
 const List = styled.div`
