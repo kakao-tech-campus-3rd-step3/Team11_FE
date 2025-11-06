@@ -20,7 +20,10 @@ const Container = styled.div`
   width: 6rem;
 `;
 
-const Avatar = styled.div<{ imageUrl: string; isOwner: boolean }>`
+const Avatar = styled.div<{ imageUrl?: string; isOwner: boolean }>`
+  display: flex;
+  justify-content: center;
+  align-items: center;
   height: 3rem;
   aspect-ratio: 1/1;
   border-radius: 1.5rem;
@@ -28,10 +31,11 @@ const Avatar = styled.div<{ imageUrl: string; isOwner: boolean }>`
   background-image: url(${(props) => props.imageUrl});
   background-size: cover;
   background-position: center;
-  border-width: ${(props) => (props.isOwner ? '0.2rem' : '0.05rem')};
+  border-width: ${(props) => (props.isOwner ? '0.2rem' : '0.15rem')};
   border-color: ${(props) => (props.isOwner ? 'green' : 'black')};
   box-sizing: border-box;
   cursor: pointer;
+  overflow: hidden;
 `;
 
 const NameTag = styled.div`
@@ -63,7 +67,22 @@ export const Participant = ({ myId, isHost, participant, meetUpId }: Participant
   return (
     <>
       <Container ref={avatarRef}>
-        <Avatar imageUrl={participant.profile.imageUrl} isOwner={isOwner} onClick={handleClick} />
+        {participant.profile.imageUrl ? (
+          <Avatar imageUrl={participant.profile.imageUrl} isOwner={isOwner} onClick={handleClick} />
+        ) : (
+          <Avatar isOwner={isOwner} onClick={handleClick}>
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M20 21V19C20 17.9391 19.5786 16.9217 18.8284 16.1716C18.0783 15.4214 17.0609 15 16 15H8C6.93913 15 5.92172 15.4214 5.17157 16.1716C4.42143 16.9217 4 17.9391 4 19V21"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+              <circle cx="12" cy="7" r="4" stroke="currentColor" strokeWidth="2" />
+            </svg>
+          </Avatar>
+        )}
         <NameTag>{participant.profile.nickname}</NameTag>
       </Container>
 
