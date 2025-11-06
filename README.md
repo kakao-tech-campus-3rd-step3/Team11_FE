@@ -4,7 +4,7 @@
 
 > [https://www.momeet.click](https://www.momeet.click)
 
-### 프로젝트 소개
+### 서비스 소개
 
 **Momeet**은 “Moment of Meeting”의 줄임말로, **만남의 순간**이라는 의미를 담고 있습니다. <br>
 많은 사용자들이 새로운 사람들과의 만남을 보다 빠르고 편리하게 이어갈 수 있도록 돕는 서비스입니다.
