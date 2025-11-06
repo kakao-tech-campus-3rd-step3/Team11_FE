@@ -2,7 +2,7 @@
 export interface Meetup {
   meetupId: string;
   name: string;
-  category: 'SPORTS' | 'STUDY' | 'GAME' | 'MUKBANG' | 'MOVIE' | 'OTHER';
+  category: 'SPORTS' | 'STUDY' | 'GAME' | 'FOOD' | 'CULTUR_ARTS' | 'OTAKU' | 'TRAVEL' | 'OTHER';
   startAt: string;
   endAt: string;
   participantCount: number;
@@ -23,4 +23,3 @@ export interface EvaluationListResponse {
   content: Meetup[];
   page: PageInfo;
 }
-

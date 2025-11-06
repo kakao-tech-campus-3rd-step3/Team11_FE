@@ -1,5 +1,4 @@
-// src/hooks/useMeetings.ts
-import { useState, useEffect, useCallback, useRef } from 'react'; // useRef 임포트
+import { useState, useEffect, useCallback } from 'react';
 import type { Meeting } from '@/types/meeting';
 import { ERROR_MESSAGES } from '@/constants/messages';
 import api from '@/api/clients/axiosInstance';
@@ -30,11 +29,6 @@ export const useMeetings = (
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // --- 여기가 수정되었습니다 ---
-  // idle 리스너를 ref로 관리합니다.
-  const idleListener = useRef<any>(null);
-  // --- 수정 끝 ---
-
   const fetchMeetings = useCallback(async () => {
     if (!map) return;
 
@@ -64,12 +58,11 @@ export const useMeetings = (
       }
 
       if (selectedCategories.length > 0) {
-        const apiCategories = selectedCategories
-          .map((korCategory) => categoryMap[korCategory])
-          .filter(Boolean);
+        const singleCategoryInKorean = selectedCategories[0];
+        const apiCategory = categoryMap[singleCategoryInKorean];
 
-        if (apiCategories.length > 0) {
-          params.category = apiCategories.join(',');
+        if (apiCategory) {
+          params.category = apiCategory;
         }
       }
 
@@ -78,15 +71,9 @@ export const useMeetings = (
       }
 
       const response = await api.get('/api/meetups/geo', { params });
-      const meetingData = response.data;
 
-      let filteredData = Array.isArray(meetingData) ? meetingData : [];
-      if (query) {
-        filteredData = filteredData.filter((meeting) =>
-          meeting.name.toLowerCase().includes(query.toLowerCase()),
-        );
-      }
-      setMeetings(filteredData);
+      const meetingData = response.data;
+      setMeetings(Array.isArray(meetingData) ? meetingData : []);
     } catch (err: any) {
       console.error('모임 정보를 불러오는 데 실패했습니다.', err);
       const errorMessage = err.message || '알 수 없는 오류';
@@ -102,25 +89,21 @@ export const useMeetings = (
   }, [map, selectedCategories, selectedRadius, query, isFilteredFromSearch, searchCenter]);
 
   useEffect(() => {
-    if (!map) return;
-
-    fetchMeetings();
-
-    if (idleListener.current) {
-      window.kakao.maps.event.removeListener(map, 'idle', idleListener.current);
-      idleListener.current = null;
+    if (!map || isFilteredFromSearch) {
+      return;
     }
-
-    if (!isFilteredFromSearch) {
-      idleListener.current = window.kakao.maps.event.addListener(map, 'idle', fetchMeetings);
-    }
-
+    window.kakao.maps.event.addListener(map, 'idle', fetchMeetings);
     return () => {
-      if (idleListener.current) {
-        window.kakao.maps.event.removeListener(map, 'idle', idleListener.current);
-      }
+      window.kakao.maps.event.removeListener(map, 'idle', fetchMeetings);
     };
   }, [map, fetchMeetings, isFilteredFromSearch]);
+
+  useEffect(() => {
+    if (!map) {
+      return;
+    }
+    fetchMeetings();
+  }, [map, fetchMeetings]);
 
   return { meetings, isLoading, error };
 };
