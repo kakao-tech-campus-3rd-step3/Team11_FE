@@ -1,36 +1,55 @@
 import styled from 'styled-components';
 import { StyledSelect } from './StyledComponents';
+import { colors } from '@/style/themes';
 
 const TimePickerContainer = styled.div`
   display: grid;
   grid-template-columns: 1fr;
-  font-size: 0.875rem;
-  margin-bottom: 8px;
-  gap: 16px;
+  gap: 1rem;
 `;
 
 const TimeInputWrapper = styled.div`
   display: grid;
   grid-template-columns: 2.5fr 1.5fr 1.5fr;
-  gap: 8px;
+  gap: 0.5rem;
   align-items: center;
 `;
 
 const DateInput = styled.input`
-  padding: 11px;
-  font-size: 0.875rem;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
+  padding: 0.75rem;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5rem;
+  border: 1px solid rgb(229, 231, 235);
+  border-radius: 0.5rem;
   background-color: #f9fafb;
-  color: #333;
+  color: rgb(42, 48, 56);
   box-sizing: border-box;
   width: 100%;
+  min-height: 3rem;
+  transition: border-color 200ms;
+
+  &:focus {
+    outline: none;
+    border-color: ${colors.primary};
+  }
 `;
 
 const ErrorMessage = styled.p`
   color: #ef4444;
-  font-size: 0.8rem;
-  margin-top: 4px;
+  font-size: 0.75rem;
+  font-weight: 400;
+  line-height: 1rem;
+  margin-top: 0.25rem;
+`;
+
+const TimeLabel = styled.label`
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.25rem;
+  color: rgb(42, 48, 56);
+  margin-bottom: 0.5rem;
 `;
 
 interface TimePickerProps {
@@ -110,11 +129,11 @@ export const TimePicker = ({ startTime, endTime, onChange, error }: TimePickerPr
   return (
     <TimePickerContainer>
       <div>
-        <label>시작 시간</label>
+        <TimeLabel>시작 시간</TimeLabel>
         <CustomTimeInput name="startTime" value={startTime} onChange={onChange} />
       </div>
       <div>
-        <label>종료 시간</label>
+        <TimeLabel>종료 시간</TimeLabel>
         <CustomTimeInput name="endTime" value={endTime} onChange={onChange} />
       </div>
       {error && <ErrorMessage>{error}</ErrorMessage>}

@@ -3,19 +3,26 @@ import { colors } from '@/style/themes';
 
 export const StyledInput = styled.input`
   width: 100%;
-  padding: 12px;
-  font-size: 1rem;
-  border: 1px solid ${colors.secondary200};
-  border-radius: 8px;
   box-sizing: border-box;
+  color: rgb(42, 48, 56);
+  transition: border-color 200ms;
+  border-style: solid;
+  min-height: 3rem;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5rem;
+  padding: 0.75rem;
+  border-width: 1px;
+  border-color: rgb(229, 231, 235);
+  border-radius: 0.5rem;
 
   &::placeholder {
-    color: ${colors.secondary300};
+    color: rgb(156, 163, 175);
   }
 
   &:focus {
     outline: none;
-    border-color: ${colors.primary400};
+    border-color: ${colors.primary};
   }
 `;
 
@@ -30,5 +37,5 @@ export const StyledSelect = styled(StyledInput).attrs({ as: 'select' })`
 export const Grid = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 16px;
+  gap: 1rem;
 `;

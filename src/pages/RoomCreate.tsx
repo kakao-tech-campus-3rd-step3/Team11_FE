@@ -31,7 +31,7 @@ const PageContainer = styled.div<{ $closing?: boolean }>`
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  background-color: #f0f0f0;
+  background-color: rgb(255, 255, 255);
   position: fixed;
   top: 0;
   left: 0;
@@ -43,28 +43,29 @@ const PageContainer = styled.div<{ $closing?: boolean }>`
 
 const FormContainer = styled.form`
   flex: 1;
-  background-color: #ffffff;
-  padding: 24px 16px;
+  background-color: rgb(255, 255, 255);
+  padding: 1.5rem;
   overflow-y: auto;
   padding-top: 7rem;
 `;
 
 const InputGroup = styled.div`
-  margin-bottom: 24px;
+  margin-bottom: 1.5rem;
 `;
 
 const Label = styled.label`
   display: block;
   font-size: 0.875rem;
   font-weight: 500;
-  color: #555;
-  margin-bottom: 8px;
+  line-height: 1.25rem;
+  color: rgb(42, 48, 56);
+  margin-bottom: 0.5rem;
 `;
 
 const Grid = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 16px;
+  gap: 1rem;
 
   @media (max-width: 420px) {
     grid-template-columns: 1fr;
@@ -73,12 +74,15 @@ const Grid = styled.div`
 
 const LocationButton = styled(Link)`
   width: 100%;
-  padding: 12px;
+  min-height: 3rem;
+  padding: 0.75rem;
   font-size: 1rem;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
+  font-weight: 400;
+  line-height: 1.5rem;
+  border: 1px solid rgb(229, 231, 235);
+  border-radius: 0.5rem;
   background-color: #f9fafb;
-  color: #333;
+  color: rgb(42, 48, 56);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -86,24 +90,36 @@ const LocationButton = styled(Link)`
   cursor: pointer;
   box-sizing: border-box;
   text-decoration: none;
+  transition: border-color 200ms;
+
+  &:focus {
+    outline: none;
+    border-color: ${colors.primary};
+  }
 `;
 
 const SubmitButton = styled.button`
   width: 100%;
-  padding: 16px;
-  font-size: 1.125rem;
+  height: 3.25rem;
+  font-size: 1rem;
   font-weight: 600;
-  color: #ffffff;
-  background-color: ${colors.primary400};
+  line-height: 1.5rem;
+  color: rgba(255, 255, 255, 1);
+  background-color: ${colors.primary};
   border: none;
-  border-radius: 12px;
+  border-radius: 0.5rem;
   cursor: pointer;
-  margin-top: 16px;
-  transition: background-color 0.2s;
+  margin-top: 1rem;
+  transition: opacity 0.2s ease;
+
+  &:active:not(:disabled) {
+    opacity: 0.8;
+  }
 
   &:disabled {
     background-color: ${colors.secondary300};
     cursor: not-allowed;
+    opacity: 0.5;
   }
 `;
 

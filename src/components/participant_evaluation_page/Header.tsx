@@ -36,7 +36,7 @@ const HeaderContent = styled.div`
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  border-bottom: 1px solid black;
+  border-bottom: 0.5px solid #e5e7eb;
 `;
 
 const RoomTitle = styled.div`
@@ -44,6 +44,7 @@ const RoomTitle = styled.div`
   top: 1.1rem;
   font-size: 1rem;
   font-weight: 500;
+  color: #374151;
   animation: ${slideUp} 1s ease-in-out forwards;
 `;
 
@@ -67,6 +68,7 @@ export const Header = () => {
           <BackArrow
             width={BACKARROW_SVG_SIZE}
             height={BACKARROW_SVG_SIZE}
+            fill="#6b7280"
             style={{ position: 'absolute', left: 0 }}
           />
         </Button>

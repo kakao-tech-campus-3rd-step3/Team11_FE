@@ -39,6 +39,7 @@ const Text = styled.div`
   margin-left: 0.5rem;
   font-size: 0.85rem;
   font-weight: 500;
+  color: #6b7280;
 `;
 
 export const ParticipantList = ({ myId, isHost, participants, meetUpId }: ParticipantListProps) => {

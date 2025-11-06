@@ -25,7 +25,7 @@ export const BadgeSection = styled(SectionBase)`
 
 export const BadgeContainer = styled.div`
   display: flex;
-  gap: 12px;
+  gap: 0.75rem;
   flex-wrap: wrap;
   min-height: 60px;
 `;
@@ -34,20 +34,12 @@ export const BadgeItem = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
-  padding: 8px;
-  border-radius: 8px;
+  gap: 0.25rem;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
   background-color: #f9fafb;
-  border: 1px solid #e5e7eb;
+  border: 1px solid rgb(243, 244, 246);
   min-width: 80px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-
-  &:hover {
-    background-color: #f3f4f6;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  }
 `;
 
 export const BadgeIcon = styled.img`
@@ -58,17 +50,20 @@ export const BadgeIcon = styled.img`
 
 export const BadgeName = styled.span`
   font-size: 0.75rem;
-  color: #374151;
-  text-align: center;
   font-weight: 500;
+  line-height: 1rem;
+  color: rgb(42, 48, 56);
+  text-align: center;
 `;
 
 export const EmptyBadgeMessage = styled.div`
   width: 100%;
   text-align: center;
-  color: #9ca3af;
+  color: rgb(156, 163, 175);
   font-size: 0.875rem;
-  padding: 20px 0;
+  font-weight: 400;
+  line-height: 1.25rem;
+  padding: 1.25rem 0;
 `;
 
 export const TitleContainer = styled.div`
@@ -97,17 +92,13 @@ export const BackButton = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background-color 0.2s ease;
   z-index: 11;
-
-  &:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-  }
 `;
 
 export const HeaderTitle = styled.h1`
-  font-size: 24px;
+  font-size: 1.5rem;
   font-weight: 600;
+  line-height: 2rem;
   color: white;
   margin: 0;
   position: relative;
@@ -164,10 +155,10 @@ export const ProfileImagePlaceholder = styled.div`
 
 export const MainContentCard = styled.div`
   background: white;
-  border-radius: 8px 8px 2px 2px;
-  padding: 40px 20px 20px 20px;
+  border-radius: 0.75rem 0.75rem 0.5rem 0.5rem;
+  padding: 40px 1.5rem 1.5rem 1.5rem;
   margin-top: 40px;
-  margin-bottom: 2px;
+  margin-bottom: 10px;
 
   position: relative;
   z-index: 100;
@@ -177,9 +168,9 @@ export const MainContentCard = styled.div`
 
 export const SectionCard = styled.div`
   background: white;
-  border-radius: 2px;
-  padding: 20px;
-  margin-bottom: 2px;
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  margin-bottom: 10px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   position: relative;
   z-index: 100;
@@ -195,33 +186,35 @@ export const ScrollableCardContent = styled.div`
 
 export const UserInfo = styled.div`
   text-align: center;
-  margin-top: 20px;
-  margin-bottom: 30px;
+  margin-top: 1.25rem;
+  margin-bottom: 1.875rem;
 `;
 
 export const UserBasicInfo = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 12px;
+  gap: 0.75rem;
   flex-wrap: wrap;
-  margin-bottom: 8px;
+  margin-bottom: 0.5rem;
 `;
 
 export const UserName = styled.h2`
-  font-size: 20px;
+  font-size: 1.25rem;
   font-weight: 600;
-  color: #2c3e50;
+  line-height: 1.75rem;
+  color: rgb(42, 48, 56);
   margin: 0;
 `;
 
 export const UserTag = styled.span`
-  font-size: 14px;
-  color: #666;
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.25rem;
+  color: rgb(107, 114, 128);
   background: #f0f0f0;
   padding: 4px 8px;
   border-radius: 12px;
-  font-weight: 500;
 `;
 
 // 호환성을 위한 별칭
@@ -230,16 +223,16 @@ export const UserGender = UserTag;
 
 
 export const ProfileInfoSection = styled.div`
-  margin: 20px 0;
-  padding: 0 20px;
+  margin: 1.25rem 0;
+  padding: 0 1.5rem;
 `;
 
 export const ProfileInfoItem = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px 0;
-  border-bottom: 1px solid #f0f0f0;
+  padding: 1rem 0;
+  border-bottom: 1px solid rgb(220, 222, 227);
 
   &:last-child {
     border-bottom: none;
@@ -247,14 +240,17 @@ export const ProfileInfoItem = styled.div`
 `;
 
 export const InfoLabel = styled.span`
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 500;
-  color: #333;
+  line-height: 1.5rem;
+  color: rgb(42, 48, 56);
 `;
 
 export const InfoValue = styled.span`
-  font-size: 16px;
-  color: #666;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5rem;
+  color: rgb(107, 114, 128);
   text-align: right;
   max-width: 60%;
   word-wrap: break-word;
@@ -263,8 +259,8 @@ export const InfoValue = styled.span`
 export const SelfIntroItem = styled.div`
   display: flex;
   flex-direction: column;
-  padding: 20px 0;
-  border-bottom: 1px solid #f0f0f0;
+  padding: 1.25rem 0;
+  border-bottom: 1px solid rgb(220, 222, 227);
 
   &:last-child {
     border-bottom: none;
@@ -273,25 +269,28 @@ export const SelfIntroItem = styled.div`
 
 export const SelfIntroContent = styled.div`
   background: #f8f9fa;
-  border-radius: 12px;
-  padding: 16px;
-  min-height: 80px;
-  border: 0.2px solid #e9ecef;
+  border-radius: 0.75rem;
+  padding: 1rem;
+  min-height: 5rem;
+  border: 1px solid rgb(243, 244, 246);
   transition: border-color 0.2s ease;
-  margin-top: 12px;
+  margin-top: 0.75rem;
 `;
 
 export const SelfIntroText = styled.p`
-  font-size: 16px;
-  line-height: 1.6;
-  color: #333;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5rem;
+  color: rgb(42, 48, 56);
   margin: 0;
   word-wrap: break-word;
 `;
 
 export const SelfIntroPlaceholder = styled.p`
-  font-size: 16px;
-  color: #999;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5rem;
+  color: rgb(156, 163, 175);
   margin: 0;
   font-style: italic;
 `;
@@ -300,24 +299,26 @@ export const ActionButtons = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 16px;
-  margin-top: 30px;
+  gap: 1rem;
+  margin-top: 1.875rem;
 `;
 
-export const SaveButton = styled.button`
+export const SaveButton = styled.button<{ notVaild?: boolean }>`
   flex: 1;
-  padding: 16px;
+  height: 3.25rem;
   background: ${colors.primary};
-  color: white;
+  color: rgba(255, 255, 255, 1);
   border: none;
-  border-radius: 4px;
-  font-size: 16px;
+  border-radius: 0.5rem;
+  font-size: 1rem;
   font-weight: 600;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
+  line-height: 1.5rem;
+  cursor: ${({ notVaild }) => (notVaild ? 'not-allowed' : 'pointer')};
+  opacity: ${({ notVaild }) => (notVaild ? '0.5' : '1')};
+  transition: opacity 0.2s ease;
 
-  &:hover {
-    background: ${colors.primary400};
+  &:active:not(:disabled) {
+    opacity: 0.8;
   }
 `;
 
@@ -358,22 +359,25 @@ export const ModalHeader = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20px;
-  border-bottom: 1px solid #f0f0f0;
+  padding: 1.25rem;
+  border-bottom: 1px solid rgb(229, 231, 235);
 `;
 
 export const ModalTitle = styled.h2`
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 600;
-  color: #333;
+  line-height: 1.75rem;
+  color: rgb(42, 48, 56);
   margin: 0;
 `;
 
 export const CloseButton = styled.button`
   background: none;
   border: none;
-  font-size: 24px;
-  color: #666;
+  font-size: 1.5rem;
+  font-weight: 400;
+  line-height: 2rem;
+  color: rgb(107, 114, 128);
   cursor: pointer;
   padding: 0;
   width: 24px;
@@ -381,35 +385,52 @@ export const CloseButton = styled.button`
   display: flex;
   justify-content: center;
   align-items: center;
+  transition: opacity 0.2s ease;
+
+  &:active:not(:disabled) {
+    opacity: 0.8;
+  }
 `;
 
 export const ModalBody = styled.div`
-  padding: 20px;
+  padding: 1.25rem;
 `;
 
 export const FormField = styled.div`
-  margin-bottom: 20px;
+  margin-bottom: 1.25rem;
 `;
 
 export const FormLabel = styled.label`
   display: block;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 500;
-  color: #333;
-  margin-bottom: 8px;
+  line-height: 1.25rem;
+  color: rgb(42, 48, 56);
+  margin-bottom: 0.5rem;
 `;
 
 const FormInputBase = `
   width: 100%;
-  padding: 12px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 16px;
   box-sizing: border-box;
+  color: rgb(42, 48, 56);
+  transition: border-color 200ms;
+  border-style: solid;
+  min-height: 3rem;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5rem;
+  padding: 0.75rem;
+  border-width: 1px;
+  border-color: rgb(229, 231, 235);
+  border-radius: 0.5rem;
 
   &:focus {
     outline: none;
     border-color: ${colors.primary};
+  }
+
+  &::placeholder {
+    color: rgb(156, 163, 175);
   }
 `;
 
@@ -420,28 +441,31 @@ export const FormInput = styled.input`
 export const FormTextArea = styled.textarea`
   ${FormInputBase}
   resize: vertical;
-  min-height: 80px;
+  min-height: 5rem;
+  padding: 0.75rem;
 `;
 
 export const ButtonGroup = styled.div`
   display: flex;
-  gap: 12px;
-  margin-top: 20px;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
 `;
 
 export const CancelButton = styled.button`
   flex: 1;
-  padding: 12px;
+  height: 3.25rem;
   background: #f8f9fa;
-  color: #666;
+  color: rgb(107, 114, 128);
   border: none;
-  border-radius: 4px;
-  font-size: 16px;
-  font-weight: 500;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.5rem;
   cursor: pointer;
+  transition: opacity 0.2s ease;
 
-  &:hover {
-    background: #e9ecef;
+  &:active:not(:disabled) {
+    opacity: 0.8;
   }
 `;
 
@@ -449,64 +473,65 @@ const DangerButtonBase = styled.button`
   background: #ef4444;
   color: white;
   border: none;
-  font-weight: 500;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.5rem;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: opacity 0.2s ease;
 
-  &:hover {
-    background: #dc2626;
+  &:active:not(:disabled) {
+    opacity: 0.8;
   }
 `;
 
 export const DeleteButton = styled(DangerButtonBase)`
   flex: 1;
-  padding: 12px;
-  border-radius: 4px;
-  font-size: 16px;
+  height: 3.25rem;
+  border-radius: 0.5rem;
 `;
 
 export const GenderButtonGroup = styled.div`
   display: flex;
-  gap: 12px;
+  gap: 0.75rem;
   width: 100%;
 `;
 
 export const GenderButton = styled.button<{ selected: boolean }>`
   flex: 1;
-  padding: 12px;
-  border: 2px solid ${(props) => (props.selected ? colors.primary : '#ddd')};
-  background: ${(props) => (props.selected ? colors.primary : 'white')};
-  color: ${(props) => (props.selected ? 'white' : '#666')};
-  border-radius: 4px;
-  font-size: 16px;
+  height: 3.25rem;
+  border: ${(props) => (props.selected ? `2px solid ${colors.primary}` : 'none')};
+  background: ${(props) => (props.selected ? colors.primary : 'rgb(243, 244, 246)')};
+  color: ${(props) => (props.selected ? 'white' : 'rgb(42, 48, 56)')};
+  border-radius: 0.5rem;
+  font-size: 1rem;
   font-weight: 600;
+  line-height: 1.5rem;
   cursor: pointer;
   transition: all 0.2s ease;
 
-  &:hover {
-    border-color: ${colors.primary};
-    background: ${(props) => (props.selected ? colors.primary400 : '#f8f9fa')};
+  &:active:not(:disabled) {
+    opacity: 0.8;
   }
 `;
 
 // 신고 목록 
 export const ReportListContainer = styled(SectionBase)`
-  padding: 0 20px;
+  padding: 0 1.5rem;
 `;
 
 export const ReportItem = styled.div`
-  padding: 16px;
-  margin-bottom: 12px;
+  padding: 1rem;
+  margin-bottom: 0.75rem;
   background-color: #f9fafb;
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
+  border: 1px solid rgb(243, 244, 246);
+  border-radius: 0.75rem;
 `;
 
 export const ReportItemHeader = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 8px;
+  margin-bottom: 0.5rem;
 `;
 
 export const ReportItemContent = styled.div`
@@ -514,42 +539,48 @@ export const ReportItemContent = styled.div`
 `;
 
 export const ReportCategory = styled.div`
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 500;
-  color: #333;
-  margin-bottom: 4px;
+  line-height: 1.25rem;
+  color: rgb(42, 48, 56);
+  margin-bottom: 0.25rem;
 `;
 
 export const ReportStatus = styled.div`
-  font-size: 12px;
-  color: #666;
+  font-size: 0.75rem;
+  font-weight: 400;
+  line-height: 1rem;
+  color: rgb(107, 114, 128);
 `;
 
 export const ReportDate = styled.div`
-  font-size: 12px;
-  color: #999;
-  margin-top: 4px;
+  font-size: 0.75rem;
+  font-weight: 400;
+  line-height: 1rem;
+  color: rgb(156, 163, 175);
+  margin-top: 0.25rem;
 `;
 
 export const ReportCancelButton = styled(DangerButtonBase)`
-  padding: 6px 12px;
-  border-radius: 6px;
-  font-size: 12px;
+  padding: 0.375rem 0.75rem;
+  border-radius: 0.375rem;
+  font-size: 0.75rem;
+  height: auto;
 `;
 
 export const BlockListContainer = styled(SectionBase)`
-  padding: 0 20px;
+  padding: 0 1.5rem;
 `;
 
 export const BlockItem = styled.div`
-  padding: 16px;
-  margin-bottom: 12px;
+  padding: 1rem;
+  margin-bottom: 0.75rem;
   background-color: #f9fafb;
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
+  border: 1px solid rgb(243, 244, 246);
+  border-radius: 0.75rem;
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 0.75rem;
 `;
 
 export const BlockItemImage = styled.img`
@@ -577,10 +608,11 @@ export const BlockItemContent = styled.div`
 `;
 
 export const BlockItemNickname = styled.div`
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 600;
-  color: #333;
-  margin-bottom: 4px;
+  line-height: 1.5rem;
+  color: rgb(42, 48, 56);
+  margin-bottom: 0.25rem;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -588,98 +620,98 @@ export const BlockItemNickname = styled.div`
 
 export const BlockItemInfo = styled.div`
   display: flex;
-  gap: 12px;
-  font-size: 12px;
-  color: #666;
+  gap: 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 400;
+  line-height: 1rem;
+  color: rgb(107, 114, 128);
 `;
 
 export const BlockItemTemperature = styled.span`
-  color: #666;
+  color: rgb(107, 114, 128);
 `;
 
 export const BlockItemDate = styled.span`
-  color: #999;
+  color: rgb(156, 163, 175);
 `;
 
 export const BlockUnblockButton = styled.button`
-  padding: 8px 16px;
-  border-radius: 6px;
-  font-size: 14px;
-  font-weight: 500;
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.25rem;
   background: #f8f9fa;
-  color: #666;
+  color: rgb(107, 114, 128);
   border: 1px solid #e5e7eb;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: opacity 0.2s ease;
   white-space: nowrap;
 
-  &:hover {
-    background: #e9ecef;
-    border-color: #d1d5db;
+  &:active:not(:disabled) {
+    opacity: 0.8;
   }
 `;
 
 // 유저 프로필 페이지 스타일
 export const CenterMessage = styled.div`
   text-align: center;
-  padding: 20px;
+  padding: 1.25rem;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5rem;
+  color: rgb(107, 114, 128);
 `;
 
 export const LoadingMessage = CenterMessage;
 export const ErrorMessage = CenterMessage;
 
 export const BadgeLabel = styled(InfoLabel)`
-  margin-bottom: 12px;
+  margin-bottom: 0.75rem;
   display: block;
 `;
 
 export const ReportButtonContainer = styled.div`
-  padding: 20px;
-  margin-top: 24px;
+  padding: 1.25rem;
+  margin-top: 1.5rem;
   display: flex;
-  gap: 12px;
+  gap: 0.75rem;
 `;
 
 export const ReportButton = styled(DangerButtonBase)`
   flex: 1;
-  padding: 12px;
-  border-radius: 4px;
-  font-size: 16px;
+  height: 3.25rem;
+  border-radius: 0.5rem;
 `;
 
 // 모임 목록 스타일
 export const MeetupListContainer = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 0.75rem;
 `;
 
 export const MeetupItem = styled.div`
-  padding: 16px;
+  padding: 1rem;
   background-color: #f9fafb;
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
-  transition: all 0.2s ease;
-
-  &:hover {
-    background-color: #f3f4f6;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  }
+  border: 1px solid rgb(243, 244, 246);
+  border-radius: 0.75rem;
 `;
 
 export const MeetupItemHeader = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 12px;
-  padding-bottom: 12px;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.75rem;
   border-bottom: 1px solid #e5e7eb;
 `;
 
 export const MeetupName = styled.h3`
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 600;
-  color: #333;
+  line-height: 1.5rem;
+  color: rgb(42, 48, 56);
   margin: 0;
   flex: 1;
 `;
@@ -697,35 +729,42 @@ export const MeetupCategory = styled.span`
 export const MeetupItemContent = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 0.5rem;
 `;
 
 export const MeetupInfo = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 14px;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
 `;
 
 export const MeetupInfoLabel = styled.span`
+  font-size: 0.875rem;
   font-weight: 500;
-  color: #666;
+  line-height: 1.25rem;
+  color: rgb(107, 114, 128);
 `;
 
 export const MeetupInfoValue = styled.span`
-  color: #333;
+  font-size: 0.875rem;
+  font-weight: 400;
+  line-height: 1.25rem;
+  color: rgb(42, 48, 56);
   text-align: right;
   flex: 1;
-  margin-left: 12px;
+  margin-left: 0.75rem;
 `;
 
 export const MeetupStatus = styled.span<{ evaluated: boolean }>`
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 500;
-  padding: 4px 8px;
-  border-radius: 6px;
+  line-height: 1rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.375rem;
   width: fit-content;
-  margin-top: 8px;
+  margin-top: 0.5rem;
   ${(props) =>
     props.evaluated
       ? `

@@ -16,8 +16,8 @@ const Container = styled.div`
   align-items: center;
   width: 100%;
   height: 5rem;
-  border: 1px solid black;
-  border-radius: 1rem;
+  border: 1px solid rgb(243, 244, 246);
+  border-radius: 0.5rem;
   margin-bottom: 1rem;
   box-sizing: border-box;
 `;
@@ -31,7 +31,7 @@ const Avatar = styled.div<{ imageUrl?: string }>`
   height: 3rem;
   aspect-ratio: 1/1;
   border-radius: 1.5rem;
-  border: 1px solid black;
+  border: 1px solid #9ca3af;
   background-image: url(${(props) => props.imageUrl});
   background-size: cover;
   background-position: center;
@@ -40,8 +40,9 @@ const Avatar = styled.div<{ imageUrl?: string }>`
 const Name = styled.div`
   position: absolute;
   left: 5rem;
-  font-size: 1rem;
-  font-weight: 500;
+  font-size: 0.875rem;
+  font-weight: 400;
+  color: #6b7280;
 `;
 
 const ThumbUp = styled(ThumbUpSVG)<{ isClicked: boolean }>`
@@ -50,7 +51,7 @@ const ThumbUp = styled(ThumbUpSVG)<{ isClicked: boolean }>`
   width: 2rem;
   height: 2rem;
   cursor: pointer;
-  fill: ${(props) => (props.isClicked ? 'black' : '#aeaeb2')};
+  fill: ${(props) => (props.isClicked ? '#374151' : '#9ca3af')};
 `;
 
 const ThumbDown = styled(ThumbDownSVG)<{ isClicked: boolean }>`
@@ -59,7 +60,7 @@ const ThumbDown = styled(ThumbDownSVG)<{ isClicked: boolean }>`
   width: 2rem;
   height: 2rem;
   cursor: pointer;
-  fill: ${(props) => (props.isClicked ? 'black' : '#aeaeb2')};
+  fill: ${(props) => (props.isClicked ? '#374151' : '#9ca3af')};
 `;
 
 export const Participant = ({ info, setEvaluations }: ParticipantProps) => {

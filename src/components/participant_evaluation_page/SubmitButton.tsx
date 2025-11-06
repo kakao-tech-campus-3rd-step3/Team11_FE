@@ -30,14 +30,15 @@ const Button = styled.button`
   align-items: center;
   color: white;
   border: none;
-  border-radius: 0.75rem;
+  border-radius: 0.5rem;
   font-size: 1rem;
-  font-weight: 500;
+  font-weight: 600;
+  line-height: 1.5rem;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: opacity 0.2s ease;
 
-  &:hover {
-    background-color: #f95858;
+  &:active:not(:disabled) {
+    opacity: 0.8;
   }
 `;
 

@@ -36,7 +36,7 @@ const Header = styled.div`
   justify-content: flex-end;
   align-items: flex-start;
   box-sizing: border-box;
-  border-bottom: 1px solid black;
+  border-bottom: 0.5px solid #e5e7eb;
 `;
 
 const Button = styled.button`
@@ -57,13 +57,17 @@ const Option = styled.button`
   height: 5.5rem;
   font-size: 1rem;
   font-weight: 500;
-  color: #000000;
-  transition: color 0.3s ease;
-  transition: background-color 0.3s ease;
+  color: #374151;
+  transition: all 0.2s ease;
+  border-bottom: 0.5px solid #f3f4f6;
 
   &:hover {
     color: #ffffff;
-    background-color: #ff8a8a;
+    background-color: #ef4444;
+  }
+
+  &:active {
+    background-color: #dc2626;
   }
 `;
 
@@ -86,7 +90,7 @@ export const Sidebar = ({
           <Undo
             width={UNDO_SVG_SIZE}
             height={UNDO_SVG_SIZE}
-            fill="#000000"
+            fill="#6b7280"
             style={{ marginLeft: '0.7rem', marginBottom: '0.7rem' }}
           />
         </Button>

@@ -20,19 +20,23 @@ interface ProfileOptionsProps {
 const ProfileOptionsContainer = styled.div`
   position: absolute;
   background: white;
-  border: 1px solid #ddd;
-  border-radius: 0.5rem;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  border: 0.5px solid #e5e7eb;
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   padding: 0.5rem;
   z-index: 100;
 `;
 
 const Option = styled.div`
-  padding: 0.3rem 0.6rem;
-  font-size: 0.8rem;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.85rem;
+  color: #374151;
   cursor: pointer;
+  border-radius: 0.5rem;
+  transition: background-color 0.2s ease;
+  
   &:hover {
-    background-color: #f3f3f3;
+    background-color: #f3f4f6;
   }
 `;
 
