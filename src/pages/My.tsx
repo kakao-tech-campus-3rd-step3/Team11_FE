@@ -485,7 +485,7 @@ const My = () => {
                             evaluated={meetup.evaluated}
                             onClick={() => {
                               if (!meetup.evaluated) {
-                                navigate('/participant-evaluation');
+                                navigate(`/participant-evaluation?meetUpId=${meetup.meetupId}`);
                               }
                             }}
                             style={{
@@ -610,9 +610,12 @@ const My = () => {
                         <BlockItemContent>
                           <BlockItemNickname>{blockedUser.nickname}</BlockItemNickname>
                           <BlockItemInfo>
-                            <BlockItemTemperature>온도: {blockedUser.temperature}°C</BlockItemTemperature>
+                            <BlockItemTemperature>
+                              온도: {blockedUser.temperature}°C
+                            </BlockItemTemperature>
                             <BlockItemDate>
-                              차단일: {new Date(blockedUser.blockedAt).toLocaleDateString('ko-KR', {
+                              차단일:{' '}
+                              {new Date(blockedUser.blockedAt).toLocaleDateString('ko-KR', {
                                 year: 'numeric',
                                 month: 'long',
                                 day: 'numeric',
@@ -635,7 +638,9 @@ const My = () => {
                                   setBlockedUsers(data.content);
                                 } catch (error: any) {
                                   console.error('차단 해제 실패:', error);
-                                  showToast(`차단 해제에 실패했습니다: ${error.response?.data?.message || error.message}`);
+                                  showToast(
+                                    `차단 해제에 실패했습니다: ${error.response?.data?.message || error.message}`,
+                                  );
                                 }
                               },
                             });
