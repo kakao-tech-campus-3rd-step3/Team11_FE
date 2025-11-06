@@ -74,16 +74,24 @@ const Label = styled.label`
 `;
 
 const Select = styled.select`
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+
   width: 100%;
-  padding: 12px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  font-size: 16px;
-  box-sizing: border-box;
+  padding: 0.6rem 2.2rem 0.6rem 0.8rem;
+  font-size: 0.9rem;
+  border: 1px solid #ccc;
+  border-radius: 0.5rem;
+  background-color: #f9fafb;
+  color: #222;
+  cursor: pointer;
+  outline: none;
+  transition: border 0.2s ease;
 
   &:focus {
-    outline: none;
-    border-color: ${colors.primary};
+    border: 1px solid #007aff;
+    box-shadow: 0 0 0 2px rgba(0, 122, 255, 0.2);
   }
 `;
 
@@ -202,6 +210,15 @@ const Button = styled.button<{ variant?: 'primary' | 'secondary' }>`
   }
 `;
 
+export const REPORT_CATEGORIES = [
+  { value: 'SPAM', label: '스팸' },
+  { value: 'ABUSE', label: '욕설/비방' },
+  { value: 'SEXUAL', label: '성적 발언/음란물' },
+  { value: 'ILLEGAL', label: '불법 행위' },
+  { value: 'OFFLINE_RISK', label: '오프라인 위험' },
+  { value: 'ETC', label: '기타' },
+];
+
 const ReportModal = ({ isOpen, onClose, targetProfileId, onSuccess }: ReportModalProps) => {
   const [category, setCategory] = useState('SPAM');
   const [detail, setDetail] = useState('');
@@ -279,10 +296,12 @@ const ReportModal = ({ isOpen, onClose, targetProfileId, onSuccess }: ReportModa
         <FormField>
           <Label>신고 카테고리</Label>
           <Select value={category} onChange={(e) => setCategory(e.target.value)}>
-            <option value="SPAM">스팸</option>
-            <option value="ABUSE">욕설/비방</option>
-            <option value="INAPPROPRIATE">부적절한 콘텐츠</option>
-            <option value="OTHER">기타</option>
+            <option value="">-- 신고 유형을 선택하세요 --</option>
+            {REPORT_CATEGORIES.map((cat) => (
+              <option key={cat.value} value={cat.value}>
+                {cat.label}
+              </option>
+            ))}
           </Select>
         </FormField>
 
@@ -297,9 +316,7 @@ const ReportModal = ({ isOpen, onClose, targetProfileId, onSuccess }: ReportModa
 
         <FormField>
           <Label>이미지 첨부 (선택사항)</Label>
-          <FileInputLabel onClick={() => fileInputRef.current?.click()}>
-            이미지 추가
-          </FileInputLabel>
+          <FileInputLabel onClick={() => fileInputRef.current?.click()}>이미지 추가</FileInputLabel>
           <FileInput
             ref={fileInputRef}
             type="file"
@@ -312,9 +329,7 @@ const ReportModal = ({ isOpen, onClose, targetProfileId, onSuccess }: ReportModa
               {imagePreviews.map((preview, index) => (
                 <ImagePreview key={index}>
                   <ImagePreviewImg src={preview} alt={`미리보기 ${index + 1}`} />
-                  <RemoveImageButton onClick={() => handleRemoveImage(index)}>
-                    ×
-                  </RemoveImageButton>
+                  <RemoveImageButton onClick={() => handleRemoveImage(index)}>×</RemoveImageButton>
                 </ImagePreview>
               ))}
             </ImagePreviewContainer>
@@ -335,5 +350,3 @@ const ReportModal = ({ isOpen, onClose, targetProfileId, onSuccess }: ReportModa
 };
 
 export default ReportModal;
-
-

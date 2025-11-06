@@ -4,9 +4,9 @@ import styled from '@emotion/styled';
 import { useNavigate } from 'react-router-dom';
 import { blockUser } from '@/api/services/block.service';
 import { toast } from 'react-toastify';
-import { ReportModal } from './ReportModal';
 import { kickUser } from '@/api/services/meetup_room.service';
 import type { ParticipantDTO } from '@/api/types/meeting_room.dto';
+import ReportModal from '../user_profile/ReportModal';
 
 interface ProfileOptionsProps {
   myId: number | null;
@@ -107,7 +107,14 @@ export const ProfileOptions = ({
         document.body,
       )}
       {isReportOpen && target.profile.id && (
-        <ReportModal onClose={() => setIsReportOpen(false)} targetProfileId={target.profile.id} />
+        <ReportModal
+          isOpen={isReportOpen}
+          onClose={() => setIsReportOpen(false)}
+          targetProfileId={target.profile.id}
+          onSuccess={() => {
+            toast.success('신고가 접수되었습니다.');
+          }}
+        />
       )}
     </>
   );
