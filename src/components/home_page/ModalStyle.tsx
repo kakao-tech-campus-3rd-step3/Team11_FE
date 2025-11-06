@@ -22,12 +22,12 @@ export const ModalContainer = styled.div<{ $isVisible: boolean }>`
   width: 100%;
   max-width: 720px;
   /* max-height: 80vh; */
-  height: 400px;
+  height: 435px;
   background-color: white;
   border-top-left-radius: 20px;
   border-top-right-radius: 20px;
   box-shadow: 0px -2px 10px rgba(0, 0, 0, 0.1);
-  z-index: 1101;
+  z-index: 1111;
   display: flex;
   flex-direction: column;
   transform: translateY(${({ $isVisible }) => ($isVisible ? '0%' : '100%')});
