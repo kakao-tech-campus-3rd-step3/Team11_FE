@@ -78,7 +78,7 @@
 <img width="392" height="851" alt="스크린샷 2025-11-07 오전 1 48 17" src="https://github.com/user-attachments/assets/47808dc4-39bf-4b7e-8979-b3a48abb5ea1" />
 <img width="394" height="852" alt="스크린샷 2025-11-07 오전 1 49 59" src="https://github.com/user-attachments/assets/3653127c-833f-42c5-ac4e-fd2f34e4051c" />
 
-### 🛠️ 기술 스택�️
+### 🛠️ 기술 스택
 
 ![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=Node.js&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=TypeScript&logoColor=white)
