@@ -149,6 +149,7 @@ export const ProfileImage = styled.img`
   object-fit: cover;
   border: 3px solid white;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+  background-color: white;
 `;
 
 export const ProfileImagePlaceholder = styled.div`
