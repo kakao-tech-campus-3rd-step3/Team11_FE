@@ -13,20 +13,6 @@ export const Container = styled.div`
   background-color: #ffffffff;
   overflow: hidden;
 
-  /* Tablet */
-  @media (min-width: 768px) {
-    max-width: 960px;
-  }
-
-  /* Small Desktop */
-  @media (min-width: 1024px) {
-    max-width: 1200px;
-  }
-
-  /* Large Desktop */
-  @media (min-width: 1440px) {
-    max-width: 1320px;
-  }
 `;
 
 export const ContentContanier = styled.div`
