@@ -40,7 +40,7 @@ const ModalHeader = styled.div`
 const ModalTitle = styled.h2`
   font-size: 20px;
   font-weight: 600;
-  color: #333;
+  color: ${colors.secondary800};
   margin: 0;
 `;
 
@@ -48,7 +48,7 @@ const CloseButton = styled.button`
   background: none;
   border: none;
   font-size: 24px;
-  color: #666;
+  color: ${colors.secondary600};
   cursor: pointer;
   padding: 0;
   width: 24px;
@@ -64,14 +64,14 @@ const ModalBody = styled.div`
 
 const Message = styled.p`
   font-size: 16px;
-  color: #666;
+  color: ${colors.secondary600};
   line-height: 1.6;
   margin: 0;
 `;
 
 const WarningMessage = styled.p`
   font-size: 14px;
-  color: #ef4444;
+  color: ${colors.primary500};
   margin-top: 12px;
   line-height: 1.5;
 `;
@@ -94,17 +94,17 @@ const Button = styled.button<{ variant?: 'primary' | 'secondary' }>`
   ${(props) =>
     props.variant === 'primary'
       ? `
-    background: #ef4444;
+    background: ${colors.primary500};
     color: white;
     &:hover {
-      background: #dc2626;
+      background: ${colors.primary400};
     }
   `
       : `
-    background: #f8f9fa;
-    color: #666;
+    background: ${colors.secondary200};
+    color: ${colors.secondary600};
     &:hover {
-      background: #e9ecef;
+      background: ${colors.secondary300};
     }
   `}
 
