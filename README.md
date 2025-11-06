@@ -89,6 +89,6 @@
 ![Redis](https://img.shields.io/badge/Redis-DC382D?style=for-the-badge&logo=redis&logoColor=white)
 ![AWS](https://img.shields.io/badge/AWS-232F3E?style=for-the-badge&logo=amazon-aws&logoColor=FF9900)
 
-### 🛠️ 기능 명세서
+### 📂 기능 명세서
 
 > https://phase-bird-e06.notion.site/0c8bbac744cc46b296ee2e5bf4bb100b?v=f4aed284cef748e699e181f2a2253be7
