@@ -265,7 +265,7 @@ const My = () => {
   // 시도 선택 시 시군구 리스트 가져오기
   const handleSidoChange = async (selectedSido: string) => {
     setSido(selectedSido);
-    setSigungu(''); // 시도 변경 시 시군구 초기화
+    setSigungu(''); 
     setSigunguList([]);
     setSigunguSuggestions([]);
 
@@ -939,7 +939,7 @@ const My = () => {
                             disabled={!sido || isLoadingSigungu}
                             placeholder={isLoadingSigungu ? '시군구 리스트를 불러오는 중...' : '시/군/구 선택 또는 입력'}
                           />
-                          {showSigunguSuggestions && sigunguSuggestions.length > 0 && (
+                              {showSigunguSuggestions && sigunguSuggestions.length > 0 && (
                             <div
                               style={{
                                 position: 'absolute',
@@ -959,7 +959,10 @@ const My = () => {
                               {sigunguSuggestions.map((suggestion, index) => (
                                 <div
                                   key={index}
-                                  onClick={() => handleSigunguSelect(suggestion)}
+                                  onMouseDown={(e) => {
+                                    e.preventDefault(); // onBlur가 발생하지 않도록 방지
+                                    handleSigunguSelect(suggestion);
+                                  }}
                                   style={{
                                     padding: '8px 12px',
                                     cursor: 'pointer',
