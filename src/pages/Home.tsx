@@ -225,7 +225,6 @@ const Home = () => {
   };
 
   const renderMeetingMessage = () => {
-    if (isLoading) return <MessageOverlay>{INFO_MESSAGES.LOADING_MEETINGS}</MessageOverlay>;
     if (error) return <MessageOverlay>{error}</MessageOverlay>;
     if (meetings.length === 0)
       return <MessageOverlay>{INFO_MESSAGES.NO_MEETINGS_FOUND}</MessageOverlay>;
