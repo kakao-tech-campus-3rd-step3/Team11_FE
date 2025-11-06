@@ -17,8 +17,10 @@ const Container = styled.div`
   max-width: 720px;
   height: 3rem;
   font-size: 1rem;
-  color: white;
-  background-color: #ff8a8a;
+  font-weight: 500;
+  color: #ffffff;
+  background-color: #FF8A8A;
+  margin: 0 2rem;
 `;
 
 export const Timer = ({ startAt, isStarted }: TimerProps) => {

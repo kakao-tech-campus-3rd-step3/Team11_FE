@@ -29,11 +29,12 @@ const Profile = styled.div<{ imageUrl?: string }>`
   width: 2rem;
   aspect-ratio: 1/1;
   border-radius: 1rem;
-  border: 1px solid black;
+  border: 0.5px solid #9ca3af;
   background-image: url(${(props) => props.imageUrl});
   background-size: cover;
   background-position: center;
   cursor: pointer;
+  color: #6b7280;
 `;
 
 const SubContainer = styled.div<{ isMine: boolean }>`
@@ -48,6 +49,7 @@ const SubContainer = styled.div<{ isMine: boolean }>`
 const Name = styled.div`
   font-size: 0.75rem;
   font-weight: 400;
+  color: #6b7280;
   margin-left: 0.2rem;
 `;
 
@@ -61,20 +63,22 @@ const Content = styled.div<{ isMine: boolean }>`
   line-height: 1.25rem;
   justify-content: center;
   align-items: center;
-  border: 1px solid black;
-  border-radius: 0.2rem;
+  border: 0.5px solid #9ca3af;
+  border-radius: 0.75rem;
   margin-top: ${({ isMine }) => (isMine ? '0' : '0.2rem')};
   margin-left: ${({ isMine }) => (isMine ? '0' : '0.2rem')};
   margin-right: ${({ isMine }) => (isMine ? '0.2rem' : '0')};
   padding: 0.3rem;
   font-size: 1rem;
   font-weight: 400;
+  color: #374151;
+  background-color: transparent;
 `;
 
 const SystemMessage = styled.div`
-  font-size: 1rem;
+  font-size: 0.9rem;
   font-weight: 400;
-  color: gray;
+  color: #9ca3af;
 `;
 
 export const Message = ({ isHost, myId, meetUpId, senderType, content, sender }: Message) => {

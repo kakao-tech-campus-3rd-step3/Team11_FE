@@ -31,17 +31,19 @@ const Avatar = styled.div<{ imageUrl?: string; isOwner: boolean }>`
   background-image: url(${(props) => props.imageUrl});
   background-size: cover;
   background-position: center;
-  border-width: ${(props) => (props.isOwner ? '0.2rem' : '0.15rem')};
-  border-color: ${(props) => (props.isOwner ? 'green' : 'black')};
+  border-width: ${(props) => (props.isOwner ? '2px' : '1px')};
+  border-color: ${(props) => (props.isOwner ? '#10b981' : '#9ca3af')};
   box-sizing: border-box;
   cursor: pointer;
   overflow: hidden;
+  color: #6b7280;
 `;
 
 const NameTag = styled.div`
   margin-top: 0.5rem;
   font-size: 0.75rem;
   font-weight: 400;
+  color: #6b7280;
   max-width: 6rem;
   white-space: nowrap;
   overflow: hidden;

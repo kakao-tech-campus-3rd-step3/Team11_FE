@@ -39,7 +39,12 @@ const TextArea = styled.textarea`
   padding-right: 3rem;
   box-sizing: border-box;
   overflow-y: auto;
-  background-color: #efefef;
+  background-color: #f3f4f6;
+  color: #374151;
+
+  &::placeholder {
+    color: #9ca3af;
+  }
 `;
 
 const Button = styled.button`
@@ -52,7 +57,7 @@ const Button = styled.button`
 
 const HelperText = styled.div`
   font-size: 0.75rem;
-  color: gray;
+  color: #6b7280;
   margin-top: 0.3rem;
 `;
 
@@ -95,7 +100,10 @@ export const ChatInput = ({ sendMessage, myId }: ChatInputProps) => {
         }}
       />
       <Button onClick={handleClick}>
-        <Send style={{ position: 'absolute', top: '0.75rem', right: '3rem' }} />
+        <Send
+          fill="transparent"
+          style={{ position: 'absolute', top: '0.75rem', right: '3rem' }}
+        />
       </Button>
       <HelperText>Enter: 전송, Shift + Enter: 줄바꿈</HelperText>
     </Container>
