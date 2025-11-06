@@ -20,14 +20,15 @@ export const LoginMain = styled.main`
 `;
 
 export const Logo = styled.img`
-  width: 80%;
-  max-width: 320px;
+  width: 70%;
+  max-width: 240px;
   color: rgb(42, 48, 56);
+  margin-bottom: 1rem;
 `;
 export const LoginSection = styled.section`
   width: 100%;
   max-width: 26.25rem;
-  padding: 16px;
+  padding: 0 1.5rem;
 `;
 
 export const InputSection = styled.input<{ hasError?: boolean }>`
@@ -36,47 +37,56 @@ export const InputSection = styled.input<{ hasError?: boolean }>`
   color: rgb(42, 48, 56);
   transition: border-color 200ms;
   border-style: solid;
-  min-height: 2.75rem;
-  font-size: 16px;
+  min-height: 3rem;
+  font-size: 1rem;
   font-weight: 400;
-  line-height: 1.375rem;
-  padding: 8px 0px;
-  border-width: 0px 0px 1px;
+  line-height: 1.5rem;
+  padding: 0.75rem 0;
+  border-width: 0px 0px 2px;
   border-color: ${({ hasError }) => (hasError ? 'red' : 'rgb(220, 222, 227)')};
   &:focus {
     outline: none;
-    border-color: ${({ hasError }) => (hasError ? 'red' : 'rgb(42, 48, 56)')};
+    border-color: ${({ hasError }) => (hasError ? 'red' : colors.primary)};
+  }
+  &::placeholder {
+    color: rgb(156, 163, 175);
   }
 `;
 
 export const LoginButton = styled.button<{ notVaild?: boolean }>`
   width: 100%;
-  height: 48px;
-  font-size: 20px;
-  font-weight: 400;
-  line-height: 1.1875rem;
+  height: 3.25rem;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.5rem;
   color: rgba(255, 255, 255, 1);
   background-color: ${colors.primary};
-  border-radius: 3px;
+  border-radius: 0.5rem;
   border: none;
   cursor: ${({ notVaild }) => (notVaild ? 'not-allowed' : 'pointer')};
   opacity: ${({ notVaild }) => (notVaild ? '0.5' : '1')};
-  transition: background-color 200ms;
+  transition: opacity 0.2s ease;
+  &:active:not(:disabled) {
+    opacity: 0.8;
+  }
 `;
 
 export const KaKaoLoginBTn = styled.button<{ notVaild?: boolean }>`
   width: 100%;
-  height: 48px;
-  font-size: 20px;
-  font-weight: 400;
-  line-height: 1.1875rem;
+  height: 3.25rem;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.5rem;
   color: #000000;
   background-color: #fee500;
-  border-radius: 3px;
+  border-radius: 0.5rem;
   border: none;
   cursor: ${({ notVaild }) => (notVaild ? 'not-allowed' : 'pointer')};
   opacity: ${({ notVaild }) => (notVaild ? '0.5' : '1')};
-  transition: background-color 200ms;
+  transition: opacity 0.2s ease;
+  &:active:not(:disabled) {
+    opacity: 0.8;
+  }
 `;
 
 export const RegisterButton = styled.button<{ notVaild?: boolean }>`
@@ -101,9 +111,10 @@ export const ErrorMessage = styled.div`
 `;
 
 export const LinkText = styled.span`
-  color: rgb(42, 48, 56);
-  font-size: 14px;
+  color: rgb(107, 114, 128);
+  font-size: 0.875rem;
   font-weight: 400;
+  line-height: 1.25rem;
 `;
 
 export const Spacer = styled.div<{ h?: number; w?: number }>`

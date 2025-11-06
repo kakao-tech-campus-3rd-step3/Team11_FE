@@ -16,6 +16,7 @@ import {
   KaKaoLoginBTn,
   LinkText,
 } from './Login.styled';
+import { colors } from '@/style/themes';
 import apikey from '@/config/apikey';
 
 const Login = () => {
@@ -89,7 +90,7 @@ const Login = () => {
       <ContentContanier>
         <LoginMain>
           <Logo alt="모밋 로고" src={LogoImg} />
-          <Spacer h={48} />
+          <Spacer h={56} />
           <LoginSection>
             <div>
               <InputSection
@@ -109,15 +110,15 @@ const Login = () => {
               />
               {errors.password && <div style={{ color: 'red' }}>{errors.password[0]}</div>}
             </div>
-            <Spacer h={24} />
+            <Spacer h={32} />
             <LoginButton onClick={handleLogin}>로그인</LoginButton>
             <Spacer h={12} />
             <KaKaoLoginBTn onClick={handleKakaoLogin}>카카오 간편 로그인</KaKaoLoginBTn>
-            <Spacer h={12} />
+            <Spacer h={24} />
             <div style={{ textAlign: 'center' }}>
               <LinkText>
                 계정이 없으신가요?{' '}
-                <Link to="/signup" style={{ color: '#007bff', textDecoration: 'none' }}>
+                <Link to="/signup" style={{ color: colors.primary, textDecoration: 'none', fontWeight: 500 }}>
                   회원가입하기
                 </Link>
               </LinkText>
