@@ -44,6 +44,14 @@ const Login = () => {
     }
   }, [location.state, showToast]);
 
+  // 카카오 로그인 오류 메시지 표시
+  useEffect(() => {
+    if (location.state?.kakaoError) {
+      showToast(location.state.kakaoError);
+      window.history.replaceState({}, document.title);
+    }
+  }, [location.state, showToast]);
+
   // 로그인 핸들러
   const handleLogin = async () => {
     setErrors({});
