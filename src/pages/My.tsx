@@ -306,7 +306,7 @@ const My = () => {
       STUDY: '스터디',
       GAME: '게임',
       FOOD: '맛집탐방',
-      CULTUR_ART: '문화/예술',
+      CULTURE_ART: '문화/예술',
       OTAKU: '덕질',
       TRAVEL: '여행',
       OTHER: '기타',

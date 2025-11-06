@@ -11,7 +11,7 @@ const iconComponents = {
   SPORTS: SportsIcon,
   GAME: GameIcon,
   FOOD: MukbangIcon,
-  CULTUR_ART: MovieIcon,
+  CULTURE_ART: MovieIcon,
   OTHER: DefaultIcon,
   OTAKU: otakuIcon,
   TRAVEL: travelIcon,
@@ -20,7 +20,7 @@ const iconComponents = {
 const categoryMap: { [key: string]: MeetingCategory } = {
   스포츠: 'SPORTS',
   맛집탐방: 'FOOD',
-  '문화/예술': 'CULTUR_ART',
+  '문화/예술': 'CULTURE_ART',
   스터디: 'STUDY',
   여행: 'TRAVEL',
   게임: 'GAME',

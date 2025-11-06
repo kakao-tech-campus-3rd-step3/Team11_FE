@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyledSelect } from './StyledComponents';
 
-const hobbyCategories = ['스포츠', '식사', '문화예술', '스터디', '여행', '게임', '덕질', '기타'];
+const hobbyCategories = ['스포츠', '식사', '문화/예술', '스터디', '여행', '게임', '덕질', '기타'];
 
 interface HobbySelectorProps {
   value: string;
