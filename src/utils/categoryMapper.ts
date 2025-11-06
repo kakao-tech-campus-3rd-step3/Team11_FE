@@ -1,7 +1,7 @@
 export const categoryMap: Record<string, string> = {
   스포츠: 'SPORTS',
   맛집탐방: 'FOOD',
-  문화예술: 'CULTUR_ARTS',
+  ' 문화/예술': 'CULTUR_ART',
   스터디: 'STUDY',
   여행: 'TRAVEL',
   게임: 'GAME',

@@ -111,7 +111,7 @@ const SubmitButton = styled.button`
 const hobbyCategoriesList = [
   '스포츠',
   '식사',
-  '문화예술',
+  '문화/예술',
   '스터디',
   '여행',
   '게임',
