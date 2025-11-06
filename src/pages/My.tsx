@@ -270,7 +270,7 @@ const My = () => {
   // 시도 선택 시 시군구 리스트 가져오기
   const handleSidoChange = async (selectedSido: string) => {
     setSido(selectedSido);
-    setSigungu(''); 
+    setSigungu('');
     setSigunguList([]);
     setSigunguSuggestions([]);
 
@@ -645,9 +645,13 @@ const My = () => {
                                 ? '스팸'
                                 : report.category === 'ABUSE'
                                   ? '욕설/비방'
-                                  : report.category === 'INAPPROPRIATE'
+                                  : report.category === 'ILLEGAL'
                                     ? '부적절한 콘텐츠'
-                                    : '기타'}
+                                    : report.category === 'SEXUAL'
+                                      ? '성적 발언/음란물'
+                                      : report.category === 'OFFLINE_RISK'
+                                        ? '오프라인 위험'
+                                        : '기타'}
                             </ReportCategory>
                             <ReportStatus>
                               상태:{' '}
@@ -970,9 +974,13 @@ const My = () => {
                             onFocus={handleSigunguFocus}
                             onBlur={() => setTimeout(() => setShowSigunguSuggestions(false), 100)}
                             disabled={!sido || isLoadingSigungu}
-                            placeholder={isLoadingSigungu ? '시군구 리스트를 불러오는 중...' : '시/군/구 선택 또는 입력'}
+                            placeholder={
+                              isLoadingSigungu
+                                ? '시군구 리스트를 불러오는 중...'
+                                : '시/군/구 선택 또는 입력'
+                            }
                           />
-                              {showSigunguSuggestions && sigunguSuggestions.length > 0 && (
+                          {showSigunguSuggestions && sigunguSuggestions.length > 0 && (
                             <div
                               style={{
                                 position: 'absolute',
