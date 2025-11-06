@@ -97,10 +97,31 @@ import {
 import BottomNav from '@/components/common/BottomNav';
 import { useToast } from '@/hooks/useToast';
 import { Toast } from '@/components/common/Toast';
-import { LocationInput } from '@/components/common/LocationInput';
-import { useLocationInput } from '@/hooks/useLocationInput';
 import { validateNickname, isNicknameValid } from '@/utils/nicknameValidation';
 import ConfirmModal from '@/components/common/ConfirmModal';
+import { getSigunguListBySido } from '@/api/services/sigungu.service';
+import type { SigunguResponse } from '@/types/sigungu';
+
+// 시도 리스트 (시도 코드 매핑)
+const SIDO_LIST = [
+  { name: '서울특별시', code: 11 },
+  { name: '부산광역시', code: 26 },
+  { name: '대구광역시', code: 27 },
+  { name: '인천광역시', code: 28 },
+  { name: '광주광역시', code: 29 },
+  { name: '대전광역시', code: 30 },
+  { name: '울산광역시', code: 31 },
+  { name: '세종특별자치시', code: 36 },
+  { name: '경기도', code: 41 },
+  { name: '강원도', code: 42 },
+  { name: '충청북도', code: 43 },
+  { name: '충청남도', code: 44 },
+  { name: '전라북도', code: 45 },
+  { name: '전라남도', code: 46 },
+  { name: '경상북도', code: 47 },
+  { name: '경상남도', code: 48 },
+  { name: '제주특별자치도', code: 50 },
+];
 
 const My = () => {
   const navigate = useNavigate();
@@ -108,18 +129,12 @@ const My = () => {
   const myProfile = useSelector((state: RootState) => state.myProfile);
   const { handleLogout, handleDeleteAccount } = useLogin();
   const { showToast, hideToast, toast } = useToast();
-  const {
-    sido,
-    setSido,
-    sigungu,
-    setSigungu,
-    sigunguSuggestions,
-    showSigunguSuggestions,
-    setShowSigunguSuggestions,
-    handleSigunguChange,
-    handleSigunguFocus,
-    handleSigunguSelect,
-  } = useLocationInput();
+  const [sido, setSido] = useState('');
+  const [sigungu, setSigungu] = useState('');
+  const [sigunguList, setSigunguList] = useState<SigunguResponse[]>([]);
+  const [sigunguSuggestions, setSigunguSuggestions] = useState<string[]>([]);
+  const [showSigunguSuggestions, setShowSigunguSuggestions] = useState(false);
+  const [isLoadingSigungu, setIsLoadingSigungu] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [badges, setBadges] = useState<Badge[]>([]);
@@ -242,9 +257,67 @@ const My = () => {
     });
     setSido('');
     setSigungu('');
+    setSigunguList([]);
+    setSigunguSuggestions([]);
+    setShowSigunguSuggestions(false);
   };
 
-  const handleEdit = () => {
+  // 시도 선택 시 시군구 리스트 가져오기
+  const handleSidoChange = async (selectedSido: string) => {
+    setSido(selectedSido);
+    setSigungu(''); 
+    setSigunguList([]);
+    setSigunguSuggestions([]);
+
+    if (selectedSido) {
+      const sidoInfo = SIDO_LIST.find((s) => s.name === selectedSido);
+      if (sidoInfo) {
+        setIsLoadingSigungu(true);
+        try {
+          const response = await getSigunguListBySido(sidoInfo.code);
+          setSigunguList(response.content);
+          setSigunguSuggestions(response.content.map((s) => s.sigunguName));
+        } catch (error) {
+          console.error('시군구 리스트 조회 실패:', error);
+          showToast('시군구 리스트를 불러오는데 실패했습니다.');
+        } finally {
+          setIsLoadingSigungu(false);
+        }
+      }
+    }
+  };
+
+  const handleSigunguChange = (value: string) => {
+    setSigungu(value);
+    if (value.trim()) {
+      const filtered = sigunguList
+        .map((s) => s.sigunguName)
+        .filter((sigunguName) => sigunguName.toLowerCase().includes(value.toLowerCase()));
+      setSigunguSuggestions(filtered);
+    } else {
+      setSigunguSuggestions(sigunguList.map((s) => s.sigunguName));
+    }
+    setShowSigunguSuggestions(true);
+  };
+
+  const handleSigunguFocus = () => {
+    if (sigungu.trim()) {
+      const filtered = sigunguList
+        .map((s) => s.sigunguName)
+        .filter((sigunguName) => sigunguName.toLowerCase().includes(sigungu.toLowerCase()));
+      setSigunguSuggestions(filtered);
+    } else {
+      setSigunguSuggestions(sigunguList.map((s) => s.sigunguName));
+    }
+    setShowSigunguSuggestions(true);
+  };
+
+  const handleSigunguSelect = (selectedSigungu: string) => {
+    setSigungu(selectedSigungu);
+    setShowSigunguSuggestions(false);
+  };
+
+  const handleEdit = async () => {
     setIsEditing(true);
 
     // 기존 프로필 데이터 가져오기
@@ -258,16 +331,38 @@ const My = () => {
     });
 
     if (myProfile.baseLocation) {
+      let sidoName = '';
+      let sigunguName = '';
+
       if (typeof myProfile.baseLocation === 'string') {
         const parts = myProfile.baseLocation.split(' ');
         if (parts.length >= 2) {
-          setSido(parts[0]);
-          setSigungu(parts[1]);
+          sidoName = parts[0];
+          sigunguName = parts[1];
         }
       } else if (typeof myProfile.baseLocation === 'object' && myProfile.baseLocation !== null) {
         const location = myProfile.baseLocation as { sidoName?: string; sigunguName?: string };
-        setSido(location.sidoName || '');
-        setSigungu(location.sigunguName || '');
+        sidoName = location.sidoName || '';
+        sigunguName = location.sigunguName || '';
+      }
+
+      if (sidoName) {
+        setSido(sidoName);
+        // 시도 선택 시 시군구 리스트도 가져오기
+        const sidoInfo = SIDO_LIST.find((s) => s.name === sidoName);
+        if (sidoInfo) {
+          setIsLoadingSigungu(true);
+          try {
+            const response = await getSigunguListBySido(sidoInfo.code);
+            setSigunguList(response.content);
+            setSigunguSuggestions(response.content.map((s) => s.sigunguName));
+            setSigungu(sigunguName);
+          } catch (error) {
+            console.error('시군구 리스트 조회 실패:', error);
+          } finally {
+            setIsLoadingSigungu(false);
+          }
+        }
       }
     }
   };
@@ -818,19 +913,81 @@ const My = () => {
 
                     <FormField>
                       <FormLabel>기본 위치</FormLabel>
-                      <LocationInput
-                        sido={sido}
-                        setSido={setSido}
-                        sigungu={sigungu}
-                        onSigunguChange={handleSigunguChange}
-                        onSigunguFocus={handleSigunguFocus}
-                        onSigunguSelect={handleSigunguSelect}
-                        onSigunguBlur={() =>
-                          setTimeout(() => setShowSigunguSuggestions(false), 100)
-                        }
-                        sigunguSuggestions={sigunguSuggestions}
-                        showSigunguSuggestions={showSigunguSuggestions}
-                      />
+                      <div style={{ display: 'flex', gap: '8px', flexDirection: 'column' }}>
+                        <FormInput
+                          as="select"
+                          value={sido}
+                          onChange={(e) => handleSidoChange(e.target.value)}
+                          style={{
+                            padding: '12px',
+                            border: '1px solid #e5e7eb',
+                            borderRadius: '8px',
+                            fontSize: '16px',
+                            backgroundColor: 'white',
+                            cursor: 'pointer',
+                          }}
+                        >
+                          <option value="">시/도 선택</option>
+                          {SIDO_LIST.map((sidoItem) => (
+                            <option key={sidoItem.code} value={sidoItem.name}>
+                              {sidoItem.name}
+                            </option>
+                          ))}
+                        </FormInput>
+                        <div style={{ position: 'relative' }}>
+                          <FormInput
+                            type="text"
+                            value={sigungu}
+                            onChange={(e) => handleSigunguChange(e.target.value)}
+                            onFocus={handleSigunguFocus}
+                            onBlur={() => setTimeout(() => setShowSigunguSuggestions(false), 100)}
+                            disabled={!sido || isLoadingSigungu}
+                            placeholder={isLoadingSigungu ? '시군구 리스트를 불러오는 중...' : '시/군/구 선택 또는 입력'}
+                          />
+                              {showSigunguSuggestions && sigunguSuggestions.length > 0 && (
+                            <div
+                              style={{
+                                position: 'absolute',
+                                top: '100%',
+                                left: 0,
+                                right: 0,
+                                backgroundColor: 'white',
+                                border: '1px solid #e5e7eb',
+                                borderRadius: '8px',
+                                marginTop: '4px',
+                                maxHeight: '200px',
+                                overflowY: 'auto',
+                                zIndex: 100,
+                                boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+                              }}
+                            >
+                              {sigunguSuggestions.map((suggestion, index) => (
+                                <div
+                                  key={index}
+                                  onMouseDown={(e) => {
+                                    e.preventDefault(); // onBlur가 발생하지 않도록 방지
+                                    handleSigunguSelect(suggestion);
+                                  }}
+                                  style={{
+                                    padding: '8px 12px',
+                                    cursor: 'pointer',
+                                    borderBottom: '1px solid #e5e7eb',
+                                    transition: 'background-color 0.2s',
+                                  }}
+                                  onMouseEnter={(e) => {
+                                    e.currentTarget.style.backgroundColor = '#f3f4f6';
+                                  }}
+                                  onMouseLeave={(e) => {
+                                    e.currentTarget.style.backgroundColor = 'white';
+                                  }}
+                                >
+                                  {suggestion}
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      </div>
                     </FormField>
 
                     <ButtonGroup>

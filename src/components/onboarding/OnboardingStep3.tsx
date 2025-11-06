@@ -103,7 +103,13 @@ const OnboardingStep3 = ({ onNext, onPrev }: OnboardingStepProps) => {
             {showSigunguSuggestions && sido.trim() && !isLoading && sigunguSuggestions.length > 0 && (
               <SuggestionList>
                 {sigunguSuggestions.map((suggestion, index) => (
-                  <SuggestionItem key={index} onClick={() => handleSigunguSelect(suggestion)}>
+                  <SuggestionItem
+                    key={index}
+                    onMouseDown={(e) => {
+                      e.preventDefault(); // onBlur가 발생하지 않도록 방지
+                      handleSigunguSelect(suggestion);
+                    }}
+                  >
                     {suggestion}
                   </SuggestionItem>
                 ))}
