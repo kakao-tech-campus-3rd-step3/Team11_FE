@@ -66,7 +66,6 @@ const UserProfile = () => {
       try {
         const profileData = await getUserProfile(userId);
         setUserProfile(profileData);
-        console.log('사용자 프로필 조회 성공:', profileData);
       } catch (error: any) {
         console.error('사용자 프로필 조회 실패:', error);
         showToast('프로필을 불러올 수 없습니다.');
@@ -89,7 +88,6 @@ const UserProfile = () => {
       try {
         const data = await getUserBadges(userId);
         setBadges(data.content);
-        console.log('뱃지 조회 성공:', data);
       } catch (error) {
         console.error('뱃지 조회 실패:', error);
       }
@@ -251,9 +249,7 @@ const UserProfile = () => {
         {/* 뱃지 섹션 */}
         <SectionCard>
           <BadgeSection>
-            <BadgeLabel>
-              획득한 뱃지 ({badges.length}개)
-            </BadgeLabel>
+            <BadgeLabel>획득한 뱃지 ({badges.length}개)</BadgeLabel>
             <BadgeContainer>
               {badges.length > 0 ? (
                 badges.map((badge) => (
@@ -271,10 +267,8 @@ const UserProfile = () => {
 
         {/* 신고 및 차단 버튼 */}
         <ReportButtonContainer>
-          <ReportButton onClick={() => setIsReportModalOpen(true)}>
-            사용자 신고
-          </ReportButton>
-          <ReportButton 
+          <ReportButton onClick={() => setIsReportModalOpen(true)}>사용자 신고</ReportButton>
+          <ReportButton
             onClick={() => setIsBlockModalOpen(true)}
             style={{ backgroundColor: '#6b7280' }}
           >

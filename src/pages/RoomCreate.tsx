@@ -162,16 +162,12 @@ const RoomCreate = () => {
         },
       };
 
-      console.log('최종 폼 데이터:', finalFormState);
-
       try {
         if (!update) {
           const response = await createMeetUp(finalFormState);
-          console.log('방 생성 성공:', response);
           toast.success('모임방이 성공적으로 생성되었습니다!');
         } else {
           const response = await updateMeetUp(finalFormState);
-          console.log('방 수정 성공:', response);
           toast.success('모임방이 성공적으로 수정되었습니다!');
         }
         navigate('/meeting-room');

@@ -38,7 +38,6 @@ const MeetingRoom = () => {
         const response = await getMyJoinedMeetup();
         setmeetUpInfo(response);
         setIsStarted(response.status === 'IN_PROGRESS');
-        console.log('모임 조회 성공:', response);
       } catch (error) {
         console.error(error);
         try {
@@ -46,7 +45,6 @@ const MeetingRoom = () => {
           const response = await getMyJoinedMeetup();
           setmeetUpInfo(response);
           setIsStarted(response.status === 'IN_PROGRESS');
-          console.log('모임 참가 성공:', response);
         } catch (error) {
           console.error(error);
         }
@@ -85,7 +83,6 @@ const MeetingRoom = () => {
         const response = await getParticipantsInMeetUp(meetUpInfo.id);
         setParticipants(response);
         checkHostId(response);
-        console.log('참여자 정보 조회 성공:', response);
       } catch (error) {
         console.error('참여자 정보 조회 실패:', error);
       }
@@ -102,8 +99,6 @@ const MeetingRoom = () => {
   // 웹소캣 액션 메세지에 따른 로직 제어
   useEffect(() => {
     if (!newAction || !myIdRef.current || !meetUpInfo) return;
-    console.log('newAction', newAction);
-    console.log('meetupinfo', meetUpInfo);
     handleSocketAction(
       'JOIN',
       newAction,
@@ -139,7 +134,6 @@ const MeetingRoom = () => {
   // 새 메세지 수신 시 표시
   useEffect(() => {
     if (!newChatMessage) return;
-    console.log('newChatMessage:', newChatMessage);
     setChatMessages((prevMessages) => [newChatMessage, ...prevMessages]);
     if (newChatMessage.senderId === myIdRef.current) {
       requestAnimationFrame(() => {

@@ -51,7 +51,6 @@ export const SubmitButton = ({ meetUpId, evaluations }: SubmitButtonProps) => {
     try {
       const payload = { items: evaluations };
       const response = await createEvaluation(meetUpId, payload);
-      console.log('평가 제출 완료: ', response);
       toast.success('참여자 평가가 성공적으로 제출되었습니다.');
       navigate('/home');
     } catch (error) {
