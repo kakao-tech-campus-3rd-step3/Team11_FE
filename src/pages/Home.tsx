@@ -90,7 +90,7 @@ const MessageOverlay = styled.div`
 
 const CancelSearchButton = styled.button`
   position: absolute;
-  top: 550px;
+  bottom: 5rem;
   left: 50%;
   transform: translateX(-50%);
   z-index: 5;
@@ -225,7 +225,6 @@ const Home = () => {
   };
 
   const renderMeetingMessage = () => {
-    if (isLoading) return <MessageOverlay>{INFO_MESSAGES.LOADING_MEETINGS}</MessageOverlay>;
     if (error) return <MessageOverlay>{error}</MessageOverlay>;
     if (meetings.length === 0)
       return <MessageOverlay>{INFO_MESSAGES.NO_MEETINGS_FOUND}</MessageOverlay>;

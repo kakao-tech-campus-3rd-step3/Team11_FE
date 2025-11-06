@@ -48,7 +48,7 @@ export function useKakaoMap({
   center = { lat: 35.2335, lng: 129.081 },
   level = 4,
   minLevel = 2, // 🔽 추가
-  maxLevel = 8, // 🔽 추가
+  maxLevel = 7, // 🔽 추가
 }: UseKakaoMapParams) {
   const [mapInstance, setMapInstance] = useState<any>(null);
 

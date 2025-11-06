@@ -4,6 +4,6 @@ export const ERROR_MESSAGES = {
 };
 
 export const INFO_MESSAGES = {
-  LOADING_MEETINGS: '주변 모임을 불러오는 중...',
+  LOADING_MEETINGS: '',
   NO_MEETINGS_FOUND: '주변에 진행 중인 모임이 없어요.',
 };
