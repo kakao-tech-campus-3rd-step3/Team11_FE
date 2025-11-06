@@ -56,11 +56,7 @@ export const createReport = async (reportData: CreateReportRequest): Promise<Rep
     });
   }
 
-  const response = await api.post<ReportResponse>('/api/reports', formData, {
-    headers: {
-      'Content-Type': 'multipart/form-data',
-    },
-  });
+  const response = await api.post<ReportResponse>('/api/reports', formData);
   
   return response.data;
 };

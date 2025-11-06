@@ -25,7 +25,7 @@ const Landing = () => {
           navigate('/home');
         }}></Logo>
         <Text>MOMEET</Text>
-      </Container>
+      
       
       {/* 스플래시 스크린 */}
       <SplashScreen onClick={() => navigate('/login')}>
@@ -34,6 +34,7 @@ const Landing = () => {
           <SplashSubtitle>새로운 만남을 시작하세요</SplashSubtitle>
         </SplashContent>
       </SplashScreen>
+      </Container>
     </>
   );
 };

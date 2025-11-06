@@ -14,12 +14,12 @@ export const kakaoLogin = async (code: string) => {
     code,
     redirectUri,
   };
-
+  
   console.log('=== 카카오 로그인 요청 ===');
   console.log('요청 URL:', '/api/auth/kakao');
   console.log('요청 본문:', JSON.stringify(requestBody, null, 2));
   console.log('현재 origin:', window.location.origin);
-
+  
   try {
     const response = await api.post('/api/auth/kakao', requestBody);
     console.log('카카오 로그인 성공:', response.data);

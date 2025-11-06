@@ -17,6 +17,7 @@ import { useLogin } from '@/hooks/useLogin';
 import { getProfile } from '@/utils/tokenStorage';
 import type { Badge } from '@/types/badge';
 import type { Meetup } from '@/types/evaluation';
+import { transformErrorMessage } from '@/api/utils/transformErrorMessage';
 import {
   HeaderTitle,
   TitleContainer,
@@ -302,8 +303,9 @@ const My = () => {
         setIsEditing(false);
       }, 2000);
     } catch (error: any) {
-      console.error('프로필 수정 실패:', error);
-      showToast(`프로필 수정 실패: ${error.message}`);
+      console.error('프로필 수정수정 실패:', error);
+      const message = transformErrorMessage(error);
+      showToast(message.startsWith('프로필') ? message : `프로필 수정 실패: ${message}`);
     }
   };
 

@@ -28,10 +28,11 @@ const KakaoLogin = () => {
       console.error('카카오 로그인 에러:', error);
       processedRef.current = true;
       setErrorShown(true);
-      showToast(`카카오 로그인에 실패했습니다: ${error}`);
-      setTimeout(() => {
-        navigate('/login');
-      }, 2000);
+      navigate('/login', {
+        state: {
+          kakaoError: `카카오 로그인에 실패했습니다: ${error}\n이미 가입된 계정인지 확인해 주세요.`,
+        },
+      });
       return;
     }
 
@@ -57,10 +58,11 @@ const KakaoLogin = () => {
               err.message ||
               '카카오 로그인에 실패했습니다. 네트워크 연결을 확인해주세요.';
             setErrorShown(true);
-            showToast(errorMessage);
-            setTimeout(() => {
-              navigate('/login');
-            }, 2000);
+            navigate('/login', {
+              state: {
+                kakaoError: `${errorMessage}\n이미 가입된 계정인지 확인해 주세요.`,
+              },
+            });
           }
         } finally {
           setIsProcessing(false);
@@ -70,10 +72,11 @@ const KakaoLogin = () => {
       console.error('인가 코드가 없습니다.');
       processedRef.current = true;
       setErrorShown(true);
-      showToast('카카오 로그인 인증에 실패했습니다. 다시 시도해주세요.');
-      setTimeout(() => {
-        navigate('/login');
-      }, 2000);
+      navigate('/login', {
+        state: {
+          kakaoError: '카카오 로그인 인증에 실패했습니다. 다시 시도해주세요.\n이미 가입된 계정인지 확인해 주세요.',
+        },
+      });
     }
     // 의존성 배열에서 handleKakaoLogin 제거하여 불필요한 재실행 방지
     // eslint-disable-next-line react-hooks/exhaustive-deps

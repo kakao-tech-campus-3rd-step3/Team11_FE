@@ -13,7 +13,6 @@ const hasCompleteProfile = (profile: any): boolean => {
   return profile && profile.nickname;
 };
 
-
 export const useLogin = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
