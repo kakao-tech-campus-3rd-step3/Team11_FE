@@ -37,9 +37,16 @@ export const BadgeItem = styled.div`
   gap: 0.25rem;
   padding: 0.5rem;
   border-radius: 0.5rem;
-  background-color: #f9fafb;
+  background-color: transparent;
   border: 1px solid rgb(243, 244, 246);
   min-width: 80px;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+  -webkit-tap-highlight-color: transparent;
+
+  &:active {
+    background-color: ${colors.primary100};
+  }
 `;
 
 export const BadgeIcon = styled.img`
@@ -126,16 +133,17 @@ export const ScrollableContentContainer = styled.div`
 `;
 
 export const ProfileImageContainer = styled.div`
-  position: absolute;
-  top: -40px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 200;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 1rem;
+  z-index: 10;
 `;
 
 export const ProfileImage = styled.img`
-  width: 80px;
-  height: 80px;
+  width: 120px;
+  height: 120px;
   border-radius: 50%;
   object-fit: cover;
   border: 3px solid white;
@@ -144,8 +152,8 @@ export const ProfileImage = styled.img`
 `;
 
 export const ProfileImagePlaceholder = styled.div`
-  width: 80px;
-  height: 80px;
+  width: 120px;
+  height: 120px;
   border-radius: 50%;
   background-color: #e9ecef;
   display: flex;
@@ -156,8 +164,8 @@ export const ProfileImagePlaceholder = styled.div`
 export const MainContentCard = styled.div`
   background: white;
   border-radius: 0.75rem 0.75rem 0.5rem 0.5rem;
-  padding: 40px 1.5rem 1.5rem 1.5rem;
-  margin-top: 40px;
+  padding: 1.5rem;
+  margin-top: 1rem;
   margin-bottom: 10px;
 
   position: relative;
@@ -186,8 +194,10 @@ export const ScrollableCardContent = styled.div`
 
 export const UserInfo = styled.div`
   text-align: center;
-  margin-top: 1.25rem;
-  margin-bottom: 1.875rem;
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  position: relative;
+  z-index: 10;
 `;
 
 export const UserBasicInfo = styled.div`
@@ -200,10 +210,10 @@ export const UserBasicInfo = styled.div`
 `;
 
 export const UserName = styled.h2`
-  font-size: 1.25rem;
+  font-size: 1.5rem;
   font-weight: 600;
-  line-height: 1.75rem;
-  color: rgb(42, 48, 56);
+  line-height: 2rem;
+  color: white;
   margin: 0;
 `;
 
@@ -220,6 +230,47 @@ export const UserTag = styled.span`
 // 호환성을 위한 별칭
 export const UserAge = UserTag;
 export const UserGender = UserTag;
+
+export const UserDetailInfo = styled.div`
+  display: flex;
+  width: 100%;
+  background: white;
+  border-radius: 0.5rem;
+  margin-bottom: 0.75rem;
+  overflow: hidden;
+  border: 1px solid rgb(243, 244, 246);
+  position: relative;
+  z-index: 10;
+`;
+
+export const UserDetailItem = styled.div`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1.25rem 0.75rem;
+  border-right: 1px solid rgb(243, 244, 246);
+
+  &:last-child {
+    border-right: none;
+  }
+`;
+
+export const UserDetailLabel = styled.span`
+  font-size: 0.75rem;
+  font-weight: 400;
+  line-height: 1rem;
+  color: rgb(107, 114, 128);
+  margin-bottom: 0.5rem;
+`;
+
+export const UserDetailValue = styled.span`
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.5rem;
+  color: rgb(42, 48, 56);
+`;
 
 
 export const ProfileInfoSection = styled.div`
@@ -239,11 +290,67 @@ export const ProfileInfoItem = styled.div`
   }
 `;
 
+export const TemperatureCard = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+`;
+
+export const TemperatureHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+export const TemperatureLabel = styled.span`
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.5rem;
+  color: rgb(107, 114, 128);
+`;
+
+export const TemperatureValue = styled.span`
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 2.5rem;
+  color: ${colors.primary};
+`;
+
+export const TemperatureBarContainer = styled.div`
+  width: 100%;
+  height: 2rem;
+  background-color: rgb(229, 231, 235);
+  border-radius: 1rem;
+  overflow: hidden;
+  position: relative;
+`;
+
+export const TemperatureBar = styled.div<{ percentage: number }>`
+  height: 100%;
+  width: ${(props) => props.percentage}%;
+  background: linear-gradient(90deg, ${colors.primary} 0%, ${colors.primary400} 100%);
+  border-radius: 1rem;
+  transition: width 0.5s ease-in-out;
+  position: relative;
+  
+  &::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background-color: white;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
+  }
+`;
+
 export const InfoLabel = styled.span`
   font-size: 1rem;
   font-weight: 500;
   line-height: 1.5rem;
-  color: rgb(42, 48, 56);
+  color: rgb(107, 114, 128);
 `;
 
 export const InfoValue = styled.span`
@@ -259,12 +366,8 @@ export const InfoValue = styled.span`
 export const SelfIntroItem = styled.div`
   display: flex;
   flex-direction: column;
-  padding: 1.25rem 0;
-  border-bottom: 1px solid rgb(220, 222, 227);
-
-  &:last-child {
-    border-bottom: none;
-  }
+  gap: 1rem;
+  margin-bottom: 1.25rem;
 `;
 
 export const SelfIntroContent = styled.div`
@@ -274,7 +377,6 @@ export const SelfIntroContent = styled.div`
   min-height: 5rem;
   border: 1px solid rgb(243, 244, 246);
   transition: border-color 0.2s ease;
-  margin-top: 0.75rem;
 `;
 
 export const SelfIntroText = styled.p`
@@ -522,9 +624,16 @@ export const ReportListContainer = styled(SectionBase)`
 export const ReportItem = styled.div`
   padding: 1rem;
   margin-bottom: 0.75rem;
-  background-color: #f9fafb;
+  background-color: transparent;
   border: 1px solid rgb(243, 244, 246);
   border-radius: 0.75rem;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+  -webkit-tap-highlight-color: transparent;
+
+  &:active {
+    background-color: ${colors.primary100};
+  }
 `;
 
 export const ReportItemHeader = styled.div`
@@ -575,12 +684,19 @@ export const BlockListContainer = styled(SectionBase)`
 export const BlockItem = styled.div`
   padding: 1rem;
   margin-bottom: 0.75rem;
-  background-color: #f9fafb;
+  background-color: transparent;
   border: 1px solid rgb(243, 244, 246);
   border-radius: 0.75rem;
   display: flex;
   align-items: center;
   gap: 0.75rem;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+  -webkit-tap-highlight-color: transparent;
+
+  &:active {
+    background-color: ${colors.primary100};
+  }
 `;
 
 export const BlockItemImage = styled.img`
@@ -693,9 +809,16 @@ export const MeetupListContainer = styled.div`
 
 export const MeetupItem = styled.div`
   padding: 1rem;
-  background-color: #f9fafb;
+  background-color: transparent;
   border: 1px solid rgb(243, 244, 246);
   border-radius: 0.75rem;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+  -webkit-tap-highlight-color: transparent;
+
+  &:active {
+    background-color: ${colors.primary100};
+  }
 `;
 
 export const MeetupItemHeader = styled.div`
