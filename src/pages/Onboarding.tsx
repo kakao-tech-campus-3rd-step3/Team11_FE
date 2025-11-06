@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Container, ContentContanier } from '@/style/CommonStyle';
 import OnboardingStep1 from '@/components/onboarding/OnboardingStep1';
@@ -6,7 +6,7 @@ import OnboardingStep2 from '@/components/onboarding/OnboardingStep2';
 import OnboardingStep3 from '@/components/onboarding/OnboardingStep3';
 import OnboardingStep4 from '@/components/onboarding/OnboardingStep4';
 import type { MyProfileState } from '@/store/slices/myProfileSlice';
-import { saveOnboardingProfile, getMyProfile } from '@/api/services/profile.service';
+import { saveOnboardingProfile } from '@/api/services/profile.service';
 import { useFunnel } from '@/hooks/useFunnel';
 import { useToast } from '@/hooks/useToast';
 import { Toast } from '@/components/common/Toast';
