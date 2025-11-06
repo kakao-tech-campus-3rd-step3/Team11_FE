@@ -60,7 +60,6 @@ export const createProfileFormData = (profileData: MyProfileState): FormData => 
       } catch {
       }
     }
-    // 일반 URL 문자열인 경우는 전송하지 않음(이미 서버에 저장된 이미지 유지)
   }
 
   return formData;

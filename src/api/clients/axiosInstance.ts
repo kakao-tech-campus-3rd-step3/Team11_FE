@@ -68,7 +68,9 @@ api.interceptors.response.use(
         return api(originalRequest);
       } else {
         clearTokens();
-        if (window.location.pathname !== '/login') {
+        // 카카오 콜백 처리 중에는 로그인 페이지로 강제 리다이렉트하지 않음
+        const currentPath = window.location.pathname;
+        if (currentPath !== '/login' && currentPath !== '/kakaoLogin') {
           window.location.href = '/login';
         }
       }
