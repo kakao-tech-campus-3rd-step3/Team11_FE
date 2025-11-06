@@ -22,6 +22,7 @@ export const handleSocketAction = <T>(
   receivedAction: DefaultActionMessage | JoinLeaveActionMessage,
   navigate: NavigateFunction,
   myId?: number,
+  meetUpId?: string,
   setState?: React.Dispatch<React.SetStateAction<T>>,
 ): boolean | undefined => {
   if (expectedAction !== receivedAction.action) return;
@@ -61,7 +62,7 @@ export const handleSocketAction = <T>(
         id: 'END',
         position: 'bottom-center',
       } as any);
-      navigate('/participant-evaluation');
+      navigate(`/participant-evaluation?meetUpId=${meetUpId}`);
       return false;
     }
 

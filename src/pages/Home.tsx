@@ -1,5 +1,5 @@
 import { useRef, useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import styled, { createGlobalStyle } from 'styled-components';
 import GlobalStyle from '@/style/GlobalStyle';
 import { colors } from '@/style/themes';
@@ -18,10 +18,9 @@ import { useUserLocation } from '@/hooks/useUserLocation';
 import { useMeetings } from '@/hooks/useMeetings';
 import { useMeetingMarkers } from '@/hooks/useMeetingMarkers';
 
-declare global {
-  interface Window {
-    kakao: any;
-  }
+interface LocationData {
+  lat: number;
+  lng: number;
 }
 
 const KakaoMapCssFix = createGlobalStyle`
@@ -89,9 +88,27 @@ const MessageOverlay = styled.div`
   max-width: calc(100% - 40px);
 `;
 
+const CancelSearchButton = styled.button`
+  position: absolute;
+  top: 500px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 5;
+  background-color: ${colors.primary500};
+  color: white;
+  border: none;
+  border-radius: 20px;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+`;
+
 interface MapFiltersState {
   categories: string[];
   radius: string | null;
+  query: string | null;
 }
 
 const Home = () => {
@@ -101,14 +118,54 @@ const Home = () => {
   const [filters, setFilters] = useState<MapFiltersState>({
     categories: [],
     radius: null,
+    query: null,
   });
+
+  const [isFilteredFromSearch, setIsFilteredFromSearch] = useState(false);
+  const [filteredSearchCenter, setFilteredSearchCenter] = useState<LocationData | null>(null);
+
   const navigate = useNavigate();
+  const location = useLocation();
 
   const APP_KEY = (import.meta.env.VITE_KAKAO_MAP_KEY as string) || (apikey?.kakaoMapKey as string);
   const map = useKakaoMap({ mapRef, appKey: APP_KEY });
   const userLocation = useUserLocation();
 
-  const { meetings, isLoading, error } = useMeetings(map, filters.categories, filters.radius);
+  useEffect(() => {
+    const searchState = location.state?.searchFilters;
+    const centerFromSearch = location.state?.searchLocation;
+
+    if (searchState) {
+      setFilters({
+        categories: searchState.categories || [],
+        radius: searchState.radius || null,
+        query: searchState.query || null,
+      });
+
+      if (centerFromSearch) {
+        setFilteredSearchCenter(centerFromSearch);
+        if (map) {
+          const searchLatLng = new window.kakao.maps.LatLng(
+            centerFromSearch.lat,
+            centerFromSearch.lng,
+          );
+          map.setCenter(searchLatLng);
+        }
+      }
+
+      setIsFilteredFromSearch(true);
+      window.history.replaceState({}, document.title);
+    }
+  }, [location.state, map]);
+
+  const { meetings, isLoading, error } = useMeetings(
+    map,
+    filters.categories,
+    filters.radius,
+    filters.query,
+    isFilteredFromSearch,
+    filteredSearchCenter,
+  );
 
   const handleMarkerClick = (meeting: Meeting) => {
     setSelectedMeeting(meeting);
@@ -117,11 +174,11 @@ const Home = () => {
   useMeetingMarkers(map, meetings, handleMarkerClick);
 
   useEffect(() => {
-    if (map && userLocation) {
+    if (map && userLocation && !location.state?.searchFilters && !filteredSearchCenter) {
       const userLatLng = new window.kakao.maps.LatLng(userLocation.lat, userLocation.lng);
       map.setCenter(userLatLng);
     }
-  }, [map, userLocation]);
+  }, [map, userLocation, location.state, filteredSearchCenter]);
 
   const handleSearchClick = () => {
     setIsSearchOpen(true);
@@ -142,17 +199,29 @@ const Home = () => {
   const handleCategoryClick = (category: string) => {
     setFilters((prev) => ({
       ...prev,
-      categories: prev.categories.includes(category)
-        ? prev.categories.filter((c) => c !== category)
-        : [...prev.categories, category],
+      categories: prev.categories.includes(category) ? [] : [category],
     }));
   };
-
   const handleRadiusClick = (radius: string) => {
     setFilters((prev) => ({
       ...prev,
       radius: prev.radius === radius ? null : radius,
     }));
+  };
+
+  const handleCancelSearch = () => {
+    setFilters({
+      categories: [],
+      radius: null,
+      query: null,
+    });
+    setIsFilteredFromSearch(false);
+    setFilteredSearchCenter(null);
+
+    if (map && userLocation) {
+      const userLatLng = new window.kakao.maps.LatLng(userLocation.lat, userLocation.lng);
+      map.setCenter(userLatLng);
+    }
   };
 
   const renderMeetingMessage = () => {
@@ -162,6 +231,9 @@ const Home = () => {
       return <MessageOverlay>{INFO_MESSAGES.NO_MEETINGS_FOUND}</MessageOverlay>;
     return null;
   };
+
+  const hasActiveFilters =
+    isFilteredFromSearch || filters.query || filters.categories.length > 0 || filters.radius;
 
   return (
     <>
@@ -173,12 +245,20 @@ const Home = () => {
           <MapContainer ref={mapRef} />
           {map ? (
             <>
+              {hasActiveFilters && (
+                <CancelSearchButton onClick={handleCancelSearch}>검색/필터 취소</CancelSearchButton>
+              )}
               <SearchButton onClick={handleSearchClick} />
-              <RadiusFilter selectedRadius={filters.radius} onRadiusClick={handleRadiusClick} />
-              <MapFilters
-                selectedCategories={filters.categories}
-                onCategoryClick={handleCategoryClick}
-              />
+              {!isFilteredFromSearch && (
+                <>
+                  <RadiusFilter selectedRadius={filters.radius} onRadiusClick={handleRadiusClick} />
+                  <MapFilters
+                    selectedCategories={filters.categories}
+                    onCategoryClick={handleCategoryClick}
+                  />
+                </>
+              )}
+
               {renderMeetingMessage()}
             </>
           ) : (
@@ -187,7 +267,11 @@ const Home = () => {
 
           {isSearchOpen && <Overlay />}
           {selectedMeeting && (
-            <MeetingDetailModal meeting={selectedMeeting} onClose={handleCloseModal} />
+            <MeetingDetailModal
+              meeting={selectedMeeting}
+              onClose={handleCloseModal}
+              isOpen={true}
+            />
           )}
         </MapArea>
         <BottomNav />

@@ -1,14 +1,19 @@
+export interface MeetingLocation {
+  longitude: number;
+  latitude: number;
+  address: string;
+}
+
 export interface Meeting {
   id: number;
-  title: string;
+  name: string;
   category: string;
-  hashtags: string[];
-  mannerTemperatureLimit: number;
-  deadline: string;
-  description: string;
-  address: string;
-  latitude: number;
-  longitude: number;
-  currentMembers: number;
-  maxMembers: number;
+  hashTags: string[];
+  scoreLimit: number;
+  endAt: string;
+  location: MeetingLocation;
+  participantCount: number;
+  capacity: number;
+
+  [key: string]: any;
 }

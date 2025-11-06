@@ -223,7 +223,7 @@ const RoomCreate = () => {
   useEffect(() => {
     if (isClosing) {
       const timer = setTimeout(() => {
-        navigate(-1);
+        navigate('/home');
       }, 400);
       return () => clearTimeout(timer);
     }

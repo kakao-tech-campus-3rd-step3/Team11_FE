@@ -76,7 +76,7 @@ const MeetingRoom = () => {
   useEffect(() => {
     if (!newAction) return;
 
-    if (!['JOIN', 'ENTER', 'EXIT'].includes(newAction.action ?? '')) return;
+    if (!['JOIN', 'ENTER', 'EXIT', 'KICKED'].includes(newAction.action ?? '')) return;
 
     const getParticipantsInfo = async () => {
       if (!meetUpInfo) return;
@@ -101,18 +101,40 @@ const MeetingRoom = () => {
 
   // 웹소캣 액션 메세지에 따른 로직 제어
   useEffect(() => {
-    if (!newAction || !myIdRef.current) return;
+    if (!newAction || !myIdRef.current || !meetUpInfo) return;
     console.log('newAction', newAction);
-    handleSocketAction('JOIN', newAction, navigate, myIdRef.current, setChatMessages);
-    handleSocketAction('EXIT', newAction, navigate, myIdRef.current, setChatMessages);
+    console.log('meetupinfo', meetUpInfo);
+    handleSocketAction(
+      'JOIN',
+      newAction,
+      navigate,
+      myIdRef.current,
+      meetUpInfo.id,
+      setChatMessages,
+    );
+    handleSocketAction(
+      'EXIT',
+      newAction,
+      navigate,
+      myIdRef.current,
+      meetUpInfo.id,
+      setChatMessages,
+    );
     handleSocketAction('KICKED', newAction, navigate, myIdRef.current);
     handleSocketAction('NEAR_STARTED', newAction, navigate);
-    handleSocketAction('STARTED', newAction, navigate, undefined, setIsStarted);
+    handleSocketAction(
+      'STARTED',
+      newAction,
+      navigate,
+      myIdRef.current,
+      meetUpInfo.id,
+      setIsStarted,
+    );
     handleSocketAction('NEAR_END', newAction, navigate);
-    handleSocketAction('END', newAction, navigate);
+    handleSocketAction('END', newAction, navigate, myIdRef.current, meetUpInfo.id);
     handleSocketAction('MODIFIED', newAction, navigate);
     handleSocketAction('CANCELED', newAction, navigate);
-  }, [newAction]);
+  }, [newAction, meetUpInfo]);
 
   // 새 메세지 수신 시 표시
   useEffect(() => {

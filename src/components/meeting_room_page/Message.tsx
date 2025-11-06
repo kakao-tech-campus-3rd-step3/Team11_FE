@@ -5,6 +5,7 @@ import { ProfileOptions } from './ProfileOptions';
 
 interface Message {
   isHost: boolean;
+  myId: number | null;
   meetUpId: string;
   sender: ParticipantDTO | undefined;
   senderType: 'me' | 'other' | 'system';
@@ -73,7 +74,7 @@ const SystemMessage = styled.div`
   color: gray;
 `;
 
-export const Message = ({ isHost, meetUpId, senderType, content, sender }: Message) => {
+export const Message = ({ isHost, myId, meetUpId, senderType, content, sender }: Message) => {
   const [isOptionOpen, setIsOptionOpen] = useState(false);
   const [position, setPosition] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
   const avatarRef = useRef<HTMLDivElement>(null);
@@ -113,6 +114,7 @@ export const Message = ({ isHost, meetUpId, senderType, content, sender }: Messa
 
       {isOptionOpen && sender && (
         <ProfileOptions
+          myId={myId}
           isHost={isHost}
           position={position}
           onClose={() => setIsOptionOpen(false)}

@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import { colors } from '@/style/themes';
+import { useRef, useState, useCallback } from 'react';
 
 const FiltersContainer = styled.div`
   position: absolute;
@@ -7,12 +8,19 @@ const FiltersContainer = styled.div`
   left: 50%;
   transform: translateX(-50%);
   z-index: 10;
-  width: 100%;
-  max-width: calc(100% - 32px);
+  width: 90%;
+  max-width: 480px;
+
   overflow-x: auto;
   white-space: nowrap;
-  text-align: center;
   padding-bottom: 8px;
+
+  user-select: none;
+  cursor: grab;
+
+  &:active {
+    cursor: grabbing;
+  }
 
   &::-webkit-scrollbar {
     display: none;
@@ -41,7 +49,16 @@ const FilterButton = styled.button`
   }
 `;
 
-const categories = ['게임', '영화', '맛집탐방', '운동', '스터디', '기타'];
+const categories = [
+  '스포츠',
+  '맛집탐방',
+  '문화/예술',
+  '스터디',
+  '여행',
+  '게임',
+  '덕질',
+  '기타',
+] as const;
 
 interface MapFiltersProps {
   selectedCategories: string[];
@@ -49,8 +66,45 @@ interface MapFiltersProps {
 }
 
 export const MapFilters = ({ selectedCategories, onCategoryClick }: MapFiltersProps) => {
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [startX, setStartX] = useState(0);
+  const [scrollLeft, setScrollLeft] = useState(0);
+
+  const onMouseDown = useCallback((e: React.MouseEvent) => {
+    if (!scrollRef.current) return;
+    setIsDragging(true);
+    setStartX(e.pageX - scrollRef.current.offsetLeft);
+    setScrollLeft(scrollRef.current.scrollLeft);
+  }, []);
+
+  const onMouseLeave = useCallback(() => {
+    setIsDragging(false);
+  }, []);
+
+  const onMouseUp = useCallback(() => {
+    setIsDragging(false);
+  }, []);
+
+  const onMouseMove = useCallback(
+    (e: React.MouseEvent) => {
+      if (!isDragging || !scrollRef.current) return;
+      e.preventDefault();
+      const x = e.pageX - scrollRef.current.offsetLeft;
+      const walk = (x - startX) * 1.5;
+      scrollRef.current.scrollLeft = scrollLeft - walk;
+    },
+    [isDragging, startX, scrollLeft],
+  );
+
   return (
-    <FiltersContainer>
+    <FiltersContainer
+      ref={scrollRef}
+      onMouseDown={onMouseDown}
+      onMouseLeave={onMouseLeave}
+      onMouseUp={onMouseUp}
+      onMouseMove={onMouseMove}
+    >
       {categories.map((category) => (
         <FilterButton
           key={category}
