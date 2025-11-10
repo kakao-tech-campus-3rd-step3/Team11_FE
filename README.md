@@ -44,38 +44,33 @@
 
 ![입장](https://github.com/user-attachments/assets/6e92c0c9-f09b-49a1-8c80-7c9ec03741ab)
 
-#### 5. 모임 시작
+#### 5. 모임 시작/종료
 
-> 방장은 모임을 시작할 수 있습니다.
+> 방장은 모임을 수정/시작/종료할 수 있습니다.
+방장이 모임을 종료하고 나면, 참여자들에 대한 평가를 진행해 주세요.
 
-<img width="391" height="850" alt="스크린샷 2025-11-07 오전 1 16 37" src="https://github.com/user-attachments/assets/2ed4f486-672b-490a-9ec9-0eae2f182104" />
-<img width="392" height="850" alt="스크린샷 2025-11-07 오전 1 20 48" src="https://github.com/user-attachments/assets/2b4b9829-c786-4e02-8fb3-684ff7d64978" />
+![수정](https://github.com/user-attachments/assets/2ecfd01e-2823-42d4-b629-6abb0de3ba56)
+![시작-종료-평가](https://github.com/user-attachments/assets/892f51c2-1e46-4cd1-9ecb-d089c64b43d4)
 
-#### 6. 프로필 옵션
+#### 6. 모임 나가기
+
+> 모임이 마음에 들지 않으면 나갈 수 있어요.
+방장이 모임을 나갈 경우, 방장의 권한이 이임됩니다.
+
+![나가기 및 권한 이임-모집 취소](https://github.com/user-attachments/assets/2f1c29f9-15e2-4b54-9607-4bbdb963f6bd)
+
+#### 7. 프로필 옵션
 
 > 현재 참여 중인 사용자들의 프로필 조희/신고/차단이 가능합니다. <br>
 방장은 필요 시 참여자를 강제 퇴장시킬 수 있어요.
 
-<img width="392" height="202" alt="스크린샷 2025-11-07 오전 1 25 23" src="https://github.com/user-attachments/assets/137a13bc-fbaf-43ff-9345-470eef2aebfd" /> <br>
-<img width="391" height="850" alt="스크린샷 2025-11-07 오전 1 26 55" src="https://github.com/user-attachments/assets/eadf6a59-e793-48b6-a12a-c7844be6ec70" />
-<img width="393" height="851" alt="스크린샷 2025-11-07 오전 1 25 56" src="https://github.com/user-attachments/assets/e209a464-8ade-4e42-a1ea-ceca38aee585" />
-<img width="392" height="850" alt="스크린샷 2025-11-07 오전 1 27 16" src="https://github.com/user-attachments/assets/0be9dea0-d9f7-4997-b0df-e66916e59ded" />
-
-#### 7. 모임 종료
-
-> 방장이 모임을 종료하고 나면, 참여자들에 대한 평가를 진행해 주세요.
-
-<img width="394" height="851" alt="스크린샷 2025-11-07 오전 1 43 34" src="https://github.com/user-attachments/assets/f372727a-edb1-4d95-b834-d35194d0a5c4" />
-<img width="394" height="852" alt="스크린샷 2025-11-07 오전 1 50 28" src="https://github.com/user-attachments/assets/3bfceacc-8f4c-47f6-9149-37749ed21f92" />
+![프로필 조회-차단-신고-강퇴](https://github.com/user-attachments/assets/9a8e9f63-07e4-4606-956b-699254a42389)
 
 #### 8. 마이페이지
 
 > 마이페이지에서 나의 프로필 수정/뱃지 조회/이전 모임 조회/신고 및 차단 목록 조회/로그 아웃/회원 탈퇴가 가능해요.
 
-<img width="392" height="850" alt="스크린샷 2025-11-07 오전 1 47 00" src="https://github.com/user-attachments/assets/9b56023c-a062-4739-8ccd-179b658726ee" />
-<img width="393" height="850" alt="스크린샷 2025-11-07 오전 1 47 30" src="https://github.com/user-attachments/assets/7967cbf6-d0ee-46b4-9a3f-803babce63f6" />
-<img width="392" height="851" alt="스크린샷 2025-11-07 오전 1 48 17" src="https://github.com/user-attachments/assets/47808dc4-39bf-4b7e-8979-b3a48abb5ea1" />
-<img width="394" height="852" alt="스크린샷 2025-11-07 오전 1 49 59" src="https://github.com/user-attachments/assets/3653127c-833f-42c5-ac4e-fd2f34e4051c" />
+![본인 프로필 조회](https://github.com/user-attachments/assets/e44f7446-139d-4175-8d53-3c9a90a6941b)
 
 ### 🛠️ 기술 스택
 
