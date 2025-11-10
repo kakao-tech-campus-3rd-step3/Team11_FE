@@ -42,8 +42,7 @@
 
 > 원하는 모임에 참여 하세요.
 
-<img width="393" height="851" alt="스크린샷 2025-11-07 오전 1 07 45" src="https://github.com/user-attachments/assets/d07b0fbb-ae0d-419d-8d29-33630511aa4a" />
-<img width="393" height="852" alt="스크린샷 2025-11-07 오전 1 04 31" src="https://github.com/user-attachments/assets/defdf59b-fe18-4e4b-beca-0737a03b8c57" />
+![입장](https://github.com/user-attachments/assets/6e92c0c9-f09b-49a1-8c80-7c9ec03741ab)
 
 #### 5. 모임 시작
 
