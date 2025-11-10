@@ -26,7 +26,8 @@
 > 보내드린 링크로 로그인하여 가입을 완료하시면, 첫 프로필 설정 단계로 이동합니다. <br>
 나를 보여주는 개성 있는 프로필을 만들어 보세요.
 
-![첫-프로필-설정](https://github.com/user-attachments/assets/17a40b83-5b93-43bd-aa31-917e3ec12ea6)
+<img width="393" height="852" alt="스크린샷 2025-11-10 오후 8 26 49" src="https://github.com/user-attachments/assets/3187df7c-2879-47de-9e96-50e1596903db" />
+<img width="394" height="852" alt="스크린샷 2025-11-10 오후 8 28 10" src="https://github.com/user-attachments/assets/3c98f980-518e-4db7-b6ed-2921cb14a24e" />
 
 #### 3. 모임 찾기
 
