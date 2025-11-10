@@ -26,17 +26,14 @@
 > 보내드린 링크로 로그인하여 가입을 완료하시면, 첫 프로필 설정 단계로 이동합니다. <br>
 나를 보여주는 개성 있는 프로필을 만들어 보세요.
 
-<img width="394" height="851" alt="스크린샷 2025-11-06 오후 6 31 25" src="https://github.com/user-attachments/assets/4e55a641-31eb-4978-8a2e-d44cda6437f5" />
-<img width="393" height="851" alt="스크린샷 2025-11-06 오후 6 31 43" src="https://github.com/user-attachments/assets/674c2445-c254-43d9-83f1-d1478818d228" />
-<img width="392" height="850" alt="스크린샷 2025-11-06 오후 6 32 37" src="https://github.com/user-attachments/assets/3e3a01c9-1a4a-4d68-bf5d-491369ae7a6c" />
-<img width="393" height="851" alt="스크린샷 2025-11-06 오후 6 33 25" src="https://github.com/user-attachments/assets/4b6b957f-66de-4cd6-aef8-752be43cfba4" />
+![첫-프로필-설정](https://github.com/user-attachments/assets/17a40b83-5b93-43bd-aa31-917e3ec12ea6)
 
 #### 3. 모임 찾기
 
 > 현재 모집 중인 모임을 확인하고 찾아 보세요.
 
-<img width="394" height="852" alt="스크린샷 2025-11-07 오전 12 43 59" src="https://github.com/user-attachments/assets/ea08a23e-963a-4414-8a7f-f79684ed78e6" />
-<img width="393" height="851" alt="스크린샷 2025-11-06 오후 6 48 40" src="https://github.com/user-attachments/assets/4ee15de9-2bcf-4ab6-af8b-619a70b08ffe" />
+![지도 탐색](https://github.com/user-attachments/assets/3c5a6c2d-f8da-4e51-9841-a3fc7b10fa2b)
+![검색](https://github.com/user-attachments/assets/1dda159c-c456-4df3-b5ca-83f66563e4b0)
 
 #### 4. 모임 참여
 
@@ -70,7 +67,7 @@
 
 > 마이페이지에서 나의 프로필 수정/뱃지 조회/이전 모임 조회/신고 및 차단 목록 조회/로그 아웃/회원 탈퇴가 가능해요.
 
-![본인 프로필 조회](https://github.com/user-attachments/assets/e44f7446-139d-4175-8d53-3c9a90a6941b)
+![나의 프로필 조회-차단 해제-신고 취소](https://github.com/user-attachments/assets/3471fe99-9cd8-479a-b7d6-27fc313d630b)
 
 ### 🛠️ 기술 스택
 
