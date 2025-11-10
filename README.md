@@ -42,7 +42,14 @@
 
 ![입장](https://github.com/user-attachments/assets/6e92c0c9-f09b-49a1-8c80-7c9ec03741ab)
 
-#### 5. 모임 시작/종료
+#### 5. 모임 생성
+
+> 원하는 모임이 없나요? 직접 만드세요!
+
+![모임 생성(1)](https://github.com/user-attachments/assets/f861eec1-c4e7-4843-9fdf-89b891602c0c)
+![모임 생성(2)](https://github.com/user-attachments/assets/d77c7fd2-5a9b-4632-8317-036253cd5ffe)
+
+#### 6. 모임 시작/종료
 
 > 방장은 모임을 수정/시작/종료할 수 있습니다.
 방장이 모임을 종료하고 나면, 참여자들에 대한 평가를 진행해 주세요.
@@ -50,21 +57,21 @@
 ![수정](https://github.com/user-attachments/assets/2ecfd01e-2823-42d4-b629-6abb0de3ba56)
 ![시작-종료-평가](https://github.com/user-attachments/assets/892f51c2-1e46-4cd1-9ecb-d089c64b43d4)
 
-#### 6. 모임 나가기
+#### 7. 모임 나가기
 
 > 모임이 마음에 들지 않으면 나갈 수 있어요.
 방장이 모임을 나갈 경우, 방장의 권한이 이임됩니다.
 
 ![나가기 및 권한 이임-모집 취소](https://github.com/user-attachments/assets/2f1c29f9-15e2-4b54-9607-4bbdb963f6bd)
 
-#### 7. 프로필 옵션
+#### 8. 프로필 옵션
 
 > 현재 참여 중인 사용자들의 프로필 조희/신고/차단이 가능합니다. <br>
 방장은 필요 시 참여자를 강제 퇴장시킬 수 있어요.
 
 ![프로필 조회-차단-신고-강퇴](https://github.com/user-attachments/assets/9a8e9f63-07e4-4606-956b-699254a42389)
 
-#### 8. 마이페이지
+#### 9. 마이페이지
 
 > 마이페이지에서 나의 프로필 수정/뱃지 조회/이전 모임 조회/신고 및 차단 목록 조회/로그 아웃/회원 탈퇴가 가능해요.
 
