@@ -46,8 +46,7 @@
 
 > 원하는 모임이 없나요? 직접 만드세요!
 
-![모임 생성(1)](https://github.com/user-attachments/assets/f861eec1-c4e7-4843-9fdf-89b891602c0c)
-![모임 생성(2)](https://github.com/user-attachments/assets/d77c7fd2-5a9b-4632-8317-036253cd5ffe)
+![모임 생성](https://github.com/user-attachments/assets/f4c9f51c-7878-44a8-90c7-26dee68a0dd9)
 
 #### 6. 모임 시작/종료
 
