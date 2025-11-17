@@ -16,18 +16,18 @@
 > 이메일을 통해 회원가입을 진행해 주세요. 입력하신 이메일 주소로 인증 링크를 보내드립니다. <br>
 카카오 계정으로도 간편하게 가입/로그인이 가능합니다.
 
-<img width="392" height="850" alt="스크린샷 2025-11-07 오전 12 51 09" src="https://github.com/user-attachments/assets/32c4dcc3-0995-45a7-8472-fcc2c0d236ad" />
-<img width="393" height="851" alt="스크린샷 2025-11-07 오전 12 57 22" src="https://github.com/user-attachments/assets/4f26a0fd-d438-4a34-a68d-ce23063e8ba4" />
-<img width="512" height="182" alt="스크린샷 2025-11-07 오전 12 55 42" src="https://github.com/user-attachments/assets/456e6fcb-6036-4a01-a89f-17e23dc8a4eb" />
-<img width="620" height="371" alt="스크린샷 2025-11-06 오후 6 05 39" src="https://github.com/user-attachments/assets/ea0b2073-a58c-42ed-b3d2-a975c1dedf0e" />
+<img width="302" height="674" alt="스크린샷 2025-11-07 오전 12 51 09" src="https://github.com/user-attachments/assets/32c4dcc3-0995-45a7-8472-fcc2c0d236ad" />
+<img width="302" height="674" alt="스크린샷 2025-11-07 오전 12 57 22" src="https://github.com/user-attachments/assets/4f26a0fd-d438-4a34-a68d-ce23063e8ba4" /> <br>
+<img width="302" height="674" alt="스크린샷 2025-11-07 오전 12 55 42" src="https://github.com/user-attachments/assets/456e6fcb-6036-4a01-a89f-17e23dc8a4eb" />
+<img width="302" height="674" alt="스크린샷 2025-11-06 오후 6 05 39" src="https://github.com/user-attachments/assets/ea0b2073-a58c-42ed-b3d2-a975c1dedf0e" />
 
 #### 2. 프로필 설정
 
 > 보내드린 링크로 로그인하여 가입을 완료하시면, 첫 프로필 설정 단계로 이동합니다. <br>
 나를 보여주는 개성 있는 프로필을 만들어 보세요.
 
-<img width="393" height="852" alt="스크린샷 2025-11-10 오후 8 26 49" src="https://github.com/user-attachments/assets/3187df7c-2879-47de-9e96-50e1596903db" />
-<img width="394" height="852" alt="스크린샷 2025-11-10 오후 8 28 10" src="https://github.com/user-attachments/assets/3c98f980-518e-4db7-b6ed-2921cb14a24e" />
+<img width="302" height="674" alt="스크린샷 2025-11-10 오후 8 26 49" src="https://github.com/user-attachments/assets/3187df7c-2879-47de-9e96-50e1596903db" />
+<img width="302" height="674" alt="스크린샷 2025-11-10 오후 8 28 10" src="https://github.com/user-attachments/assets/3c98f980-518e-4db7-b6ed-2921cb14a24e" />
 
 #### 3. 모임 찾기
 
