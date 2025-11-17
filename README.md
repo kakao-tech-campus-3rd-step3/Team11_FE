@@ -33,8 +33,8 @@
 
 > 현재 모집 중인 모임을 확인하고 찾아 보세요.
 
-![지도 탐색](https://github.com/user-attachments/assets/3c5a6c2d-f8da-4e51-9841-a3fc7b10fa2b)
-![검색](https://github.com/user-attachments/assets/1dda159c-c456-4df3-b5ca-83f66563e4b0)
+![지도 탐색](https://github.com/user-attachments/assets/7c97bdbb-9893-4e5a-aa89-231b8d762ff5)
+![검색](https://github.com/user-attachments/assets/58f63f95-f31e-43bb-be65-39c2544c575e)
 
 #### 4. 모임 참여
 
